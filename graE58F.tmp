@@ -1,0 +1,94 @@
+[gd_scene load_steps=8 format=3 uid="uid://457qsgfoiffm"]
+
+[ext_resource type="Texture2D" uid="uid://cei4qngk4c2kh" path="res://assets/icons/white/circle-solid.png" id="1_n5sbo"]
+[ext_resource type="Script" path="res://graph_node.gd" id="1_xmc6h"]
+[ext_resource type="Texture2D" uid="uid://ctiv7et6h4hmj" path="res://assets/icons/black/circle-regular (1).png" id="2_uw84f"]
+[ext_resource type="PackedScene" uid="uid://mgvb8detqlu7" path="res://context_menu.tscn" id="3_l3efe"]
+[ext_resource type="Script" path="res://resources/context_actions/context_action.gd" id="4_d4doj"]
+[ext_resource type="Resource" uid="uid://dontgb55onwt5" path="res://resources/context_actions/graph node/graph_node_ca.tres" id="5_d7h6g"]
+[ext_resource type="Script" path="res://draggable.gd" id="7_mb1h3"]
+
+[node name="GraphNode" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1088.0
+offset_bottom = -584.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xmc6h")
+
+[node name="Outline" type="TextureRect" parent="."]
+layout_mode = 1
+offset_right = 64.0
+offset_bottom = 64.0
+texture = ExtResource("2_uw84f")
+expand_mode = 1
+
+[node name="NodeVisual" type="TextureRect" parent="Outline"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_n5sbo")
+expand_mode = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Outline/NodeVisual"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+text = "N
+"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Label" type="Label" parent="Outline/NodeVisual"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "N"
+horizontal_alignment = 1
+
+[node name="context_menu" parent="." instance=ExtResource("3_l3efe")]
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_bottom = 30.0
+context = "Graph Node"
+context_actions = Array[ExtResource("4_d4doj")]([ExtResource("5_d7h6g")])
+
+[node name="draggable" type="Node" parent="."]
+script = ExtResource("7_mb1h3")

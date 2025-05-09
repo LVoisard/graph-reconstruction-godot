@@ -1,0 +1,7 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://bysmucllofybw"]
+
+[ext_resource type="Script" path="res://resources/context_actions/ca_general_delete.gd" id="1_ybn3o"]
+
+[resource]
+script = ExtResource("1_ybn3o")
+action_text = "Delete"

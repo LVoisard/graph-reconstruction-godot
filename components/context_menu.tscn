@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://mgvb8detqlu7"]
+
+[ext_resource type="Script" path="res://components/context_menu.gd" id="1_4wdlj"]
+
+[node name="context_menu" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 30)
+anchors_preset = -1
+anchor_right = 0.173611
+anchor_bottom = 0.462963
+offset_bottom = -269.0
+script = ExtResource("1_4wdlj")
+context = "Context Menu Prefab"
+
+[node name="v-container" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="context-label" type="Label" parent="v-container"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Context
+"
+horizontal_alignment = 1
+
+[node name="context-actions" type="VBoxContainer" parent="v-container"]
+layout_mode = 2
+theme_override_constants/separation = 1

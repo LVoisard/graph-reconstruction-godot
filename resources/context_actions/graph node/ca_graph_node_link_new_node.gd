@@ -1,0 +1,20 @@
+extends ContextAction
+
+var node_prefab: PackedScene = null
+var connection_prefab: PackedScene = null
+
+func perform_context_action(node: Node) -> void:
+	if node_prefab == null:
+		node_prefab = load("res://scripts/graph_node/graph_node.tscn")
+	if connection_prefab == null:
+		connection_prefab = load("res://scripts/connection/connection.tscn")
+	var n = node_prefab.instantiate() as Control
+	n.set_position(node.get_position() + Vector2(150, 0))
+	
+	var c = connection_prefab.instantiate() as Connection
+	c.set_connection_nodes(node as Control, n)
+	c.update_connection_position()
+	
+	node.add_sibling(n)
+	node.add_sibling(c)
+	

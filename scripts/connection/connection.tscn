@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3 uid="uid://npo6cawgrxf2"]
+
+[ext_resource type="Script" path="res://scripts/connection/connection.gd" id="1_dls6g"]
+[ext_resource type="Texture2D" uid="uid://m35ex1ouot5j" path="res://assets/icons/black/left.png" id="1_sl5wl"]
+[ext_resource type="Texture2D" uid="uid://cxpmtsegsjwnw" path="res://assets/icons/black/minus.png" id="2_b2k8e"]
+[ext_resource type="Texture2D" uid="uid://dg34bwoc0fdne" path="res://assets/icons/black/right.png" id="3_noxjb"]
+
+[node name="Connection" type="Control"]
+custom_minimum_size = Vector2(100, 32)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 100.0
+offset_bottom = 32.0
+script = ExtResource("1_dls6g")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(100, 32)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="left connector" type="TextureRect" parent="HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("1_sl5wl")
+expand_mode = 2
+
+[node name="NinePatchRect" type="NinePatchRect" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_b2k8e")
+region_rect = Rect2(30, 22, 45, 60)
+
+[node name="right connector" type="TextureRect" parent="HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("3_noxjb")
+expand_mode = 2

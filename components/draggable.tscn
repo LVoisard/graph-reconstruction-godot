@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bp8x4vaggq0uc"]
+
+[ext_resource type="Script" path="res://components/draggable.gd" id="1_8cv04"]
+
+[node name="draggable" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_8cv04")

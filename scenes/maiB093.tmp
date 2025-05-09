@@ -1,0 +1,71 @@
+[gd_scene load_steps=3 format=3 uid="uid://bgo78cbvaoxxk"]
+
+[ext_resource type="Texture2D" uid="uid://c6r7jn1rydbkb" path="res://assets/icons/white/plus.png" id="1_xuxub"]
+[ext_resource type="PackedScene" uid="uid://2366d4on4cdd" path="res://scripts/graph/graph.tscn" id="1_yar6h"]
+
+[node name="main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="layout container" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Left Bar" type="Control" parent="layout container"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="layout container/Left Bar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Center Canvas" type="SubViewportContainer" parent="layout container"]
+layout_mode = 2
+size_flags_horizontal = 3
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="layout container/Center Canvas"]
+handle_input_locally = false
+size = Vector2i(744, 648)
+render_target_update_mode = 4
+
+[node name="Graph" parent="layout container/Center Canvas/SubViewport" instance=ExtResource("1_yar6h")]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="layout container/Center Canvas/SubViewport"]
+custom_minimum_size = Vector2(0, 64)
+offset_right = 64.0
+offset_bottom = 64.0
+
+[node name="Button" type="Button" parent="layout container/Center Canvas/SubViewport/HBoxContainer"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "New Node"
+icon = ExtResource("1_xuxub")
+expand_icon = true
+
+[node name="Right Bar" type="Control" parent="layout container"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="layout container/Right Bar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[connection signal="pressed" from="layout container/Center Canvas/SubViewport/HBoxContainer/Button" to="layout container/Center Canvas/SubViewport/Graph" method="_on_button_pressed"]
