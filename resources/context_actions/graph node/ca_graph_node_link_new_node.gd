@@ -8,12 +8,11 @@ func perform_context_action(node: Node) -> void:
 		node_prefab = load("res://scripts/graph_node/graph_node.tscn")
 	if connection_prefab == null:
 		connection_prefab = load("res://scripts/connection/connection.tscn")
-	var n = node_prefab.instantiate() as Control
+	var n = node_prefab.instantiate() as MyGraphNode
 	n.set_position(node.get_position() + Vector2(150, 0))
 	
 	var c = connection_prefab.instantiate() as Connection
-	c.set_connection_nodes(node as Control, n)
-	c.update_connection_position()
+	c.set_connection_nodes(node as MyGraphNode, n)
 	
 	node.add_sibling(n)
 	node.add_sibling(c)

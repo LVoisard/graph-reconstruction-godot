@@ -2,6 +2,8 @@ extends Control
 class_name Draggable
 
 signal finished_dragging
+signal started_dragging
+signal dragging
 
 var is_dragging = false #state management
 var mouse_offset #center mouse on click
@@ -17,6 +19,7 @@ func _ready() -> void:
 	
 func _physics_process(delta):
 	if is_dragging == true:
+		dragging.emit()
 		get_parent().position = get_global_mouse_position() - mouse_offset
 		
 func _input(event):
@@ -25,6 +28,7 @@ func _input(event):
 			if mouse_over_parent:
 				#print('clicked on sprite')
 				is_dragging = true
+				started_dragging.emit()
 				mouse_offset = get_global_mouse_position() - get_parent().global_position
 		else:
 			if is_dragging:

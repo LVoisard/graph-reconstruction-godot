@@ -1,0 +1,7 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://tib5hh2wgcax"]
+
+[ext_resource type="Script" path="res://resources/context_actions/graph node/ca_graph_node_change_node_type.gd" id="1_tfcin"]
+
+[resource]
+script = ExtResource("1_tfcin")
+action_text = "Change Node Type"

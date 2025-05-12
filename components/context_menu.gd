@@ -32,6 +32,9 @@ func _input(event: InputEvent) -> void:
 			if mouse_over_parent:
 				self.visible = true
 				self.global_position = get_global_mouse_position()
+				get_parent().get_parent().move_child(get_parent(), -1)
+			else:
+				self.visible = false
 	elif event is InputEventMouseButton:
 		if not get_global_rect().has_point(get_global_mouse_position()):
 				self.visible = false

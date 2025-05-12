@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://457qsgfoiffm"]
+[gd_scene load_steps=10 format=3 uid="uid://457qsgfoiffm"]
 
 [ext_resource type="Texture2D" uid="uid://cei4qngk4c2kh" path="res://assets/icons/white/circle-solid.png" id="1_n5sbo"]
 [ext_resource type="Script" path="res://scripts/graph_node/graph_node.gd" id="1_xmc6h"]
@@ -8,6 +8,7 @@
 [ext_resource type="Resource" uid="uid://dontgb55onwt5" path="res://resources/context_actions/graph node/ca_graph_node_link_new_node.tres" id="5_d7h6g"]
 [ext_resource type="Resource" uid="uid://bysmucllofybw" path="res://resources/context_actions/ca_general_delete.tres" id="7_annck"]
 [ext_resource type="PackedScene" uid="uid://bp8x4vaggq0uc" path="res://components/draggable.tscn" id="7_hmws7"]
+[ext_resource type="Resource" uid="uid://tib5hh2wgcax" path="res://resources/context_actions/graph node/ca_graph_node_change_node_type.tres" id="8_w44de"]
 
 [node name="GraphNode" type="Control"]
 custom_minimum_size = Vector2(64, 64)
@@ -84,7 +85,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 offset_bottom = 30.0
 context = "Graph Node"
-context_actions = Array[ExtResource("4_d4doj")]([ExtResource("5_d7h6g"), ExtResource("7_annck")])
+context_actions = Array[ExtResource("4_d4doj")]([ExtResource("5_d7h6g"), ExtResource("8_w44de"), ExtResource("7_annck")])
 
 [node name="draggable" parent="." instance=ExtResource("7_hmws7")]
 visible = false
