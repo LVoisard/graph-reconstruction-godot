@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://6bokh8mlrsgl"]
+
+[ext_resource type="Script" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type.gd" id="1_7pwx7"]
+
+[resource]
+script = ExtResource("1_7pwx7")
+type = 1
+action_text = "Goal"

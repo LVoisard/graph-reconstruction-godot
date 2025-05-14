@@ -15,10 +15,11 @@ grow_vertical = 2
 script = ExtResource("1_flixm")
 
 [node name="context_menu" parent="." instance=ExtResource("2_i3r03")]
-layout_mode = 0
+layout_mode = 1
 anchors_preset = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
+offset_right = 61.0
 offset_bottom = 30.0
 context = "Graph"
 context_actions = Array[ExtResource("3_tf2hb")]([ExtResource("4_xn1qh")])

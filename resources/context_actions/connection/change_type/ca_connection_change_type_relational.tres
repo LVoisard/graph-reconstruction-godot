@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dns68sahiwmqu"]
+
+[ext_resource type="Script" path="res://resources/context_actions/connection/change_type/ca_connection_change_type.gd" id="1_mi1jd"]
+
+[resource]
+script = ExtResource("1_mi1jd")
+type = 1
+action_text = "Relational"

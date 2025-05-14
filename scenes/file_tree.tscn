@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bpgw7tlguw8n0"]
+
+[ext_resource type="Script" path="res://scenes/file_tree.gd" id="1_21j4d"]
+
+[node name="Tree" type="Tree"]
+size_flags_vertical = 3
+columns = 3
+column_titles_visible = true
+allow_search = false
+hide_root = true
+script = ExtResource("1_21j4d")

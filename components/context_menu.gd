@@ -17,12 +17,23 @@ func _ready() -> void:
 	get_parent().mouse_exited.connect(on_mouse_exited)
 	
 	for context_action in context_actions:
-		var ca = context_action as ContextAction
-		var btn = Button.new()
-		btn.text = ca.get_action_name()
-		btn.pressed.connect(ca.perform_context_action.bind(get_parent())) 
-		btn.pressed.connect(on_context_action_pressed)
-		context_actions_container.add_child(btn)
+		if context_action is SubContextAction:
+			var ca = context_action as SubContextAction
+			var btn = MenuButton.new()
+			btn.text = ca.get_action_name()
+			btn.flat = false
+			for action in ca.sub_context_actions:
+				btn.get_popup().add_item(action.get_action_name())
+			btn.get_popup().id_pressed.connect(ca.on_sub_context_action_clicked.bind(get_parent()))	
+			btn.get_popup().id_pressed.connect(on_sub_context_action_pressed)
+			context_actions_container.add_child(btn)
+		elif context_action is ContextAction:
+			var ca = context_action as ContextAction
+			var btn = Button.new()
+			btn.text = ca.get_action_name()
+			btn.pressed.connect(ca.perform_context_action.bind(get_parent())) 
+			btn.pressed.connect(on_context_action_pressed)
+			context_actions_container.add_child(btn)
 		
 	self.hide()
 
@@ -45,6 +56,9 @@ func on_mouse_entered() -> void:
 func on_mouse_exited() -> void:
 	mouse_over_parent = false
 	
+	
+func on_sub_context_action_pressed(_id: int) -> void:
+	self.visible = false
 	
 func on_context_action_pressed() -> void:
 	self.visible = false

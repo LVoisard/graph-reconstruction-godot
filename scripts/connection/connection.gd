@@ -2,7 +2,7 @@ extends Control
 class_name Connection 
 
 var connection_nodes: Array[MyGraphNode] = [null, null]
-var connector_bits: Array[bool] = [true,true]
+var connector_bits: Array[bool] = [false,true]
 var connection_type: ConnectionType = ConnectionType.Directional
 
 @export var connector_arrow: Texture2D
@@ -10,6 +10,8 @@ var connection_type: ConnectionType = ConnectionType.Directional
 
 @onready var left_connector: TextureButton = $"HBoxContainer/left connector"
 @onready var right_connector: TextureButton = $"HBoxContainer/right connector"
+@onready var dotted_line: TextureRect = $"HBoxContainer/dotted_line"
+@onready var full_line: NinePatchRect = $"HBoxContainer/full_line"
 
 func _ready() -> void:
 	left_connector.button_down.connect(on_connector_button_pressed.bind(0))
@@ -41,8 +43,28 @@ func update_connection_visual() -> void:
 	right_connector.texture_normal = connector_arrow if connector_bits[1] else connector_dead_end
 	right_connector.flip_h = true
 	
+	match connection_type:
+		ConnectionType.Directional:
+			left_connector.show()
+			right_connector.show()
+			dotted_line.hide()
+			full_line.show()
+		ConnectionType.Relational:
+			left_connector.hide()
+			right_connector.show()
+			dotted_line.show()
+			full_line.hide()
+	
+func set_type(new_type: ConnectionType) -> void:
+	print("%s > %s" % [ConnectionType.keys()[connection_type], ConnectionType.keys()[new_type]])
+	connection_type = new_type
+	update_connection_visual()
+	
 func belongs_to_graph_node(node: MyGraphNode) -> bool:
 	return a() == node || b() == node	
+
+func get_other(node: MyGraphNode) -> MyGraphNode:
+	return a() if node == b() else b()
 
 func a() -> MyGraphNode:
 	return connection_nodes[0]
@@ -50,7 +72,9 @@ func a() -> MyGraphNode:
 func b() -> MyGraphNode:
 	return connection_nodes[1]
 
-func on_connection_deleted() -> void:
+func on_connection_deleted(node: Node) -> void:
+	if node != a() && a() != null: a().remove_connection(self)
+	if node != b() && b() != null: b().remove_connection(self)
 	self.queue_free()
 	
 func on_connector_button_pressed(index: int)->void:
@@ -58,6 +82,12 @@ func on_connector_button_pressed(index: int)->void:
 	if not connector_bits[0] && not connector_bits[1]:
 		connector_bits[(index + 1) % 2] = true
 	update_connection_visual()
+	
+func copy_connector(con: Connection) -> void:	
+	self.connection_type = con.connection_type
+	self.connector_bits = con.connector_bits
+	update_connection_visual()
+	
 
 enum ConnectionType {
 	Directional,

@@ -1,0 +1,79 @@
+[gd_scene load_steps=3 format=3 uid="uid://m7c1nsgiiqkd"]
+
+[ext_resource type="Script" path="res://scenes/generator_controller.gd" id="1_vxu2e"]
+[ext_resource type="PackedScene" uid="uid://2366d4on4cdd" path="res://scripts/graph/graph.tscn" id="4_xsyub"]
+
+[node name="Generator" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_vxu2e")
+metadata/_tab_index = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Left Bar" type="Control" parent="HBoxContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="HBoxContainer/Left Bar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Left Bar/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Left Bar/Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="Input Graph Viewport" type="SubViewportContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="HBoxContainer/Input Graph Viewport"]
+handle_input_locally = false
+size = Vector2i(1516, 1080)
+render_target_update_mode = 4
+
+[node name="Control" type="Control" parent="HBoxContainer/Input Graph Viewport/SubViewport"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="input graph" parent="HBoxContainer/Input Graph Viewport/SubViewport/Control" instance=ExtResource("4_xsyub")]
+layout_mode = 1
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HBoxContainer/Input Graph Viewport/SubViewport"]
+offset_right = 42.0
+offset_bottom = 23.0
+text = "Input
+"

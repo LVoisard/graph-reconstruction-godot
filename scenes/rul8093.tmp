@@ -1,0 +1,132 @@
+[gd_scene load_steps=3 format=3 uid="uid://dav187gv7canr"]
+
+[ext_resource type="Script" path="res://scripts/rules_controller.gd" id="1_nmf5h"]
+[ext_resource type="PackedScene" uid="uid://2366d4on4cdd" path="res://scripts/graph/graph.tscn" id="2_r3oha"]
+
+[node name="Rules" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_nmf5h")
+metadata/_tab_index = 0
+
+[node name="layout container" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Left Bar" type="Control" parent="layout container"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="layout container/Left Bar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="layout container/Left Bar/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="layout container/Left Bar/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Untitled"
+horizontal_alignment = 1
+
+[node name="Tree" type="Tree" parent="layout container/Left Bar/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Tree2" type="Tree" parent="layout container/Left Bar/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="copy input to output" type="Button" parent="layout container/Left Bar/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Copy to Output
+"
+
+[node name="save rule btn" type="Button" parent="layout container/Left Bar/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Save Rule"
+
+[node name="clear rule" type="Button" parent="layout container/Left Bar/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Clear
+"
+
+[node name="Center Canvas" type="HSplitContainer" parent="layout container"]
+layout_mode = 2
+size_flags_horizontal = 3
+split_offset = 3
+
+[node name="Input Graph Viewport" type="SubViewportContainer" parent="layout container/Center Canvas"]
+layout_mode = 2
+size_flags_horizontal = 3
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="layout container/Center Canvas/Input Graph Viewport"]
+handle_input_locally = false
+size = Vector2i(2, 2)
+render_target_update_mode = 4
+
+[node name="Control" type="Control" parent="layout container/Center Canvas/Input Graph Viewport/SubViewport"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="input graph" parent="layout container/Center Canvas/Input Graph Viewport/SubViewport/Control" instance=ExtResource("2_r3oha")]
+layout_mode = 1
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="layout container/Center Canvas/Input Graph Viewport/SubViewport"]
+offset_right = 42.0
+offset_bottom = 23.0
+text = "Input
+"
+
+[node name="Output Graph Viewport" type="SubViewportContainer" parent="layout container/Center Canvas"]
+layout_mode = 2
+size_flags_horizontal = 3
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="layout container/Center Canvas/Output Graph Viewport"]
+handle_input_locally = false
+size = Vector2i(2, 2)
+render_target_update_mode = 4
+
+[node name="Control" type="Control" parent="layout container/Center Canvas/Output Graph Viewport/SubViewport"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="output graph" parent="layout container/Center Canvas/Output Graph Viewport/SubViewport/Control" instance=ExtResource("2_r3oha")]
+layout_mode = 1
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="layout container/Center Canvas/Output Graph Viewport/SubViewport"]
+offset_right = 50.0
+offset_bottom = 23.0
+text = "Ouput
+"
+
+[connection signal="button_down" from="layout container/Left Bar/Panel/VBoxContainer/copy input to output" to="." method="copy_to_output"]
+[connection signal="button_down" from="layout container/Left Bar/Panel/VBoxContainer/save rule btn" to="." method="save_requested"]
+[connection signal="button_down" from="layout container/Left Bar/Panel/VBoxContainer/clear rule" to="." method="clear"]

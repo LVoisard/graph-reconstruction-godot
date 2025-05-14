@@ -1,0 +1,7 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://0sq5iqybsr51"]
+
+[ext_resource type="Script" path="res://resources/context_actions/graph node/ca_graph_node_remove_connections.gd" id="1_lv2ch"]
+
+[resource]
+script = ExtResource("1_lv2ch")
+action_text = "Remove all Connections"

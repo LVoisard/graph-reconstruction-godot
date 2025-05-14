@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://bgm13g8chq4s4"]
+
+[ext_resource type="Script" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type.gd" id="1_4cnm1"]
+
+[resource]
+script = ExtResource("1_4cnm1")
+type = 4
+action_text = "Lock"

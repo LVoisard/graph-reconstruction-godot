@@ -1,7 +1,15 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://tib5hh2wgcax"]
+[gd_resource type="Resource" script_class="SubContextAction" load_steps=9 format=3 uid="uid://tib5hh2wgcax"]
 
-[ext_resource type="Script" path="res://resources/context_actions/graph node/ca_graph_node_change_node_type.gd" id="1_tfcin"]
+[ext_resource type="Script" path="res://resources/context_actions/sub_context_action.gd" id="1_bnp0e"]
+[ext_resource type="Script" path="res://resources/context_actions/context_action.gd" id="2_f22py"]
+[ext_resource type="Resource" uid="uid://d33tctvuqiqys" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_entrance.tres" id="3_bpwv2"]
+[ext_resource type="Resource" uid="uid://6bokh8mlrsgl" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_goal.tres" id="4_krkf8"]
+[ext_resource type="Resource" uid="uid://d37gjlpg61vng" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_task.tres" id="5_u2csm"]
+[ext_resource type="Resource" uid="uid://h6i5my37wotw" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_key.tres" id="6_ukwu0"]
+[ext_resource type="Resource" uid="uid://bgm13g8chq4s4" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_lock.tres" id="7_oqf1u"]
+[ext_resource type="Resource" uid="uid://cl5rtu3ct3apq" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_any.tres" id="8_wjfks"]
 
 [resource]
-script = ExtResource("1_tfcin")
+script = ExtResource("1_bnp0e")
+sub_context_actions = Array[ExtResource("2_f22py")]([ExtResource("8_wjfks"), ExtResource("3_bpwv2"), ExtResource("4_krkf8"), ExtResource("6_ukwu0"), ExtResource("7_oqf1u"), ExtResource("5_u2csm")])
 action_text = "Change Node Type"

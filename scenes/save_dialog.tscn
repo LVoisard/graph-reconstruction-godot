@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://di3jdylkt76p4"]
+
+[node name="FileDialog" type="FileDialog"]
+auto_translate_mode = 1
+initial_position = 1
+size = Vector2i(500, 350)
+dialog_hide_on_ok = true
+root_subfolder = "res://rules"
+filters = PackedStringArray("*.txt;Text Files")
+show_hidden_files = true
+
+[node name="Tree" type="Tree" parent="."]
+visible = false
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 492.0
+offset_bottom = 301.0
+size_flags_vertical = 3
+
+[node name="Tree" type="Tree" parent="Tree"]
+visible = false
+layout_mode = 0
+size_flags_vertical = 3

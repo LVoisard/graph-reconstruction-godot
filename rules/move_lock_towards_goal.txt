@@ -1,0 +1,16 @@
+input
+nodes
+1,140,583,LOCK
+2,384,581,TASK
+3,266,388,ANY
+edges
+1,2,Directional
+3,1,Relational
+output
+nodes
+1,140,583,TASK
+2,384,581,LOCK
+3,266,388,ANY
+edges
+1,2,Directional
+3,2,Relational

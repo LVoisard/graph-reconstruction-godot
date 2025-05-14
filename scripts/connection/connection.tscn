@@ -1,17 +1,22 @@
-[gd_scene load_steps=6 format=3 uid="uid://npo6cawgrxf2"]
+[gd_scene load_steps=11 format=3 uid="uid://npo6cawgrxf2"]
 
 [ext_resource type="Script" path="res://scripts/connection/connection.gd" id="1_dls6g"]
 [ext_resource type="Texture2D" uid="uid://m35ex1ouot5j" path="res://assets/icons/black/left.png" id="1_sl5wl"]
 [ext_resource type="Texture2D" uid="uid://cxpmtsegsjwnw" path="res://assets/icons/black/minus.png" id="2_b2k8e"]
 [ext_resource type="Texture2D" uid="uid://b4wnt01q1rdex" path="res://assets/icons/black/stop.png" id="3_abtrf"]
 [ext_resource type="Texture2D" uid="uid://dg34bwoc0fdne" path="res://assets/icons/black/right.png" id="3_noxjb"]
+[ext_resource type="Texture2D" uid="uid://dopxdjee2k7dg" path="res://assets/icons/black/test_line.png" id="4_qvmlb"]
+[ext_resource type="PackedScene" uid="uid://mgvb8detqlu7" path="res://components/context_menu.tscn" id="6_bpyl6"]
+[ext_resource type="Script" path="res://resources/context_actions/context_action.gd" id="7_a7eyn"]
+[ext_resource type="Resource" uid="uid://ddm8blxt0ulwn" path="res://resources/context_actions/connection/ca_connection_change_type.tres" id="8_r0l6d"]
+[ext_resource type="Resource" uid="uid://bysmucllofybw" path="res://resources/context_actions/ca_general_delete.tres" id="9_fpr8u"]
 
 [node name="Connection" type="Control"]
-custom_minimum_size = Vector2(100, 32)
+custom_minimum_size = Vector2(64, 10)
 layout_mode = 3
 anchors_preset = 0
-offset_right = 100.0
-offset_bottom = 32.0
+offset_right = 469.0
+offset_bottom = 10.0
 script = ExtResource("1_dls6g")
 connector_arrow = ExtResource("1_sl5wl")
 connector_dead_end = ExtResource("3_abtrf")
@@ -34,7 +39,16 @@ texture_normal = ExtResource("1_sl5wl")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="NinePatchRect" type="NinePatchRect" parent="HBoxContainer"]
+[node name="dotted_line" type="TextureRect" parent="HBoxContainer"]
+visible = false
+clip_contents = true
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("4_qvmlb")
+stretch_mode = 1
+
+[node name="full_line" type="NinePatchRect" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 texture = ExtResource("2_b2k8e")
@@ -46,3 +60,13 @@ layout_mode = 2
 texture_normal = ExtResource("3_noxjb")
 ignore_texture_size = true
 stretch_mode = 0
+
+[node name="context_menu" parent="." instance=ExtResource("6_bpyl6")]
+visible = false
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_bottom = 30.0
+context = "Connection"
+context_actions = Array[ExtResource("7_a7eyn")]([ExtResource("8_r0l6d"), ExtResource("9_fpr8u")])
