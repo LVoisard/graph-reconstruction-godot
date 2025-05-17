@@ -27,8 +27,7 @@ func _ready() -> void:
 func set_id(id: int) -> void:
 	self.id = id
 
-func set_type(new_type: NodeType) -> void:
-	print("%s > %s" % [NodeType.keys()[node_type], NodeType.keys()[new_type]])
+func set_type(new_type: NodeType) -> void:	
 	node_type = new_type
 	label.text = "%d:%s" % [id, NodeType.keys()[node_type].substr(0,1)]
 	change_visuals()

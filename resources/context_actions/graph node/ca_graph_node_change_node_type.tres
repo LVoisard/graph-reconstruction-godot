@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="SubContextAction" load_steps=9 format=3 uid="uid://tib5hh2wgcax"]
 
-[ext_resource type="Script" path="res://resources/context_actions/sub_context_action.gd" id="1_bnp0e"]
-[ext_resource type="Script" path="res://resources/context_actions/context_action.gd" id="2_f22py"]
+[ext_resource type="Script" uid="uid://dsbdscvfng6du" path="res://resources/context_actions/sub_context_action.gd" id="1_bnp0e"]
+[ext_resource type="Script" uid="uid://dg1p4omlqndtb" path="res://resources/context_actions/context_action.gd" id="2_f22py"]
 [ext_resource type="Resource" uid="uid://d33tctvuqiqys" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_entrance.tres" id="3_bpwv2"]
 [ext_resource type="Resource" uid="uid://6bokh8mlrsgl" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_goal.tres" id="4_krkf8"]
 [ext_resource type="Resource" uid="uid://d37gjlpg61vng" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_task.tres" id="5_u2csm"]

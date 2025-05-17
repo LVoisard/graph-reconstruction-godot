@@ -10,8 +10,9 @@ var file_dialog: FileDialog = null
 
 func _ready() -> void:
 	file_dialog = load("res://scenes/save_dialog.tscn").instantiate()
-	add_child(file_dialog)
 	file_dialog.confirmed.connect(save_rule)
+	file_dialog.use_native_dialog = false
+	add_child(file_dialog)
 	file_tree.load_rule.connect(load_rule)
 	update_file_tree()
 	
@@ -20,7 +21,10 @@ func save_requested() -> void:
 	file_dialog.show()
 
 func save_rule() -> void:
-	var f = FileAccess.open("res://rules/" + file_dialog.current_path, FileAccess.WRITE)
+	print(file_dialog.current_path)
+	print(file_dialog.current_dir)
+	print(file_dialog.current_file)
+	var f = FileAccess.open(file_dialog.current_path, FileAccess.WRITE)
 	var s = "input\n"
 	s += input_graph.get_graph_string()
 	s += "output\n"

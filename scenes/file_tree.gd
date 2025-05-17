@@ -89,7 +89,7 @@ func delete_rule(item: TreeItem, path: String, confirm) -> void:
 	confirm.queue_free()
 	
 
-func get_all_files(path: String, file_ext:= ["txt"]):
+func get_all_files(path: String, file_ext:= ["txt"]) -> JsonItemDirectory:
 	var dir = DirAccess.open(path)
 	
 	var files = JsonItemDirectory.new()
@@ -116,8 +116,10 @@ func get_all_files(path: String, file_ext:= ["txt"]):
 				continue
 				
 			files.files.append(JsonItemFile.new(file_name, dir, file_ext))
-			
-		file_name = dir.get_next()
+		file_name = dir.get_next()		
+		#print(files.files.map(func(x): return x.name))
+		files.files.sort_custom(func(a,b): return a.name < b.name)
+		#print(files.files.map(func(x): return x.name))
 	return files
 	
 class JsonItemDirectory:

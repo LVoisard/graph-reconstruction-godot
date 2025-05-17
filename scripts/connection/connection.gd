@@ -56,7 +56,6 @@ func update_connection_visual() -> void:
 			full_line.hide()
 	
 func set_type(new_type: ConnectionType) -> void:
-	print("%s > %s" % [ConnectionType.keys()[connection_type], ConnectionType.keys()[new_type]])
 	connection_type = new_type
 	update_connection_visual()
 	

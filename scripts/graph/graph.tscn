@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://2366d4on4cdd"]
 
-[ext_resource type="Script" path="res://scripts/graph/graph.gd" id="1_flixm"]
+[ext_resource type="Script" uid="uid://btxradebxf0j2" path="res://scripts/graph/graph.gd" id="1_flixm"]
 [ext_resource type="PackedScene" uid="uid://mgvb8detqlu7" path="res://components/context_menu.tscn" id="2_i3r03"]
-[ext_resource type="Script" path="res://resources/context_actions/context_action.gd" id="3_tf2hb"]
+[ext_resource type="Script" uid="uid://dg1p4omlqndtb" path="res://resources/context_actions/context_action.gd" id="3_tf2hb"]
 [ext_resource type="Resource" uid="uid://b021esmx6sf71" path="res://resources/context_actions/graph/ca_graph_create_new.tres" id="4_xn1qh"]
 
 [node name="Graph" type="Control"]

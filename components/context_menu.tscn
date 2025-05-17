@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://mgvb8detqlu7"]
 
-[ext_resource type="Script" path="res://components/context_menu.gd" id="1_4wdlj"]
+[ext_resource type="Script" uid="uid://bi1wts51e6au8" path="res://components/context_menu.gd" id="1_4wdlj"]
 
 [node name="context_menu" type="PanelContainer"]
 top_level = true

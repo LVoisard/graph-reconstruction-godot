@@ -25,7 +25,6 @@ func on_child_entered(child: Node) -> void:
 		connections.append(child)
 
 func on_child_exited(child: Node) -> void:
-	print("deleted")
 	if child is MyGraphNode:
 		if child in nodes:
 			nodes.remove_at(nodes.find(child))
@@ -38,7 +37,7 @@ func on_child_exited(child: Node) -> void:
 func assign_node_id(node: MyGraphNode) -> void:
 	var new_id:int = -1
 	if free_ids.is_empty():
-		current_id += 1
+		current_id = nodes.size()
 		new_id = current_id
 	else:
 		new_id = free_ids.pop_front()
@@ -54,6 +53,14 @@ func get_graph_string() -> String:
 		s += "%d,%d,%s\n" % [con.a().id, con.b().id, Connection.ConnectionType.keys()[con.connection_type]]	
 	return s
 	
+func get_graph_dict() -> Dictionary:
+	var d = {"nodes": [], "edges": []}
+	for node in nodes:
+		d["nodes"].append("%d,%d,%d,%s" % [node.id, node.position.x, node.position.y, MyGraphNode.NodeType.keys()[node.node_type]])
+	for con in connections:
+		d["edges"].append("%d,%d,%s" % [con.a().id, con.b().id, Connection.ConnectionType.keys()[con.connection_type]])
+	return d
+	
 func load_from_string(string_graph: Dictionary) -> void:
 	print(string_graph)
 	for node_string in string_graph["nodes"]:
@@ -68,7 +75,21 @@ func load_from_string(string_graph: Dictionary) -> void:
 		add_child(new_con)
 		new_con.set_connection_nodes(nodes[int(params[0]) - 1], nodes[int(params[1]) - 1])
 		new_con.set_type(Connection.ConnectionType.get(params[2]))
-	
+
+func load_from_analytic(graph: AnalyticGraph) -> void:
+	var id_dict = {}
+	for node in graph.nodes.values():
+		var new_node = graph_node_prefab.instantiate()
+		id_dict[node.id] = new_node
+		add_child(new_node)
+		new_node.set_position(Vector2(node.x, node.y))
+		new_node.set_type(MyGraphNode.NodeType.get(node.label))
+	for edge in graph.edges:
+		var new_con = connection_prefab.instantiate()
+		add_child(new_con)
+		new_con.set_connection_nodes(id_dict[edge.source], id_dict[edge.target])
+		new_con.set_type(Connection.ConnectionType.get(edge.label))
+
 func copy_graph(graph: MyGraph) -> void:
 	var node_map = {}
 	var con_map = {}
@@ -77,8 +98,6 @@ func copy_graph(graph: MyGraph) -> void:
 	for con in graph.connections:
 		var new_con = copy_con(con)
 		new_con.set_connection_nodes(node_map[con.connection_nodes[0]], node_map[con.connection_nodes[1]])		
-			
-	print("copy")
 
 func copy_node(node: MyGraphNode) -> MyGraphNode:
 	var new_node = graph_node_prefab.instantiate() as MyGraphNode
@@ -95,4 +114,5 @@ func copy_con(con: Connection) -> Connection:
 func clear() -> void:
 	for node in nodes:
 		node.queue_free()
-	print("clearing graph")
+	free_ids.clear()
+	await get_tree().process_frame
