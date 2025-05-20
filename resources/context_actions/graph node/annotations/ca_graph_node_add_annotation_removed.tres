@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://b3jo45ckemtei"]
+
+[ext_resource type="Script" uid="uid://1tuutthgo3xt" path="res://resources/context_actions/graph node/annotations/ca_graph_node_add_annotation.gd" id="1_e7mp7"]
+
+[resource]
+script = ExtResource("1_e7mp7")
+type = 2
+action_text = "Removed"
+metadata/_custom_type_script = "uid://dg1p4omlqndtb"

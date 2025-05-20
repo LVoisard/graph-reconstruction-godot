@@ -6,7 +6,7 @@ var edges: Array[AnalyticGraphEdge] = []
 func _init(dict: Dictionary):
 	for node in dict["nodes"]:
 		var params = node.split(",")
-		nodes[int(params[0])] = AnalyticGraphNode.new(int(params[0]), int(params[1]), int(params[2]), params[3])
+		nodes[int(params[0])] = AnalyticGraphNode.new(int(params[0]), int(params[1]), int(params[2]), params[3], params[4])
 	for edge in dict["edges"]:
 		var params = edge.split(",")
 		edges.append(AnalyticGraphEdge.new(int(params[0]), int(params[1]), params[2]))
@@ -45,12 +45,14 @@ class AnalyticGraphNode:
 	var x: int
 	var y: int
 	var label: String
+	var annotation: String
 
-	func _init(_id, _x, _y, _label):
+	func _init(_id, _x, _y, _label, _annotation):
 		id = _id
 		x = _x
 		y = _y
 		label = _label
+		annotation = _annotation
 	
 class AnalyticGraphEdge:
 	var source: int

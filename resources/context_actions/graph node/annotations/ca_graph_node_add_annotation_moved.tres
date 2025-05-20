@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dpxj1hw0du5lq"]
+
+[ext_resource type="Script" uid="uid://1tuutthgo3xt" path="res://resources/context_actions/graph node/annotations/ca_graph_node_add_annotation.gd" id="1_41tig"]
+
+[resource]
+script = ExtResource("1_41tig")
+type = 1
+action_text = "Moved"
+metadata/_custom_type_script = "uid://dg1p4omlqndtb"

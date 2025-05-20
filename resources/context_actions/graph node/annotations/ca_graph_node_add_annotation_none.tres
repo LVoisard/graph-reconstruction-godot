@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dw2xptmhnd58j"]
+
+[ext_resource type="Script" uid="uid://1tuutthgo3xt" path="res://resources/context_actions/graph node/annotations/ca_graph_node_add_annotation.gd" id="1_2fbxk"]
+
+[resource]
+script = ExtResource("1_2fbxk")
+type = 0
+action_text = "None"
+metadata/_custom_type_script = "uid://dg1p4omlqndtb"

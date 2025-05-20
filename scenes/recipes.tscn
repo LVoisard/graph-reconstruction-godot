@@ -1,0 +1,54 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjrsqkrswr52s"]
+
+[ext_resource type="Texture2D" uid="uid://bdvkxibkbw851" path="res://assets/icons/FolderBigThumb.svg" id="1_xmpxi"]
+
+[node name="Recipes" type="MarginContainer"]
+offset_right = 200.0
+offset_bottom = 800.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_tab_index = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Recipe"
+
+[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("1_xmpxi")
+expand_icon = true
+
+[node name="Recipe Menu" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="edit recipe" type="Button" parent="VBoxContainer/Recipe Menu"]
+layout_mode = 2
+text = "Edit Recipe"
+
+[node name="save" type="Button" parent="VBoxContainer/Recipe Menu"]
+layout_mode = 2
+text = "Save
+"
+
+[node name="Iterate" type="Button" parent="VBoxContainer/Recipe Menu"]
+layout_mode = 2
+text = "Iterate"
+
+[node name="Complete" type="Button" parent="VBoxContainer/Recipe Menu"]
+layout_mode = 2
+text = "Complete"
+
+[node name="Tree" type="Tree" parent="VBoxContainer/Recipe Menu"]
+layout_mode = 2
+size_flags_vertical = 3

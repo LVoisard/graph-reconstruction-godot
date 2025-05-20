@@ -2,7 +2,7 @@ extends Control
 
 const generator_rule_prefab: PackedScene = preload("res://scenes/generator_rule.tscn")
 
-@onready var generator_rules_container: Control = $"HBoxContainer/Left Bar/Panel/HBoxContainer/MarginContainer/VBoxContainer"
+@onready var generator_rules_container: Control = $"HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer/Manual/VBoxContainer"
 @onready var generator_graph: MyGraph = $"HBoxContainer/Input Graph Viewport/SubViewport/Control/input graph"
 
 func _ready() -> void:
@@ -12,8 +12,8 @@ func _ready() -> void:
 
 func clear() -> void:
 	await generator_graph.clear()
-	var entrance = load("res://scripts/graph_node/graph_node.tscn").instantiate() as MyGraphNode
-	var goal = load("res://scripts/graph_node/graph_node.tscn").instantiate() as MyGraphNode
+	var entrance = load("res://scripts/graph_node/rule/rule_graph_node.tscn").instantiate() as MyGraphNode
+	var goal = load("res://scripts/graph_node/rule/rule_graph_node.tscn").instantiate() as MyGraphNode
 	var c = load("res://scripts/connection/connection.tscn").instantiate() as Connection
 	generator_graph.add_child(entrance)
 	entrance.position = Vector2(100, get_viewport_rect().get_center().y)
@@ -53,10 +53,12 @@ func apply_rule_random(file: String) -> void:
 		print("No valid nodes")
 		return
 	
-	apply_rewrite(target, matches.pick_random(), pattern_output)
+	apply_rewrite(target, matches.pick_random(),pattern, pattern_output)
 	
 	await generator_graph.clear()
+	await get_tree().process_frame
 	generator_graph.load_from_analytic(target)
+	print("Random " + file)
 	
 func apply_rule_lsystem(file: String) -> void:
 	var graphs = Helper.parse_graphs("res://rules/"+file)
@@ -71,7 +73,8 @@ func apply_rule_lsystem(file: String) -> void:
 		print("No valid nodes")
 		return
 	for m in matches:
-		apply_rewrite(target, m, pattern_output)
+		apply_rewrite(target, m, pattern, pattern_output)
+		
 	
 	await generator_graph.clear()
 	generator_graph.load_from_analytic(target)
@@ -133,31 +136,31 @@ func edges_compatible(P: AnalyticGraph, G: AnalyticGraph, mapping: Dictionary, n
 			if not edge_exists(G, g_src, g_tgt, p_edge.label):
 				return false
 
-	# Now reject if there are extra edges in the target between mapped nodes
-	var mapped_nodes = mapping.duplicate()
-	mapped_nodes[new_p_node] = candidate_g_node
-
-	# Create reverse mapping: from target node ID to pattern node ID
-	var reverse_mapping = {}
-	for p_id in mapped_nodes.keys():
-		reverse_mapping[mapped_nodes[p_id]] = p_id
-
-	for g_edge in G.edges:
-		if reverse_mapping.has(g_edge.source) and reverse_mapping.has(g_edge.target):
-			var p_src = reverse_mapping[g_edge.source]
-			var p_tgt = reverse_mapping[g_edge.target]
-
-			var found = false
-			for p_edge in P.edges:
-				if p_edge.source == p_src and p_edge.target == p_tgt and p_edge.label == g_edge.label:
-					found = true
-					break
-				elif p_edge.source == p_tgt and p_edge.target == p_src and p_edge.label == g_edge.label:
-					found = true
-					break
-			if not found:
-				# Extra edge in target that doesn't exist in pattern
-				return false
+	## Now reject if there are extra edges in the target between mapped nodes
+	#var mapped_nodes = mapping.duplicate()
+	#mapped_nodes[new_p_node] = candidate_g_node
+#
+	## Create reverse mapping: from target node ID to pattern node ID
+	#var reverse_mapping = {}
+	#for p_id in mapped_nodes.keys():
+		#reverse_mapping[mapped_nodes[p_id]] = p_id
+#
+	#for g_edge in G.edges:
+		#if reverse_mapping.has(g_edge.source) and reverse_mapping.has(g_edge.target):
+			#var p_src = reverse_mapping[g_edge.source]
+			#var p_tgt = reverse_mapping[g_edge.target]
+#
+			#var found = false
+			#for p_edge in P.edges:
+				#if p_edge.source == p_src and p_edge.target == p_tgt and p_edge.label == g_edge.label:
+					#found = true
+					#break
+				#elif p_edge.source == p_tgt and p_edge.target == p_src and p_edge.label == g_edge.label:
+					#found = true
+					#break
+			#if not found:
+				## Extra edge in target that doesn't exist in pattern
+				#return false
 
 	return true
 
@@ -169,11 +172,13 @@ func edge_exists(G: AnalyticGraph, src: int, tgt: int, label: String) -> bool:
 	return false
 
 
-func apply_rewrite(G: AnalyticGraph, m: Dictionary, pattern_output: AnalyticGraph) -> void:
+func apply_rewrite(G: AnalyticGraph, m: Dictionary, pattern_input: AnalyticGraph, pattern_output: AnalyticGraph) -> void:
 	# identify which nodes are targeted
 	var mapped_nodes = {}
+	var mapped_nodes_reversed = {}
 	for matched_id in m.keys():
 		mapped_nodes[matched_id] = G.nodes[m[matched_id]]
+		mapped_nodes_reversed[m[matched_id]] = matched_id
 	
 	# record the connections to nodes from outside the matched pattern
 	# this also includes connection that exist between pattern nodes, not specified in the pattern
@@ -189,32 +194,21 @@ func apply_rewrite(G: AnalyticGraph, m: Dictionary, pattern_output: AnalyticGrap
 		var tgt_in_match := matched_node_set.has(edge.target)
 
 		# Case 1: One side is inside match, one is outside => external edge to preserve
-		if src_in_match != tgt_in_match:
-			if edge.label == "Relational":
-				if tgt_in_match:
-					print(m)
-					print(pattern_output.to_dict())
-					print("need to move this ")
-				# find the new id in the output corresponding to this node
-				print("possibly need to map this edge so that it remains connected with its intended target")
-				
-			else:
+		if src_in_match != tgt_in_match:			
+			# check if there is an annotation that tells us what to do, otherwise, link up external nodes like before.
+			var id = edge.source if src_in_match else edge.target
+			if src_in_match:
 				external_edges.append(edge)
-		# internal edge (two nodes that are in the pattern
-		# check if the edge is in the source graph
-		#else:
-			#if edge.label == "Directional": continue
-			#print("internal edge (%d %d)" % [edge.source, edge.target])
-			#for pattern_edge in pattern_output.edges:
-				##if not m.has(pattern_edge.source) and edge.source != m[pattern_edge.source] or not m.has(pattern_edge.target) and edge.target != m[pattern_edge.target]:
-				#if m.has(pattern_edge.source) and m.has(pattern_edge.target):
-					#var not_found = true
-					#if m[pattern_edge.source] != edge.source and m[pattern_edge.target] != edge.target:
-						#not_found = false
-					#if not not_found && edge.label == "Directional":
-						#print("internal edge to preserve (%d %d)" % [m[pattern_edge.source], m[pattern_edge.target]])
-						#external_edges.append(edge)
-			#print("node %d has an external edge (%d %d)" % [n, edge.source, edge.target])
+			elif tgt_in_match:
+				if edge.label != "Relational":
+					external_edges.append(edge)
+				elif pattern_input.nodes[mapped_nodes_reversed[id]].annotation == "None":
+					external_edges.append(edge)
+				else:
+					var ann = pattern_input.nodes[mapped_nodes_reversed[id]].annotation
+					var other = pattern_output.nodes.values().find_custom(func(x): return x.annotation == ann)
+					edge.target = m[other+1]
+					external_edges.append(edge)
 	
 	#remove connections from the nodes
 	for target_graph_node_id in m.values():
@@ -232,7 +226,10 @@ func apply_rewrite(G: AnalyticGraph, m: Dictionary, pattern_output: AnalyticGrap
 			#print("equivalent node (%d: %d) identified" % [pattern_node_id, m[pattern_node_id]])
 		# this node is a new one from the pattern
 		else:
-			new_node = AnalyticGraph.AnalyticGraphNode.new(G.get_next_id(), pattern_output.nodes[pattern_node_id].x,pattern_output.nodes[pattern_node_id].y, pattern_output.nodes[pattern_node_id].label)
+			var edge_index = pattern_output.edges.find_custom(func(x): return x.target == pattern_node_id)
+			var src = G.nodes[m[pattern_output.edges[edge_index].source]]
+			new_node = AnalyticGraph.AnalyticGraphNode.new(G.get_next_id(), src.x + 200, src.y, pattern_output.nodes[pattern_node_id].label, pattern_output.nodes[pattern_node_id].annotation)
+			
 		G.add_node(new_node)
 		new_node_mapped_to_pattern_nodes[pattern_node_id] = new_node.id
 		

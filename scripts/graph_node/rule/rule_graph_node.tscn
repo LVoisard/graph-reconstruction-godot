@@ -1,0 +1,17 @@
+[gd_scene load_steps=10 format=3 uid="uid://cifjx04dehavu"]
+
+[ext_resource type="PackedScene" uid="uid://457qsgfoiffm" path="res://scripts/graph_node/graph_node.tscn" id="1_j23u6"]
+[ext_resource type="Script" uid="uid://dg1p4omlqndtb" path="res://resources/context_actions/context_action.gd" id="2_j51jw"]
+[ext_resource type="Script" uid="uid://bnlmb8vlamx2v" path="res://scripts/graph_node/rule/rule_graph_node.gd" id="2_lna6b"]
+[ext_resource type="Resource" uid="uid://dontgb55onwt5" path="res://resources/context_actions/graph node/ca_graph_node_link_new_node.tres" id="3_lna6b"]
+[ext_resource type="Resource" uid="uid://bpki6yb088ktr" path="res://resources/context_actions/graph node/ca_graph_node_link_existing_node.tres" id="4_6jb61"]
+[ext_resource type="Resource" uid="uid://tib5hh2wgcax" path="res://resources/context_actions/graph node/ca_graph_node_change_node_type.tres" id="5_br6qv"]
+[ext_resource type="Resource" uid="uid://0sq5iqybsr51" path="res://resources/context_actions/graph node/ca_graph_node_remove_connections.tres" id="6_2eec4"]
+[ext_resource type="Resource" uid="uid://bysmucllofybw" path="res://resources/context_actions/ca_general_delete.tres" id="7_ppbq7"]
+[ext_resource type="Resource" uid="uid://blc066eqywkgv" path="res://resources/context_actions/graph node/ca_graph_node_add_annotation.tres" id="8_6jb61"]
+
+[node name="RuleGraphNode" instance=ExtResource("1_j23u6")]
+script = ExtResource("2_lna6b")
+
+[node name="context_menu" parent="." index="1"]
+context_actions = Array[ExtResource("2_j51jw")]([ExtResource("3_lna6b"), ExtResource("4_6jb61"), ExtResource("5_br6qv"), ExtResource("6_2eec4"), ExtResource("8_6jb61"), ExtResource("7_ppbq7")])

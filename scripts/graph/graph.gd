@@ -1,7 +1,7 @@
 class_name MyGraph extends Control
 
 
-const graph_node_prefab: PackedScene = preload("res://scripts/graph_node/graph_node.tscn")
+const graph_node_prefab: PackedScene = preload("res://scripts/graph_node/rule/rule_graph_node.tscn")
 const connection_prefab: PackedScene = preload("res://scripts/connection/connection.tscn")
 
 var nodes: Array[MyGraphNode] = []
@@ -47,7 +47,7 @@ func assign_node_id(node: MyGraphNode) -> void:
 func get_graph_string() -> String:
 	var s: String = "nodes\n"
 	for node in nodes:
-		s += "%d,%d,%d,%s\n" % [node.id, node.position.x, node.position.y, MyGraphNode.NodeType.keys()[node.node_type]]
+		s += "%d,%d,%d,%s,%s\n" % [node.id, node.position.x, node.position.y, MyGraphNode.NodeType.keys()[node.node_type], RuleGraphNode.Annotation.keys()[node.annotation]]
 	s += "edges\n"
 	for con in connections:
 		s += "%d,%d,%s\n" % [con.a().id, con.b().id, Connection.ConnectionType.keys()[con.connection_type]]	
@@ -56,7 +56,7 @@ func get_graph_string() -> String:
 func get_graph_dict() -> Dictionary:
 	var d = {"nodes": [], "edges": []}
 	for node in nodes:
-		d["nodes"].append("%d,%d,%d,%s" % [node.id, node.position.x, node.position.y, MyGraphNode.NodeType.keys()[node.node_type]])
+		d["nodes"].append("%d,%d,%d,%s,%s" % [node.id, node.position.x, node.position.y, MyGraphNode.NodeType.keys()[node.node_type], RuleGraphNode.Annotation.keys()[node.annotation]])
 	for con in connections:
 		d["edges"].append("%d,%d,%s" % [con.a().id, con.b().id, Connection.ConnectionType.keys()[con.connection_type]])
 	return d
@@ -115,4 +115,6 @@ func clear() -> void:
 	for node in nodes:
 		node.queue_free()
 	free_ids.clear()
+	await get_tree().process_frame
+	await get_tree().process_frame
 	await get_tree().process_frame
