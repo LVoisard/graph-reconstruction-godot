@@ -38,7 +38,7 @@ func refresh_rules() -> void:
 		var n = file.get_basename()
 		r.label.text = n
 		r.random_apply_btn.button_down.connect(apply_rule_random.bind(file))
-		r.lsystem_apply_btn.button_down.connect(apply_rule_lsystem.bind(file))	
+		r.lsystem_apply_btn.button_down.connect(apply_rule_lsystem.bind(file))
 
 func apply_rule_random(file: String) -> void:
 	var graphs = Helper.parse_graphs("res://rules/"+file)

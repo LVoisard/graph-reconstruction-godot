@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://cjrsqkrswr52s"]
+[gd_scene load_steps=4 format=3 uid="uid://cjrsqkrswr52s"]
 
+[ext_resource type="Script" uid="uid://bau12xncuejuj" path="res://scenes/recipes.gd" id="1_g44oj"]
 [ext_resource type="Texture2D" uid="uid://bdvkxibkbw851" path="res://assets/icons/FolderBigThumb.svg" id="1_xmpxi"]
+[ext_resource type="Script" uid="uid://beeofohumx84r" path="res://scenes/recipe_tree.gd" id="3_g44oj"]
 
 [node name="Recipes" type="MarginContainer"]
 offset_right = 200.0
@@ -9,6 +11,7 @@ theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
+script = ExtResource("1_g44oj")
 metadata/_tab_index = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -22,7 +25,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Recipe"
 
-[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer"]
+[node name="load" type="Button" parent="VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 icon = ExtResource("1_xmpxi")
@@ -52,3 +55,24 @@ text = "Complete"
 [node name="Tree" type="Tree" parent="VBoxContainer/Recipe Menu"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/icon_max_width = 32
+columns = 4
+column_titles_visible = true
+hide_root = true
+drop_mode_flags = 2
+script = ExtResource("3_g44oj")
+
+[node name="Load Recipe" type="FileDialog" parent="."]
+title = "Load Recipe"
+initial_position = 2
+ok_button_text = "Load"
+file_mode = 0
+root_subfolder = "recipes"
+
+[node name="Save Recipe" type="FileDialog" parent="."]
+auto_translate_mode = 1
+initial_position = 2
+root_subfolder = "recipes"
+
+[connection signal="button_down" from="VBoxContainer/HBoxContainer/load" to="Load Recipe" method="set_visible" binds= [true]]
+[connection signal="button_down" from="VBoxContainer/Recipe Menu/save" to="Save Recipe" method="set_visible" binds= [true]]

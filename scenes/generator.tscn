@@ -61,6 +61,7 @@ metadata/_tab_index = 0
 layout_mode = 2
 
 [node name="Recipes" parent="HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer" instance=ExtResource("2_ef8yp")]
+visible = false
 layout_mode = 2
 
 [node name="refresh button" type="Button" parent="HBoxContainer/Left Bar/Panel/HBoxContainer"]
