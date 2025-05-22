@@ -64,6 +64,11 @@ func change_visuals() -> void:
 			visual.texture = visual_texture_square
 			visual.self_modulate = Color.BLACK
 			label.self_modulate = Color.WHITE
+		NodeType.LOCK_TERMINAL:
+			outline.texture = outline_texture_round
+			visual.texture = visual_texture_round
+			visual.self_modulate = Color.BLACK
+			label.self_modulate = Color.WHITE
 	
 	
 func on_moved() -> void:
@@ -94,5 +99,6 @@ enum NodeType {
 	TASK,
 	KEY,
 	LOCK,
+	LOCK_TERMINAL,
 	ANY,
 }

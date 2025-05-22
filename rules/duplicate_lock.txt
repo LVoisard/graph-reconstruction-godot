@@ -12,7 +12,7 @@ output
 nodes
 1,156,496,LOCK,None
 2,316,498,ANY,None
-3,485,497,LOCK,None
+3,485,497,LOCK_TERMINAL,None
 4,315,327,KEY,None
 edges
 1,2,Directional

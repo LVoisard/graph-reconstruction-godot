@@ -4,5 +4,5 @@
 
 [resource]
 script = ExtResource("1_tpe5h")
-type = 5
+type = 6
 action_text = "Any"

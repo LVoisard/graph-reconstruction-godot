@@ -1,12 +1,15 @@
-[gd_resource type="Resource" script_class="SubContextAction" load_steps=6 format=3 uid="uid://blc066eqywkgv"]
+[gd_resource type="Resource" script_class="SubContextAction" load_steps=9 format=3 uid="uid://blc066eqywkgv"]
 
 [ext_resource type="Script" uid="uid://dsbdscvfng6du" path="res://resources/context_actions/sub_context_action.gd" id="1_23xao"]
 [ext_resource type="Script" uid="uid://dg1p4omlqndtb" path="res://resources/context_actions/context_action.gd" id="2_8s5p5"]
 [ext_resource type="Resource" uid="uid://dw2xptmhnd58j" path="res://resources/context_actions/graph node/annotations/ca_graph_node_add_annotation_none.tres" id="3_10rpo"]
 [ext_resource type="Resource" uid="uid://dpxj1hw0du5lq" path="res://resources/context_actions/graph node/annotations/ca_graph_node_add_annotation_moved.tres" id="4_gsa2p"]
+[ext_resource type="Resource" uid="uid://cmo57uhhv57hd" path="res://resources/context_actions/graph node/annotations/ca_graph_node_add_annotation_keep_incoming_connections.tres" id="5_23xao"]
 [ext_resource type="Resource" uid="uid://b3jo45ckemtei" path="res://resources/context_actions/graph node/annotations/ca_graph_node_add_annotation_removed.tres" id="5_34xej"]
+[ext_resource type="Resource" uid="uid://ciew0kvosnla1" path="res://resources/context_actions/graph node/annotations/ca_graph_node_add_annotation_keep_connections.tres" id="5_gsa2p"]
+[ext_resource type="Resource" uid="uid://b2qlvw5irag3q" path="res://resources/context_actions/graph node/annotations/ca_graph_node_add_annotation_keep_outgoing_connections.tres" id="6_8s5p5"]
 
 [resource]
 script = ExtResource("1_23xao")
-sub_context_actions = Array[ExtResource("2_8s5p5")]([ExtResource("3_10rpo"), ExtResource("4_gsa2p"), ExtResource("5_34xej")])
+sub_context_actions = Array[ExtResource("2_8s5p5")]([ExtResource("3_10rpo"), ExtResource("4_gsa2p"), ExtResource("5_23xao"), ExtResource("6_8s5p5"), ExtResource("5_gsa2p"), ExtResource("5_34xej")])
 action_text = "Add Annotation"

@@ -4,8 +4,12 @@ const generator_rule_prefab: PackedScene = preload("res://scenes/generator_rule.
 
 @onready var generator_rules_container: Control = $"HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer/Manual/VBoxContainer"
 @onready var generator_graph: MyGraph = $"HBoxContainer/Input Graph Viewport/SubViewport/Control/input graph"
+@onready var recipes: Recipes = $"HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer/Recipes"
+
 
 func _ready() -> void:
+	recipes.apply_rule_random.connect(apply_rule_random)
+	recipes.apply_rule_lsystem.connect(apply_rule_lsystem)
 	refresh_rules()
 	clear()
 	
@@ -199,7 +203,7 @@ func apply_rewrite(G: AnalyticGraph, m: Dictionary, pattern_input: AnalyticGraph
 			var id = edge.source if src_in_match else edge.target
 			if src_in_match:
 				external_edges.append(edge)
-			elif tgt_in_match:
+			elif tgt_in_match:				
 				if edge.label != "Relational":
 					external_edges.append(edge)
 				elif pattern_input.nodes[mapped_nodes_reversed[id]].annotation == "None":
@@ -209,6 +213,14 @@ func apply_rewrite(G: AnalyticGraph, m: Dictionary, pattern_input: AnalyticGraph
 					var other = pattern_output.nodes.values().find_custom(func(x): return x.annotation == ann)
 					edge.target = m[other+1]
 					external_edges.append(edge)
+			#connection is inside the pattern
+		elif src_in_match && tgt_in_match:
+			if pattern_output.nodes[mapped_nodes_reversed[edge.source]].annotation == "KeepConnections" or pattern_output.nodes[mapped_nodes_reversed[edge.target]].annotation == "KeepConnections":
+				external_edges.append(edge)
+			elif pattern_output.nodes[mapped_nodes_reversed[edge.target]].annotation == "KeepIncomingConnections":
+				external_edges.append(edge)
+			elif pattern_output.nodes[mapped_nodes_reversed[edge.source]].annotation == "KeepOutgoingConnections":
+				external_edges.append(edge)
 	
 	#remove connections from the nodes
 	for target_graph_node_id in m.values():

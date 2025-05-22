@@ -2,7 +2,7 @@ input
 nodes
 1,472,331,KEY,None
 2,233,331,ANY,None
-3,120,556,LOCK,None
+3,120,556,LOCK,KeepIncomingConnections
 4,354,557,TASK,None
 5,565,552,ANY,None
 edges
@@ -14,7 +14,7 @@ output
 nodes
 1,548,333,KEY,None
 2,161,330,ANY,None
-3,260,553,LOCK,None
+3,260,553,LOCK,KeepIncomingConnections
 4,350,327,TASK,None
 5,444,552,ANY,None
 edges

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cmo57uhhv57hd"]
+
+[ext_resource type="Script" uid="uid://1tuutthgo3xt" path="res://resources/context_actions/graph node/annotations/ca_graph_node_add_annotation.gd" id="1_vvctf"]
+
+[resource]
+script = ExtResource("1_vvctf")
+type = 2
+action_text = "Keep Incoming Connections"
+metadata/_custom_type_script = "uid://dg1p4omlqndtb"

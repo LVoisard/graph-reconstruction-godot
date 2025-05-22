@@ -1,6 +1,6 @@
 input
 nodes
-1,293,286,KEY,Moved
+1,293,286,KEY,KeepConnections
 2,451,459,LOCK,None
 3,162,458,TASK,None
 edges
@@ -8,7 +8,7 @@ edges
 3,2,Directional
 output
 nodes
-1,450,291,KEY,Moved
+1,450,291,KEY,KeepConnections
 2,451,459,LOCK,None
 3,159,459,TASK,None
 4,160,286,KEY,None

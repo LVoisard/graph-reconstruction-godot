@@ -8,5 +8,8 @@ func set_annotation(ann: Annotation) -> void:
 enum Annotation {
 	None,
 	Moved,
-	Removed,
+	KeepIncomingConnections,
+	KeppOutgoingConnections,
+	KeepConnections,
+	Removed
 }

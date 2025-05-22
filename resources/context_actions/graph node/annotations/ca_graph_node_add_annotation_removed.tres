@@ -4,6 +4,6 @@
 
 [resource]
 script = ExtResource("1_e7mp7")
-type = 2
+type = 5
 action_text = "Removed"
 metadata/_custom_type_script = "uid://dg1p4omlqndtb"

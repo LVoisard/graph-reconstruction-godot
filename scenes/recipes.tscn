@@ -63,9 +63,9 @@ drop_mode_flags = 2
 script = ExtResource("3_g44oj")
 
 [node name="Load Recipe" type="FileDialog" parent="."]
-title = "Load Recipe"
+title = "Open a File"
 initial_position = 2
-ok_button_text = "Load"
+ok_button_text = "Open"
 file_mode = 0
 root_subfolder = "recipes"
 
@@ -76,3 +76,5 @@ root_subfolder = "recipes"
 
 [connection signal="button_down" from="VBoxContainer/HBoxContainer/load" to="Load Recipe" method="set_visible" binds= [true]]
 [connection signal="button_down" from="VBoxContainer/Recipe Menu/save" to="Save Recipe" method="set_visible" binds= [true]]
+[connection signal="button_down" from="VBoxContainer/Recipe Menu/Iterate" to="." method="iterate_recipe"]
+[connection signal="button_down" from="VBoxContainer/Recipe Menu/Complete" to="." method="complete_recipe"]

@@ -4,7 +4,7 @@ class_name MyGraph extends Control
 const graph_node_prefab: PackedScene = preload("res://scripts/graph_node/rule/rule_graph_node.tscn")
 const connection_prefab: PackedScene = preload("res://scripts/connection/connection.tscn")
 
-var nodes: Array[MyGraphNode] = []
+var nodes: Array[RuleGraphNode] = []
 var connections: Array[Connection] = []
 
 var current_id: int = 0
@@ -16,7 +16,7 @@ func _ready() -> void:
 	child_exiting_tree.connect(on_child_exited)	
 	
 func on_child_entered(child: Node) -> void:
-	if child is MyGraphNode:
+	if child is RuleGraphNode:
 		move_child(child, -1)
 		nodes.append(child)
 		assign_node_id(child)
@@ -25,7 +25,7 @@ func on_child_entered(child: Node) -> void:
 		connections.append(child)
 
 func on_child_exited(child: Node) -> void:
-	if child is MyGraphNode:
+	if child is RuleGraphNode:
 		if child in nodes:
 			nodes.remove_at(nodes.find(child))
 			free_ids.append(child.id)
@@ -34,7 +34,7 @@ func on_child_exited(child: Node) -> void:
 		if child in connections:
 			connections.remove_at(connections.find(child))
 			
-func assign_node_id(node: MyGraphNode) -> void:
+func assign_node_id(node: RuleGraphNode) -> void:
 	var new_id:int = -1
 	if free_ids.is_empty():
 		current_id = nodes.size()
@@ -99,8 +99,8 @@ func copy_graph(graph: MyGraph) -> void:
 		var new_con = copy_con(con)
 		new_con.set_connection_nodes(node_map[con.connection_nodes[0]], node_map[con.connection_nodes[1]])		
 
-func copy_node(node: MyGraphNode) -> MyGraphNode:
-	var new_node = graph_node_prefab.instantiate() as MyGraphNode
+func copy_node(node: RuleGraphNode) -> RuleGraphNode:
+	var new_node = graph_node_prefab.instantiate() as RuleGraphNode
 	add_child(new_node)
 	new_node.copy_node(node)
 	return new_node

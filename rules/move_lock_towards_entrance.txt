@@ -11,7 +11,7 @@ edges
 output
 nodes
 1,381,436,LOCK,None
-2,152,437,ANY,None
+2,152,437,ANY,KeepConnections
 3,381,633,ANY,None
 4,152,633,ANY,None
 edges
