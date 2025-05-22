@@ -1,7 +1,7 @@
 extends Control
 class_name Connection 
 
-var connection_nodes: Array[MyGraphNode] = [null, null]
+var connection_nodes: Array[RuleGraphNode] = [null, null]
 var connector_bits: Array[bool] = [false,true]
 var connection_type: ConnectionType = ConnectionType.Directional
 
@@ -18,7 +18,7 @@ func _ready() -> void:
 	right_connector.button_down.connect(on_connector_button_pressed.bind(1))
 	update_connection_visual()
 
-func set_connection_nodes(_a: MyGraphNode, _b: MyGraphNode) -> void:
+func set_connection_nodes(_a: RuleGraphNode, _b: RuleGraphNode) -> void:
 	connection_nodes[0] = _a
 	connection_nodes[1] = _b	
 	a().moved.connect(update_connection_position)
@@ -59,16 +59,16 @@ func set_type(new_type: ConnectionType) -> void:
 	connection_type = new_type
 	update_connection_visual()
 	
-func belongs_to_graph_node(node: MyGraphNode) -> bool:
+func belongs_to_graph_node(node: RuleGraphNode) -> bool:
 	return a() == node || b() == node	
 
-func get_other(node: MyGraphNode) -> MyGraphNode:
+func get_other(node: RuleGraphNode) -> RuleGraphNode:
 	return a() if node == b() else b()
 
-func a() -> MyGraphNode:
+func a() -> RuleGraphNode:
 	return connection_nodes[0]
 	
-func b() -> MyGraphNode:
+func b() -> RuleGraphNode:
 	return connection_nodes[1]
 
 func on_connection_deleted(node: Node) -> void:

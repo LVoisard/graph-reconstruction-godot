@@ -2,6 +2,8 @@ class_name Recipes extends Control
 
 signal apply_rule_random(file_name)
 signal apply_rule_lsystem(file_name)
+signal organise_graph
+signal recipe_complete
 
 @onready var load_file_dialog: FileDialog = $"Load Recipe"
 @onready var save_file_dialog: FileDialog = $"Save Recipe"
@@ -9,7 +11,7 @@ signal apply_rule_lsystem(file_name)
 @onready var recipe_tree: RecipeTree = $"VBoxContainer/Recipe Menu/Tree"
 
 func _ready() -> void:
-	load_file_dialog.confirmed.connect(load_recipe)
+	load_file_dialog.confirmed.connect(load_recipe_from_dialog)
 	save_file_dialog.confirmed.connect(save_recipe)
 	recipe_tree.build_tree("")
 	
@@ -35,27 +37,41 @@ func save_recipe() -> void:
 	file.close()
 	print("save", save_file_dialog.current_path)
 
-func load_recipe() -> void:
-	recipe_tree.build_tree(load_file_dialog.current_path)
-	print("load", load_file_dialog.current_path)
+func load_recipe_from_dialog() -> void:
+	load_recipe(load_file_dialog.current_path)
+
+func load_recipe(path: String) -> void:
+	recipe_tree.build_tree(path)
+	print("load", path)
 	
 func iterate_recipe() -> void:
 	var step = recipe_tree.get_next()
 	if step == null:
 		print("Finished recipe")
+		organise_graph.emit()
+		recipe_complete.emit()
 		return
 	await process_step(step)
 		
 func complete_recipe() -> void:
 	var step = recipe_tree.get_next()
-	while step != null:
-		await process_step(step)
-		step = recipe_tree.get_next()
+	if step != null:
+		while step != null:
+			await process_step(step)
+			step = recipe_tree.get_next()
+	recipe_complete.emit()
+	
+func reset_recipe() -> void:
+	recipe_tree.reset_recipe()
 		
 func process_step(step) -> void:
 	print("processing ", step.name)
 	if int(step.min) == -1 and int(step.max) == -1:
 		apply_rule_lsystem.emit(step.path.get_file())
+		await get_tree().process_frame
+		await get_tree().process_frame
+		await get_tree().process_frame
+		await get_tree().process_frame
 	else:	
 		for i in range(0, randi_range(int(step.min), int(step.max))):
 			print(i + 1)
@@ -64,3 +80,4 @@ func process_step(step) -> void:
 			await get_tree().process_frame
 			await get_tree().process_frame
 			await get_tree().process_frame
+	

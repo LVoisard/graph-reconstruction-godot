@@ -1,4 +1,6 @@
-extends Control
+class_name Generator extends Control
+
+signal graph_complete
 
 const generator_rule_prefab: PackedScene = preload("res://scenes/generator_rule.tscn")
 
@@ -10,8 +12,10 @@ const generator_rule_prefab: PackedScene = preload("res://scenes/generator_rule.
 func _ready() -> void:
 	recipes.apply_rule_random.connect(apply_rule_random)
 	recipes.apply_rule_lsystem.connect(apply_rule_lsystem)
+	recipes.organise_graph.connect(organise_graph)
+	recipes.recipe_complete.connect(validate_graph)
 	refresh_rules()
-	clear()
+	#clear()
 	
 
 func clear() -> void:
@@ -20,9 +24,9 @@ func clear() -> void:
 	var goal = load("res://scripts/graph_node/rule/rule_graph_node.tscn").instantiate() as MyGraphNode
 	var c = load("res://scripts/connection/connection.tscn").instantiate() as Connection
 	generator_graph.add_child(entrance)
-	entrance.position = Vector2(100, get_viewport_rect().get_center().y)
+	entrance.position = Vector2(100, 100)
 	entrance.set_type(MyGraphNode.NodeType.ENTRANCE)	
-	goal.position = entrance.position + Vector2(800, 0)
+	goal.position = entrance.position + Vector2(800, 700)
 	generator_graph.add_child(goal)
 	goal.set_type(MyGraphNode.NodeType.GOAL)
 	c.set_connection_nodes(entrance, goal)
@@ -274,3 +278,38 @@ func get_max_node_id(G: AnalyticGraph) -> int:
 	if G.nodes.size() == 0:
 		return 0
 	return G.nodes.keys().reduce(func(a, b): return max(a, b))
+	
+	
+func validate_graph() -> bool:
+	if generator_graph.is_traversable():
+		print("Good")
+		await organise_graph()
+		if not generator_graph.has_no_intersection():
+			print("Overlap")
+			restart_validation()
+			return false
+		graph_complete.emit()
+	else:
+		restart_validation()
+	return false
+
+func restart_validation() -> void:
+	print("Bad")
+	await clear()
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	recipes.reset_recipe()
+	recipes.complete_recipe()
+
+func organise_graph() -> void:
+	await generator_graph.apply_force_layout()	
+	
+func generate_dungeon_graph(recipe_path: String) -> MyGraph:
+	await clear()
+	recipes.load_recipe(recipe_path)
+	recipes.complete_recipe()
+	await graph_complete
+	return generator_graph
+		
+	

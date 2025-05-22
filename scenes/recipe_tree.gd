@@ -52,7 +52,7 @@ func build_tree(recipe_file: String) -> void:
 	new_rule_child.set_metadata(ACTION_COLUMN_INDEX, "add")
 	
 	
-	current_step = root.get_first_child()
+	reset_recipe()
 	#file_tree.check_propagated_to_item.connect(prop)
 
 
@@ -90,6 +90,9 @@ func get_next() -> JsonItemFile:
 	current_step = current_step.get_next()
 	
 	return to_return.get_metadata(NAME_COLUMN_INDEX)
+
+func reset_recipe() -> void:
+	current_step = get_root().get_first_child()
 	
 func add_rule(confirm) -> void:
 	print("add ", confirm.current_path)

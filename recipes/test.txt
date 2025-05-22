@@ -1,7 +1,6 @@
 add_task,res://rules/add_task.txt,16,20
 add_lock,res://rules/add_lock.txt,2,4
 duplicate_key,res://rules/duplicate_key.txt,0,2
-duplicate_lock,res://rules/duplicate_lock.txt,0,2
 pull_task_to_hide_key,res://rules/pull_task_to_hide_key.txt,6,11
 move_lock_towards_entrance,res://rules/move_lock_towards_entrance.txt,3,5
 add_shorcut_to_lock,res://rules/add_shorcut_to_lock.txt,-1,-1
