@@ -245,7 +245,8 @@ func has_no_intersection() -> bool:
 	var filtered = connections.filter(func(x): x.connection_type == Connection.ConnectionType.Directional)
 	for edge in filtered:
 		for other_edge in filtered:
-			if lines_intersect(edge.a().position, edge.b().position, other_edge.a().position, other_edge.b().position): return false
+			if Geometry2D.segment_intersects_segment(edge.a(), edge.b(), other_edge.a(), other_edge.b()): return false
+			
 	return true
 	
 func ccw(A,B,C):
