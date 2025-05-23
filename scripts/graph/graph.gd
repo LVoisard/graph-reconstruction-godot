@@ -242,10 +242,16 @@ func is_traversable() -> bool:
 	return false  # goal unreachable
 	
 func has_no_intersection() -> bool:
-	var filtered = connections.filter(func(x): x.connection_type == Connection.ConnectionType.Directional)
-	for edge in filtered:
-		for other_edge in filtered:
-			if Geometry2D.segment_intersects_segment(edge.a(), edge.b(), other_edge.a(), other_edge.b()): return false
+	print(connections.size())
+	for i in connections.size():
+		if connections[i].connection_type == Connection.ConnectionType.Relational: continue
+		var ab1 = connections[i].b().position - connections[i].a().position
+		for j in range(i + 1, connections.size()):
+			if connections[j].connection_type == Connection.ConnectionType.Relational: continue
+			var ab2 = connections[j].b().position - connections[j].a().position
+			if Geometry2D.segment_intersects_segment(connections[i].a().position + ab1 * 0.1, connections[i].b().position - ab1 * 0.1, connections[j].a().position + ab2 * 0.1, connections[j].b().position - ab2 * 0.1) != null:
+				print("overlap_found at %d, %d" % [i, j])
+				return false
 			
 	return true
 	
