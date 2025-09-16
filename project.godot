@@ -11,14 +11,13 @@ config_version=5
 [application]
 
 config/name="graph_rewriting_test"
-run/main_scene="uid://doookhmn7eo4o"
+run/main_scene="uid://b7fo3p43jmejj"
 config/features=PackedStringArray("4.5", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Helper="*res://Helper.gd"
-SubgraphIsomorphism="*res://scripts/graph-lib/SubgraphIsomorphism.cs"
 
 [display]
 

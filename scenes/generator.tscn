@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://m7c1nsgiiqkd"]
 
-[ext_resource type="Script" uid="uid://e6gvy72yn54q" path="res://scenes/generator_controller.gd" id="1_vxu2e"]
+[ext_resource type="Script" uid="uid://e6gvy72yn54q" path="res://scripts/generator_controller.gd" id="1_vxu2e"]
 [ext_resource type="PackedScene" uid="uid://cjrsqkrswr52s" path="res://scenes/recipes.tscn" id="2_ef8yp"]
-[ext_resource type="PackedScene" uid="uid://2366d4on4cdd" path="res://scripts/graph/graph.tscn" id="4_xsyub"]
+[ext_resource type="PackedScene" uid="uid://2366d4on4cdd" path="res://scenes/graph.tscn" id="4_xsyub"]
 
 [node name="Generator" type="Control"]
 layout_mode = 3

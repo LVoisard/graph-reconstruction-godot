@@ -3,13 +3,12 @@ using Godot;
 
 namespace graph_rewriting_test.scripts.graph_lib
 {
-	[GlobalClass]
-	public partial class Edge: GodotObject
+	public partial class Edge : GodotObject
 	{
-		public Node From { get; init; }
-		public Node To { get; init; }
+		public Node From { get; private set; }
+		public Node To { get; private set; }
 
-		public Edge(Node from, Node to)
+		public void Init(Node from, Node to)
 		{
 			this.From = from;
 			this.To = to;

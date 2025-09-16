@@ -1,5 +1,5 @@
 extends Control
-class_name MyGraphNode
+class_name VisualGraphNode
 
 signal moved
 signal deleted(node)
@@ -14,26 +14,19 @@ signal deleted(node)
 @onready var visual: TextureRect = $"Outline/NodeVisual"
 @onready var label: Label = $"Outline/NodeVisual/Label"
 
-
-var node_type: NodeType = NodeType.ANY
-var connections: Array[Connection] = []
-var id: int = -1
+var type: NodeType = NodeType.ANY
 
 func _ready() -> void:
 	draggable.dragging.connect(on_moved)
 	draggable.finished_dragging.connect(on_moved)
-	set_type(NodeType.ANY)
 	
-func set_id(id: int) -> void:
-	self.id = id
-
 func set_type(new_type: NodeType) -> void:	
-	node_type = new_type
-	label.text = "%d:%s" % [id, NodeType.keys()[node_type].substr(0,1)]
+	type = new_type
+	label.text = "%d:%s" % [-1, NodeType.keys()[new_type].substr(0,1)]
 	change_visuals()
 	
 func change_visuals() -> void:
-	match node_type:
+	match type:
 		NodeType.ANY:
 			outline.texture = outline_texture_round
 			visual.texture = visual_texture_round
@@ -74,24 +67,9 @@ func change_visuals() -> void:
 func on_moved() -> void:
 	moved.emit()
 	
-func add_connection(con: Connection) -> void:
-	connections.append(con)
-	
-func remove_connection(con: Connection) -> void:
-	if con in connections:
-		connections.remove_at(connections.find(con))
-
-func remove_all_connections() -> void:
-	for conn in connections:
-		conn.on_connection_deleted(self)
-	connections.clear()
-	
 func _exit_tree() -> void:
 	deleted.emit(self)
 	
-func copy_node(node: MyGraphNode) -> void:
-	self.set_type(node.node_type)
-	self.set_position(node.position)
 
 enum NodeType {
 	ENTRANCE,

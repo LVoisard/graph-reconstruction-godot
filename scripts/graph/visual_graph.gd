@@ -1,37 +1,39 @@
-class_name MyGraph extends Control
+class_name VisualGraph extends Control
 
 const graph_node_prefab: PackedScene = preload("res://scripts/graph_node/rule/rule_graph_node.tscn")
 const connection_prefab: PackedScene = preload("res://scripts/connection/connection.tscn")
 
-var nodes: Array[RuleGraphNode] = []
-var connections: Array[Connection] = []
+var visual_nodes: Dictionary[int, VisualGraphNode] = {}
+var visual_connections: Dictionary[int, Connection] = {}
 
 var current_id: int = 0
 var free_ids: Array[int] = []
 
+var backend = preload("res://scripts/graph-lib/Graph.cs").new()
+var node_backend = preload("res://scripts/graph-lib/Node.cs")
 
 func _ready() -> void:
-	child_entered_tree.connect(on_child_entered)
-	child_exiting_tree.connect(on_child_exited)
-	print(e.Test())
+	print("ready")
 	
-	var mygrpah = Graph.new();
-	#graph_rewriting_test.scri
-	#var res = j.Test();
-	#print(res)
-
 func _process(delta: float) -> void:
-	if nodes.is_empty(): return
+	if visual_nodes.is_empty(): return
 	if Input.is_key_pressed(KEY_O):
 		await apply_force_layout()
 	if Input.is_key_pressed(KEY_V):
 		if is_traversable():
 			print("Graph is valid")
+			
+func add_node(node: VisualGraphNode) -> void:
+	var new_node = node_backend.new();
+	new_node.init(node.type)
+	backend.AddNode(new_node)
+	visual_nodes.set(new_node.id, node)
+	
 	
 func on_child_entered(child: Node) -> void:
 	if child is RuleGraphNode:
 		move_child(child, -1)
-		nodes.append(child)
+		visual_nodes.append(child)
 		assign_node_id(child)
 	if child is Connection:
 		move_child(child, 0)
@@ -39,66 +41,66 @@ func on_child_entered(child: Node) -> void:
 
 func on_child_exited(child: Node) -> void:
 	if child is RuleGraphNode:
-		if child in nodes:
-			nodes.remove_at(nodes.find(child))
+		if child in visual_nodes:
+			visual_nodes.remove_at(visual_nodes.find(child))
 			free_ids.append(child.id)
 			free_ids.sort()
 	if child is Connection:
 		if child in connections:
 			connections.remove_at(connections.find(child))
 			
-func assign_node_id(node: RuleGraphNode) -> void:
+func assign_node_id(node: VisualGraphNode) -> void:
 	var new_id:int = -1
 	if free_ids.is_empty():
-		current_id = nodes.size()
+		current_id = visual_nodes.size()
 		new_id = current_id
 	else:
 		new_id = free_ids.pop_front()
-	node.set_id(new_id)
+	#node.set_id(new_id)
 
 
 func get_graph_string() -> String:
-	var s: String = "nodes\n"
-	for node in nodes:
-		s += "%d,%d,%d,%s,%s\n" % [node.id, node.position.x, node.position.y, MyGraphNode.NodeType.keys()[node.node_type], RuleGraphNode.Annotation.keys()[node.annotation]]
+	var s: String = "visual_nodes\n"
+	for node in visual_nodes:
+		s += "%d,%d,%d,%s,%s\n" % [node.id, node.position.x, node.position.y, VisualGraphNode.NodeType.keys()[node.node_type], RuleGraphNode.Annotation.keys()[node.annotation]]
 	s += "edges\n"
 	for con in connections:
 		s += "%d,%d,%s\n" % [con.a().id, con.b().id, Connection.ConnectionType.keys()[con.connection_type]]	
 	return s
 	
 func get_graph_dict() -> Dictionary:
-	var d = {"nodes": [], "edges": []}
-	for node in nodes:
-		d["nodes"].append("%d,%d,%d,%s,%s" % [node.id, node.position.x, node.position.y, MyGraphNode.NodeType.keys()[node.node_type], RuleGraphNode.Annotation.keys()[node.annotation]])
+	var d = {"visual_nodes": [], "edges": []}
+	for node in visual_nodes:
+		d["visual_nodes"].append("%d,%d,%d,%s,%s" % [node.id, node.position.x, node.position.y, VisualGraphNode.NodeType.keys()[node.node_type], RuleGraphNode.Annotation.keys()[node.annotation]])
 	for con in connections:
 		d["edges"].append("%d,%d,%s" % [con.a().id, con.b().id, Connection.ConnectionType.keys()[con.connection_type]])
 	return d
 	
 func load_from_string(string_graph: Dictionary) -> void:
 	print(string_graph)
-	for node_string in string_graph["nodes"]:
+	for node_string in string_graph["visual_nodes"]:
 		var params = (node_string as String).split(",")
 		var new_node = graph_node_prefab.instantiate()
 		add_child(new_node)		
 		new_node.set_position(Vector2(int(params[1]), int(params[2])))
-		new_node.set_type(MyGraphNode.NodeType.get(params[3]))
+		new_node.set_type(VisualGraphNode.NodeType.get(params[3]))
 	for edge_string in string_graph["edges"]:
 		var params = (edge_string as String).split(",")
 		var new_con = connection_prefab.instantiate()
 		add_child(new_con)
-		new_con.set_connection_nodes(nodes[int(params[0]) - 1], nodes[int(params[1]) - 1])
+		new_con.set_connection_nodes(visual_nodes[int(params[0]) - 1], visual_nodes[int(params[1]) - 1])
 		new_con.set_type(Connection.ConnectionType.get(params[2]))
-		nodes[int(params[0]) - 1].add_connection(new_con)
-		nodes[int(params[1]) - 1].add_connection(new_con)
+		visual_nodes[int(params[0]) - 1].add_connection(new_con)
+		visual_nodes[int(params[1]) - 1].add_connection(new_con)
 
 func load_from_analytic(graph: AnalyticGraph) -> void:
 	var id_dict = {}
-	for node in graph.nodes.values():
+	for node in graph.visual_nodes.values():
 		var new_node = graph_node_prefab.instantiate()
 		id_dict[node.id] = new_node
 		add_child(new_node)
 		new_node.set_position(Vector2(node.x, node.y))
-		new_node.set_type(MyGraphNode.NodeType.get(node.label))
+		new_node.set_type(VisualGraphNode.NodeType.get(node.label))
 	for edge in graph.edges:
 		var new_con = connection_prefab.instantiate()
 		add_child(new_con)
@@ -107,10 +109,10 @@ func load_from_analytic(graph: AnalyticGraph) -> void:
 		id_dict[edge.source].add_connection(new_con)
 		id_dict[edge.target].add_connection(new_con)
 
-func copy_graph(graph: MyGraph) -> void:
+func copy_graph(graph: VisualGraph) -> void:
 	var node_map = {}
 	var con_map = {}
-	for node in graph.nodes:
+	for node in graph.visual_nodes:
 		node_map[node] = copy_node(node)	
 	for con in graph.connections:
 		var new_con = copy_con(con)
@@ -133,7 +135,7 @@ func copy_con(con: Connection) -> Connection:
 	
 	
 func clear() -> void:
-	for node in nodes:
+	for node in visual_nodes:
 		node.queue_free()
 	free_ids.clear()
 	await get_tree().process_frame
@@ -154,16 +156,16 @@ func apply_force_layout():
 	var temperature = width / 10.0
 
 	# Add jitter to break symmetry
-	for node in nodes:
+	for node in visual_nodes:
 		node.position += Vector2(randf_range(-50, 50), randf_range(-50, 50))
 
 	for i in ITERATIONS:
-		for v in nodes:
+		for v in visual_nodes:
 			disp[v] = Vector2.ZERO
 
 		# Repulsive forces
-		for v in nodes:
-			for u in nodes:
+		for v in visual_nodes:
+			for u in visual_nodes:
 				if u == v:
 					continue
 				var delta = v.position - u.position
@@ -183,8 +185,8 @@ func apply_force_layout():
 			disp[u] -= dir * force
 			disp[v] += dir * force
 
-		# Move nodes based on force, clamp within area
-		for v in nodes:
+		# Move visual_nodes based on force, clamp within area
+		for v in visual_nodes:
 			var d = disp[v]
 			d = d.normalized() * min(d.length(), temperature)
 			v.position += d
@@ -221,7 +223,7 @@ func is_traversable() -> bool:
 			return false
 			
 		# only add the lock's neighbours if its locks have all been visited, put the lock back in the queue
-		if current.node_type == MyGraphNode.NodeType.LOCK:
+		if current.node_type == VisualGraphNode.NodeType.LOCK:
 			var keys = get_lock_keys(current)
 			if not keys.all(func(x): return visited.has(x.id)):
 				queue.append(current)
@@ -234,7 +236,7 @@ func is_traversable() -> bool:
 			visited[current.id] = []
 		
 		# Goal reached
-		if current.node_type == MyGraphNode.NodeType.GOAL:
+		if current.node_type == VisualGraphNode.NodeType.GOAL:
 			print("valid")
 			return true
 			
@@ -302,7 +304,7 @@ func lines_intersect(p1: Vector2, p2: Vector2, p3: Vector2, p4: Vector2) -> Arra
 	return [intersects, intersection_point]
 
 func get_entrance_node() -> RuleGraphNode:
-	return nodes.filter(func(x): return x.node_type == MyGraphNode.NodeType.ENTRANCE)[0]
+	return visual_nodes.filter(func(x): return x.node_type == VisualGraphNode.NodeType.ENTRANCE)[0]
 
 func get_neighbours(node: RuleGraphNode) -> Array[RuleGraphNode]:
 	var neighbours: Array[RuleGraphNode] = []

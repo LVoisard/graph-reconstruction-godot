@@ -3,8 +3,8 @@ extends Control
 
 var file_dialog: FileDialog = null
 
-@onready var input_graph: MyGraph = $"layout container/Center Canvas/Input Graph Viewport/SubViewport/Control/input graph"
-@onready var output_graph: MyGraph = $"layout container/Center Canvas/Output Graph Viewport/SubViewport/Control/output graph"
+@onready var input_graph: VisualGraph = $"layout container/Center Canvas/Input Graph Viewport/SubViewport/Control/input graph"
+@onready var output_graph: VisualGraph = $"layout container/Center Canvas/Output Graph Viewport/SubViewport/Control/output graph"
 
 @onready var file_tree:  = $"layout container/Left Bar/Panel/VBoxContainer/Tree" as FileTree
 
@@ -15,6 +15,9 @@ func _ready() -> void:
 	add_child(file_dialog)
 	file_tree.load_rule.connect(load_rule)
 	update_file_tree()
+	
+	
+	
 	
 func save_requested() -> void:
 	

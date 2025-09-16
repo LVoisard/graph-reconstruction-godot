@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 namespace graph_rewriting_test.scripts.graph_lib
 {
-    [GlobalClass]
-    public partial class Graph : Godot.Node
+    public partial class Graph: GodotObject
     {
 
         public List<Node> Nodes { get; init; } = new();

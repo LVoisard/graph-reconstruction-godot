@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace graph_rewriting_test.scripts.graph_lib
 {
-    public partial class SubgraphIsomorphism : Godot.Node
+    public partial class SubgraphIsomorphism
     {
         public static bool IsIsomorphicSubgraph(Graph source, Graph pattern)
         {

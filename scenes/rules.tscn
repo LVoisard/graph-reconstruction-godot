@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://n51d3eb3tmq8" path="res://scripts/rules_controller.gd" id="1_nmf5h"]
 [ext_resource type="PackedScene" uid="uid://bpgw7tlguw8n0" path="res://scenes/file_tree.tscn" id="2_8bx55"]
-[ext_resource type="PackedScene" uid="uid://2366d4on4cdd" path="res://scripts/graph/graph.tscn" id="2_r3oha"]
+[ext_resource type="PackedScene" uid="uid://2366d4on4cdd" path="res://scenes/graph.tscn" id="2_r3oha"]
 
 [node name="Rules" type="Control"]
 layout_mode = 3

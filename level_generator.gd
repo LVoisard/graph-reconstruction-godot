@@ -6,6 +6,8 @@ extends Node3D
 var player_prefab: PackedScene = preload("res://addons/basic_fps_player.tscn")
 
 func _ready() -> void:
+	var cs_class = load("res://scripts/TestCSharp.cs")
+	cs_class.Test()
 	var graph = await generator.generate_dungeon_graph("res://recipes/test.txt")
 
 	var room_positions = {}
@@ -31,21 +33,10 @@ func _ready() -> void:
 	add_child(player)
 	player.position = room_positions[graph.get_entrance_node()] + Vector3i(0,5,0)
 
-func graph_has_edge_overlap(graph: MyGraph) -> bool:
+func graph_has_edge_overlap(graph: VisualGraph) -> bool:
 	var used_voxels := {}
 	
-	for con in graph.connections:
-		var from_pos = con.a().grid_pos  # Assume Vector3i or Vector3
-		var to_pos = con.b().grid_pos
-
-		var edge_path = bresenham_line_3d(from_pos, to_pos)
-
-		for voxel in edge_path:
-			if used_voxels.has(voxel):
-				# Overlapping voxel detected
-				print("Edge overlap at:", voxel)
-				return true
-			used_voxels[voxel] = true
+	
 
 	return false  # No overlaps found
 

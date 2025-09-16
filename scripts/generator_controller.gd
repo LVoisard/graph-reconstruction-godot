@@ -5,7 +5,7 @@ signal graph_complete
 const generator_rule_prefab: PackedScene = preload("res://scenes/generator_rule.tscn")
 
 @onready var generator_rules_container: Control = $"HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer/Manual/VBoxContainer"
-@onready var generator_graph: MyGraph = $"HBoxContainer/Input Graph Viewport/SubViewport/Control/input graph"
+@onready var generator_graph: VisualGraph = $"HBoxContainer/Input Graph Viewport/SubViewport/Control/input graph"
 @onready var recipes: Recipes = $"HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer/Recipes"
 
 
@@ -22,18 +22,18 @@ func _ready() -> void:
 
 func clear() -> void:
 	await generator_graph.clear()
-	var entrance = load("res://scripts/graph_node/rule/rule_graph_node.tscn").instantiate() as MyGraphNode
-	var goal = load("res://scripts/graph_node/rule/rule_graph_node.tscn").instantiate() as MyGraphNode
+	var entrance = load("res://scripts/graph_node/rule/rule_graph_node.tscn").instantiate() as VisualGraphNode
+	var goal = load("res://scripts/graph_node/rule/rule_graph_node.tscn").instantiate() as VisualGraphNode
 	var c = load("res://scripts/connection/connection.tscn").instantiate() as Connection
 	generator_graph.add_child(entrance)
 	entrance.position = Vector2(100, 100)
-	entrance.set_type(MyGraphNode.NodeType.ENTRANCE)	
+	entrance.set_type(VisualGraphNode.NodeType.ENTRANCE)	
 	goal.position = entrance.position + Vector2(800, 700)
 	generator_graph.add_child(goal)
-	goal.set_type(MyGraphNode.NodeType.GOAL)
+	goal.set_type(VisualGraphNode.NodeType.GOAL)
 	c.set_connection_nodes(entrance, goal)
-	entrance.add_connection(c)
-	goal.add_connection(c)
+	#entrance.add_connection(c)
+	#goal.add_connection(c)
 	generator_graph.add_child(c)
 
 func refresh_rules() -> void:
@@ -308,7 +308,7 @@ func restart_validation() -> void:
 func organise_graph() -> void:
 	await generator_graph.apply_force_layout()	
 	
-func generate_dungeon_graph(recipe_path: String) -> MyGraph:
+func generate_dungeon_graph(recipe_path: String) -> VisualGraph:
 	await clear()
 	recipes.load_recipe(recipe_path)
 	recipes.complete_recipe()
