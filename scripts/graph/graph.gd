@@ -1,6 +1,5 @@
 class_name MyGraph extends Control
 
-
 const graph_node_prefab: PackedScene = preload("res://scripts/graph_node/rule/rule_graph_node.tscn")
 const connection_prefab: PackedScene = preload("res://scripts/connection/connection.tscn")
 
@@ -13,7 +12,13 @@ var free_ids: Array[int] = []
 
 func _ready() -> void:
 	child_entered_tree.connect(on_child_entered)
-	child_exiting_tree.connect(on_child_exited)	
+	child_exiting_tree.connect(on_child_exited)
+	print(e.Test())
+	
+	var mygrpah = Graph.new();
+	#graph_rewriting_test.scri
+	#var res = j.Test();
+	#print(res)
 
 func _process(delta: float) -> void:
 	if nodes.is_empty(): return
@@ -136,7 +141,7 @@ func clear() -> void:
 	await get_tree().process_frame
 	
 const ITERATIONS := 10000
-const AREA := Vector2(1100, 850)
+const AREA := Vector2(800, 600)
 const REPULSION := 5000.0
 const ATTRACTION := 0.0001
 const MAX_DISPLACEMENT := 200.0

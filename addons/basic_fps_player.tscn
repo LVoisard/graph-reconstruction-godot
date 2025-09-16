@@ -7,6 +7,9 @@
 
 [node name="Basic FPS Player" type="CharacterBody3D"]
 script = ExtResource("1_8mk8t")
+CAPTURE_ON_START = true
+SPEED = 25.0
+IN_AIR_SPEED = 20.0
 
 [node name="Head" parent="." instance=ExtResource("2_22726")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.412659, 0)

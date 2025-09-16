@@ -26,7 +26,7 @@ func _ready() -> void:
 		for i in range(-10, 10):
 			for j in range(-10, 10):
 				grid_map.set_cell_item(room_positions[node] + Vector3i(i, 0, j), grid_map.mesh_library.find_item_by_name("floor-square"))
-	
+				
 	var player = player_prefab.instantiate()
 	add_child(player)
 	player.position = room_positions[graph.get_entrance_node()] + Vector3i(0,5,0)

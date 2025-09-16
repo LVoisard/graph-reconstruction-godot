@@ -19,7 +19,7 @@ func _enter_tree():
 ###########################
 
 @export_category("Mouse Capture")
-@export var CAPTURE_ON_START := true
+@export var CAPTURE_ON_START := false
 
 @export_category("Movement")
 @export_subgroup("Settings")
@@ -99,6 +99,9 @@ func _physics_process(delta):
 func _process(delta):
 	if Engine.is_editor_hint():
 		return
+		
+	if Input.is_action_pressed("ui_cancel"):
+		Input.mouse_mode == Input.MOUSE_MODE_VISIBLE
 
 	if !UPDATE_PLAYER_ON_PHYS_STEP:
 		move_player(delta)
@@ -108,8 +111,7 @@ func _input(event):
 	if Engine.is_editor_hint():
 		return
 	
-	if event.is_action("ui_cancel"):
-		Input.mouse_mode == Input.MOUSE_MODE_VISIBLE
+	
 	
 	# Listen for mouse movement and check if mouse is captured
 	if event is InputEventMouseMotion && Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:

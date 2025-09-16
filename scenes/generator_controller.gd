@@ -15,6 +15,8 @@ func _ready() -> void:
 	recipes.organise_graph.connect(organise_graph)
 	recipes.recipe_complete.connect(validate_graph)
 	refresh_rules()
+	#Dungeon.Graph()
+	
 	#clear()
 	
 
@@ -94,6 +96,7 @@ func find_subgraph_matches(G: AnalyticGraph, P: AnalyticGraph) -> Array:
 	var mapping = {}
 	var used_G_nodes = {}
 
+	
 	backtrack(G, P, mapping, used_G_nodes, results)
 	return results
 

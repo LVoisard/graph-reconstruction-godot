@@ -1,4 +1,4 @@
-[gd_scene load_steps=153 format=4 uid="uid://v8vkjwb6tt6y"]
+[gd_scene load_steps=153 format=4 uid="uid://dr8ph2xo8rpkq"]
 
 [ext_resource type="PackedScene" uid="uid://b7kk0qph3k27e" path="res://assets/models/GLB format/animal-bison.glb" id="1_3hgb6"]
 [ext_resource type="PackedScene" uid="uid://bm0y741nrgig6" path="res://assets/models/GLB format/animal-dog.glb" id="2_7hbov"]
