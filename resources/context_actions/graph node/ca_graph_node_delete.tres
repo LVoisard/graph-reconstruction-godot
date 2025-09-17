@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dnmwxkcclknd8"]
+
+[ext_resource type="Script" uid="uid://doeefbojpbo7r" path="res://resources/context_actions/graph node/ca_graph_node_delete.gd" id="1_0tr1n"]
+
+[resource]
+script = ExtResource("1_0tr1n")
+action_text = "Delete"
+metadata/_custom_type_script = "uid://b1pvy8em27xih"

@@ -9,9 +9,9 @@ namespace graph_rewriting_test.scripts.graph_lib
 		[Export] public int X { get; private set; }
 		[Export] public int Y { get; private set; }
 
-		[Export] public NodeType Type { get; private set; }
+		[Export] public VertexType Type { get; private set; }
 
-		public Vertex(int id, NodeType type)
+		public Vertex(int id, VertexType type)
 		{
 			Id = id;
 			Type = type;
@@ -19,7 +19,15 @@ namespace graph_rewriting_test.scripts.graph_lib
 			Y = 0;
 		}
 
-		public void SetType(NodeType type)
+		public Vertex(int id, int x, int y, VertexType type)
+		{
+			Id = id;
+			Type = type;
+			X = x;
+			Y = y;
+		}
+
+		public void SetType(VertexType type)
 		{
 			this.Type = type;
 		}
@@ -30,7 +38,12 @@ namespace graph_rewriting_test.scripts.graph_lib
 			Y = y;
 		}
 
-		public enum NodeType
+		public override string ToString()
+		{
+			return $"{Id},{X},{Y},{Enum.GetValues(typeof(Vertex.VertexType)).GetValue((int)Type)}\n";
+		}
+
+		public enum VertexType
 		{
 			Entrance,
 			Goal,

@@ -13,11 +13,23 @@ namespace graph_rewriting_test.scripts.graph_lib
 		{
 			this.From = from;
 			this.To = to;
+			this.Type = EdgeType.Directional;
+		}
+
+		public Edge(Vertex from, Vertex to, EdgeType type)
+		{
+			this.From = from;
+			this.To = to;
+			this.Type = type;
 		}
 
 		public void SetType(EdgeType type)
 		{
 			this.Type = type;
+		}
+		public override string ToString()
+		{
+			return $"{From.Id},{To.Id},{Enum.GetValues(typeof(EdgeType)).GetValue((int)Type)}\n";
 		}
 
 		public enum EdgeType

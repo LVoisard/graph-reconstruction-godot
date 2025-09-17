@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="graph_rewriting_test"
-run/main_scene="uid://b7fo3p43jmejj"
+run/main_scene="uid://bgo78cbvaoxxk"
 config/features=PackedStringArray("4.5", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 

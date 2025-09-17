@@ -94,7 +94,6 @@ size_flags_vertical = 3
 
 [node name="input graph" parent="HBoxContainer/Input Graph Viewport/SubViewport/Control" instance=ExtResource("4_xsyub")]
 layout_mode = 1
-size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="HBoxContainer/Input Graph Viewport/SubViewport"]
 offset_right = 42.0

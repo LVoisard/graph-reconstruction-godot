@@ -51,19 +51,25 @@ func refresh_rules() -> void:
 		r.lsystem_apply_btn.button_down.connect(apply_rule_lsystem.bind(file))
 
 func apply_rule_random(file: String) -> void:
-	var graphs = Helper.parse_graphs("res://rules/"+file)
-	var target = AnalyticGraph.new(generator_graph.get_graph_dict())
-	var pattern = AnalyticGraph.new(graphs[0])
-	var pattern_output = AnalyticGraph.new(graphs[1])
+	
+	var rules_strings = Helper.split_input_output(file)
+	var pattern = GodotGraph.new()
+	pattern.CreateFromString(rules_strings[0])
+	
+	var pattern_output = GodotGraph.new()
+	pattern_output.CreateFromString(rules_strings[1])
+
+	var subgraph_iso_checker = SubgraphIsomorphism.new()
+	subgraph_iso_checker.FindAllIsomorphicSubgraphs(generator_graph.backend, pattern)
 	#traverse_graph(graphs[0])
-	var matches = find_subgraph_matches(target, pattern)
+	var matches = find_subgraph_matches(generator_graph.backend, pattern)
 	print("Found %d matches" % matches.size())
 	
 	if matches.is_empty():
 		print("No valid nodes")
 		return
 	
-	apply_rewrite(target, matches.pick_random(),pattern, pattern_output)
+	apply_rewrite(generator_graph.backend, matches.pick_random(),pattern, pattern_output)
 	
 	await generator_graph.clear()
 	await get_tree().process_frame
@@ -91,7 +97,7 @@ func apply_rule_lsystem(file: String) -> void:
 	
 	print("L-System " + file)
 
-func find_subgraph_matches(G: AnalyticGraph, P: AnalyticGraph) -> Array:
+func find_subgraph_matches(G: GodotGraph, P: GodotGraph) -> Array:
 	var results = []
 	var mapping = {}
 	var used_G_nodes = {}

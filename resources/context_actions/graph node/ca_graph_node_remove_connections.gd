@@ -1,6 +1,6 @@
-extends ContextAction
+extends GraphNodeContextAction
 
 
-func perform_context_action(_node: Node) -> void:
-	(_node as VisualGraphNode).remove_all_connections()
+func perform_graph_node_context_action(node: VisualGraphNode) -> void:
+	node.graph.remove_node_connections(node)
 	

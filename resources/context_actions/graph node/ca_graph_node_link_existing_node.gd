@@ -1,18 +1,15 @@
-extends ContextAction
+extends GraphNodeContextAction
 
-var connection_prefab: PackedScene = null
 var waiting: bool = false
-
-func perform_context_action(node: Node) -> void:
-	if connection_prefab == null:
-		connection_prefab = load("res://scripts/connection/connection.tscn")
-	wait_for_click(node as VisualGraphNode)
+func perform_graph_node_context_action(node: VisualGraphNode) -> void:
+	print("linking to existing node")
+	wait_for_click(node)
 	
 func wait_for_click(starting_node: VisualGraphNode) -> void:
 	waiting = true	
 	while waiting:
 		process_input(starting_node)
-		await starting_node.get_tree().create_timer(starting_node.get_process_delta_time()).timeout	
+		await starting_node.get_tree().physics_frame
 	
 	
 func process_input(starting_node: VisualGraphNode) -> void:
@@ -23,11 +20,8 @@ func process_input(starting_node: VisualGraphNode) -> void:
 			if node == starting_node: continue
 			if starting_node.get_parent() != node.get_parent(): continue
 			if (node as VisualGraphNode).get_global_rect().has_point(mouse_pos):
-				var c = connection_prefab.instantiate() as Connection
-				c.set_connection_nodes(starting_node, node as VisualGraphNode)
-				node.add_sibling(c)
-				starting_node.add_connection(c)
-				node.add_connection(c)
+				var con = starting_node.graph.create_new_connection(starting_node, node)
 				waiting = false
 				return
+		print("cancelled")
 		waiting = false

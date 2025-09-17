@@ -5,27 +5,30 @@ using System.Linq;
 
 namespace graph_rewriting_test.scripts.graph_lib
 {
+    [GlobalClass]
     public partial class SubgraphIsomorphism : GodotObject
     {
-        public static bool IsIsomorphicSubgraph(Graph source, Graph pattern)
+        public bool IsIsomorphicSubgraph(GodotGraph source, GodotGraph pattern)
         {
-            return false;
+            Dictionary<Vertex, Vertex> mapping = new();
+            HashSet<Vertex> used = new();
+            return matchFirst(source, pattern, mapping, used);
         }
 
-        public static List<Graph> FindAllIsomorphicSubgraphs(Graph source, Graph pattern)
+        public GodotGraph[] FindAllIsomorphicSubgraphs(GodotGraph source, GodotGraph pattern)
         {
             return null;
         }
 
-        private static bool matchFirst(Graph target, Graph pattern, Dictionary<Vertex, Vertex> mapping,
+        private bool matchFirst(GodotGraph target, GodotGraph pattern, Dictionary<Vertex, Vertex> mapping,
             HashSet<Vertex> usedTargetNodes)
         {
-            if (mapping.Count == pattern.Vertices.Count)
+            if (mapping.Count == pattern.graph.Vertices.Count)
                 return true; // <-- stop at first found
 
             Vertex nextPatternNode = SelectUnmappedNode(pattern, mapping);
 
-            foreach (Vertex targetNode in target.Vertices)
+            foreach (Vertex targetNode in target.graph.Vertices)
             {
                 if (usedTargetNodes.Contains(targetNode))
                     continue;
@@ -46,22 +49,22 @@ namespace graph_rewriting_test.scripts.graph_lib
             return false;
         }
 
-        private static void matchAll(Graph target, Graph pattern, Dictionary<Vertex, Vertex> mapping,
-            HashSet<Graph> usedTargetNodes)
+        private void matchAll(GodotGraph target, GodotGraph pattern, Dictionary<Vertex, Vertex> mapping,
+            HashSet<Vertex> usedTargetNodes)
         {
 
         }
 
-        static bool Compatible(Vertex pNode, Vertex tNode,
+        private bool Compatible(Vertex pNode, Vertex tNode,
             Dictionary<Vertex, Vertex> mapping,
-            Graph pattern, Graph target)
+            GodotGraph pattern, GodotGraph target)
         {
             // (1) Check labels if applicable
             if (pNode.Type != tNode.Type)
                 return false;
 
             // (2) Check edge consistency
-            foreach (Edge e in pattern.Edges)
+            foreach (Edge e in pattern.graph.Edges)
             {
                 if (e.From == pNode && mapping.ContainsKey(e.To))
                 {
@@ -81,22 +84,22 @@ namespace graph_rewriting_test.scripts.graph_lib
             return true;
         }
 
-        static bool EdgeExists(Graph g, Vertex from, Vertex to)
+        private bool EdgeExists(GodotGraph g, Vertex from, Vertex to)
         {
-            return g.Edges.Any(e => e.From == from && e.To == to);
+            return g.graph.Edges.Any(e => e.From == from && e.To == to);
         }
 
-        private static Vertex SelectUnmappedNode(Graph pattern, Dictionary<Vertex, Vertex> mapping)
+        private Vertex SelectUnmappedNode(GodotGraph pattern, Dictionary<Vertex, Vertex> mapping)
         {
-            return pattern.Vertices
+            return pattern.graph.Vertices
                 .Where(n => !mapping.ContainsKey(n))
                 .OrderByDescending(n => Degree(pattern, n))
                 .First();
         }
 
-        static int Degree(Graph g, Vertex n)
+        private int Degree(GodotGraph g, Vertex n)
         {
-            return g.Edges.Count(e => e.From == n || e.To == n);
+            return g.graph.Edges.Count(e => e.From == n || e.To == n);
         }
 
 

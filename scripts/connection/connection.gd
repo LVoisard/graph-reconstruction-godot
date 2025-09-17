@@ -1,9 +1,10 @@
 extends Control
 class_name Connection 
 
-var connection_nodes: Array[RuleGraphNode] = [null, null]
+var connection_nodes: Array[VisualGraphNode] = [null, null]
 var connector_bits: Array[bool] = [false,true]
 var connection_type: ConnectionType = ConnectionType.Directional
+var graph: VisualGraph
 
 @export var connector_arrow: Texture2D
 @export var connector_dead_end: Texture2D
@@ -18,15 +19,13 @@ func _ready() -> void:
 	right_connector.button_down.connect(on_connector_button_pressed.bind(1))
 	update_connection_visual()
 
-func set_connection_nodes(_a: RuleGraphNode, _b: RuleGraphNode) -> void:
-	connection_nodes[0] = _a
-	connection_nodes[1] = _b	
+func set_connection_nodes(_a: VisualGraphNode, _b: VisualGraphNode) -> void:
+	connection_nodes.clear()
+	connection_nodes.append(_a)
+	connection_nodes.append(_b)	
 	a().moved.connect(update_connection_position)
 	b().moved.connect(update_connection_position)
-	a().deleted.connect(on_connection_deleted)
-	b().deleted.connect(on_connection_deleted)
 	update_connection_position()
-	
 	
 func update_connection_position() -> void:
 	var ab: Vector2 = b().get_global_rect().get_center() - a().get_global_rect().get_center()
@@ -59,6 +58,9 @@ func set_type(new_type: ConnectionType) -> void:
 	connection_type = new_type
 	update_connection_visual()
 	
+func set_graph(graph: VisualGraph) -> void:
+	self.graph = graph
+	
 func belongs_to_graph_node(node: RuleGraphNode) -> bool:
 	return a() == node || b() == node	
 
@@ -70,11 +72,6 @@ func a() -> RuleGraphNode:
 	
 func b() -> RuleGraphNode:
 	return connection_nodes[1]
-
-func on_connection_deleted(node: Node) -> void:
-	if node != a() && a() != null: a().remove_connection(self)
-	if node != b() && b() != null: b().remove_connection(self)
-	self.queue_free()
 	
 func on_connector_button_pressed(index: int)->void:
 	connector_bits[index] = !connector_bits[index]

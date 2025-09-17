@@ -1,5 +1,24 @@
 extends Node
 
+
+func split_input_output(path: String) -> Array[String]:
+	var file = FileAccess.open(path, FileAccess.READ)
+	var input = ""
+	var output = ""
+	var mode = 0
+	while not file.eof_reached():
+		var line = file.get_line()
+		if line == "": continue
+		if line.contains("output"):
+			mode = 1
+		if line.contains("input") or line.contains("output") or line.contains("nodes") or line.contains("edges"): continue		
+		
+		if mode == 0:
+			input += line
+		else:
+			output += line
+	return [input, output]
+	
 func parse_graphs(path: String) -> Array[Dictionary]:
 	var file = FileAccess.open(path, FileAccess.READ)
 	var graphs: Array[Dictionary] = [
