@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace graph_rewriting_test.scripts.graph_lib
 {
-    public partial class SubgraphIsomorphism
+    public partial class SubgraphIsomorphism : GodotObject
     {
         public static bool IsIsomorphicSubgraph(Graph source, Graph pattern)
         {
@@ -17,15 +17,15 @@ namespace graph_rewriting_test.scripts.graph_lib
             return null;
         }
 
-        private static bool matchFirst(Graph target, Graph pattern, Dictionary<Node, Node> mapping,
-            HashSet<Node> usedTargetNodes)
+        private static bool matchFirst(Graph target, Graph pattern, Dictionary<Vertex, Vertex> mapping,
+            HashSet<Vertex> usedTargetNodes)
         {
-            if (mapping.Count == pattern.Nodes.Count)
+            if (mapping.Count == pattern.Vertices.Count)
                 return true; // <-- stop at first found
 
-            Node nextPatternNode = SelectUnmappedNode(pattern, mapping);
+            Vertex nextPatternNode = SelectUnmappedNode(pattern, mapping);
 
-            foreach (Node targetNode in target.Nodes)
+            foreach (Vertex targetNode in target.Vertices)
             {
                 if (usedTargetNodes.Contains(targetNode))
                     continue;
@@ -46,14 +46,14 @@ namespace graph_rewriting_test.scripts.graph_lib
             return false;
         }
 
-        private static void matchAll(Graph target, Graph pattern, Dictionary<Node, Node> mapping,
+        private static void matchAll(Graph target, Graph pattern, Dictionary<Vertex, Vertex> mapping,
             HashSet<Graph> usedTargetNodes)
         {
 
         }
 
-        static bool Compatible(Node pNode, Node tNode,
-            Dictionary<Node, Node> mapping,
+        static bool Compatible(Vertex pNode, Vertex tNode,
+            Dictionary<Vertex, Vertex> mapping,
             Graph pattern, Graph target)
         {
             // (1) Check labels if applicable
@@ -65,14 +65,14 @@ namespace graph_rewriting_test.scripts.graph_lib
             {
                 if (e.From == pNode && mapping.ContainsKey(e.To))
                 {
-                    Node mappedTo = mapping[e.To];
+                    Vertex mappedTo = mapping[e.To];
                     if (!EdgeExists(target, tNode, mappedTo))
                         return false;
                 }
 
                 if (e.To == pNode && mapping.ContainsKey(e.From))
                 {
-                    Node mappedFrom = mapping[e.From];
+                    Vertex mappedFrom = mapping[e.From];
                     if (!EdgeExists(target, mappedFrom, tNode))
                         return false;
                 }
@@ -81,20 +81,20 @@ namespace graph_rewriting_test.scripts.graph_lib
             return true;
         }
 
-        static bool EdgeExists(Graph g, Node from, Node to)
+        static bool EdgeExists(Graph g, Vertex from, Vertex to)
         {
             return g.Edges.Any(e => e.From == from && e.To == to);
         }
 
-        private static Node SelectUnmappedNode(Graph pattern, Dictionary<Node, Node> mapping)
+        private static Vertex SelectUnmappedNode(Graph pattern, Dictionary<Vertex, Vertex> mapping)
         {
-            return pattern.Nodes
+            return pattern.Vertices
                 .Where(n => !mapping.ContainsKey(n))
                 .OrderByDescending(n => Degree(pattern, n))
                 .First();
         }
 
-        static int Degree(Graph g, Node n)
+        static int Degree(Graph g, Vertex n)
         {
             return g.Edges.Count(e => e.From == n || e.To == n);
         }

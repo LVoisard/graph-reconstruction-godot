@@ -15,17 +15,20 @@ signal deleted(node)
 @onready var label: Label = $"Outline/NodeVisual/Label"
 
 var type: NodeType = NodeType.ANY
+var id: int
 
 func _ready() -> void:
 	draggable.dragging.connect(on_moved)
 	draggable.finished_dragging.connect(on_moved)
 	
+func set_id(id) -> void:
+	self.id = id
+	
 func set_type(new_type: NodeType) -> void:	
 	type = new_type
-	label.text = "%d:%s" % [-1, NodeType.keys()[new_type].substr(0,1)]
-	change_visuals()
 	
 func change_visuals() -> void:
+	label.text = "%d:%s" % [id, NodeType.keys()[type].substr(0,1)]
 	match type:
 		NodeType.ANY:
 			outline.texture = outline_texture_round

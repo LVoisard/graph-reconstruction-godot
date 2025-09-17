@@ -3,35 +3,31 @@ using Godot;
 
 namespace graph_rewriting_test.scripts.graph_lib
 {
-	public partial class Node : GodotObject
+	public partial class Vertex : GodotObject
 	{
-		private static int _nextId = 0;
-		public int Id { get; private set; }
+		[Export] public int Id { get; private set; }
+		[Export] public int X { get; private set; }
+		[Export] public int Y { get; private set; }
 
-		public NodeType Type { get; private set; }
+		[Export] public NodeType Type { get; private set; }
 
-		public void Init()
+		public Vertex(int id, NodeType type)
 		{
-			this.Id = _nextId++;
-			this.Type = NodeType.Task;
+			Id = id;
+			Type = type;
+			X = 0;
+			Y = 0;
 		}
 
-		public void Init(NodeType type)
+		public void SetType(NodeType type)
 		{
-			this.Id = _nextId++;
 			this.Type = type;
 		}
 
-		public void Init(int id, NodeType type)
+		public void SetPosition(int x, int y)
 		{
-			this.Id = id;
-			this.Type = type;
-		}
-
-		public void Init(Node other)
-		{
-			this.Id = other.Id;
-			this.Type = other.Type;
+			X = x;
+			Y = y;
 		}
 
 		public enum NodeType

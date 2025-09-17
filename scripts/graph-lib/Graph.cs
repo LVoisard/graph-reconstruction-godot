@@ -1,24 +1,30 @@
 using Godot;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace graph_rewriting_test.scripts.graph_lib
 {
-    public partial class Graph: GodotObject
+    public class Graph
     {
+        public List<Vertex> Vertices { get; private set; } = new();
+        public List<Edge> Edges { get; private set; } = new();
 
-        public List<Node> Nodes { get; init; } = new();
-        public List<Edge> Edges { get; init; } = new();
-
-
-        public void AddNode(Node node)
+        public void AddVertex(Vertex vert)
         {
-            Nodes.Add(node);
-
+            Vertices.Add(vert);
         }
 
-        public void AddEdge(Node from, Node to, bool isDirected = false)
+        public void AddEdge(Edge edge)
         {
-            Edges.Add(new Edge(from, to));
+            Edges.Add(edge);
+        }
+
+        public void Clear()
+        {
+            Vertices.Clear();
+            Edges.Clear();
         }
     }
 }
