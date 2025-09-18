@@ -11,12 +11,12 @@ func split_input_output(path: String) -> Array[String]:
 		if line == "": continue
 		if line.contains("output"):
 			mode = 1
-		if line.contains("input") or line.contains("output") or line.contains("nodes") or line.contains("edges"): continue		
+		if line.contains("input") or line.contains("output"): continue
 		
 		if mode == 0:
-			input += line
+			input += line + "\n"
 		else:
-			output += line
+			output += line + "\n"
 	return [input, output]
 	
 func parse_graphs(path: String) -> Array[Dictionary]:

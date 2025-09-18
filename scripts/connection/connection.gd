@@ -56,7 +56,6 @@ func update_connection_visual() -> void:
 	
 func set_type(new_type: ConnectionType) -> void:
 	connection_type = new_type
-	update_connection_visual()
 	
 func set_graph(graph: VisualGraph) -> void:
 	self.graph = graph

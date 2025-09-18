@@ -44,8 +44,6 @@ func update_file_tree() -> void:
 func load_rule(path: String) -> void:
 	print("loading rule: %s" % path)
 	clear()
-	await get_tree().process_frame
-	await get_tree().process_frame
 	var graph_strings = Helper.parse_graphs(path)
 	input_graph.load_from_string(graph_strings[0])
 	output_graph.load_from_string(graph_strings[1])
@@ -55,6 +53,6 @@ func copy_to_output() -> void:
 	output_graph.copy_graph(input_graph)
 	
 func clear() -> void:
-	input_graph.clear()
-	output_graph.clear()
+	input_graph.clear_all()
+	output_graph.clear_all()
 	

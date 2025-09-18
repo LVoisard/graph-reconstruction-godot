@@ -29,7 +29,7 @@ namespace graph_rewriting_test.scripts.graph_lib
 		}
 		public override string ToString()
 		{
-			return $"{From.Id},{To.Id},{Enum.GetValues(typeof(EdgeType)).GetValue((int)Type)}\n";
+			return $"{From.Id},{To.Id},{Enum.GetValues(typeof(EdgeType)).GetValue((int)Type)}";
 		}
 
 		public enum EdgeType

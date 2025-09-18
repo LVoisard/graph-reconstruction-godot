@@ -2,6 +2,7 @@ class_name Recipes extends Control
 
 signal apply_rule_random(file_name)
 signal apply_rule_lsystem(file_name)
+signal update_gaph_visual
 signal organise_graph
 signal recipe_complete
 
@@ -68,16 +69,10 @@ func process_step(step) -> void:
 	print("processing ", step.name)
 	if int(step.min) == -1 and int(step.max) == -1:
 		apply_rule_lsystem.emit(step.path.get_file())
-		await get_tree().process_frame
-		await get_tree().process_frame
-		await get_tree().process_frame
-		await get_tree().process_frame
+		update_gaph_visual.emit()
 	else:	
 		for i in range(0, randi_range(int(step.min), int(step.max))):
 			print(i + 1)
 			apply_rule_random.emit(step.path.get_file())
-			await get_tree().process_frame
-			await get_tree().process_frame
-			await get_tree().process_frame
-			await get_tree().process_frame
+		update_gaph_visual.emit()
 	

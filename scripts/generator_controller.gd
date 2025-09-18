@@ -14,6 +14,7 @@ func _ready() -> void:
 	recipes.apply_rule_lsystem.connect(apply_rule_lsystem)
 	recipes.organise_graph.connect(organise_graph)
 	recipes.recipe_complete.connect(validate_graph)
+	recipes.update_gaph_visual.connect(update_graph_visual)
 	refresh_rules()
 	#Dungeon.Graph()
 	
@@ -21,20 +22,20 @@ func _ready() -> void:
 	
 
 func clear() -> void:
-	await generator_graph.clear()
-	var entrance = load("res://scripts/graph_node/rule/rule_graph_node.tscn").instantiate() as VisualGraphNode
-	var goal = load("res://scripts/graph_node/rule/rule_graph_node.tscn").instantiate() as VisualGraphNode
-	var c = load("res://scripts/connection/connection.tscn").instantiate() as Connection
-	generator_graph.add_child(entrance)
-	entrance.position = Vector2(100, 100)
-	entrance.set_type(VisualGraphNode.NodeType.ENTRANCE)	
-	goal.position = entrance.position + Vector2(800, 700)
-	generator_graph.add_child(goal)
-	goal.set_type(VisualGraphNode.NodeType.GOAL)
-	c.set_connection_nodes(entrance, goal)
-	#entrance.add_connection(c)
-	#goal.add_connection(c)
-	generator_graph.add_child(c)
+	generator_graph.clear_all()
+	var entrance = generator_graph.create_new_node() as VisualGraphNode
+	entrance.set_position(Vector2(100, 50))
+	generator_graph.change_node_type(entrance, VisualGraphNode.NodeType.ENTRANCE)
+	generator_graph.update_node_position(entrance)
+	
+	
+	var goal = generator_graph.create_new_node() as VisualGraphNode
+	goal.set_position(Vector2(300, 50))
+	generator_graph.change_node_type(goal, VisualGraphNode.NodeType.GOAL)
+	generator_graph.update_node_position(goal)
+	
+	var con = generator_graph.create_new_connection(entrance, goal) as Connection
+	
 
 func refresh_rules() -> void:
 	var dir = DirAccess.open("res://rules")
@@ -48,33 +49,35 @@ func refresh_rules() -> void:
 		var n = file.get_basename()
 		r.label.text = n
 		r.random_apply_btn.button_down.connect(apply_rule_random.bind(file))
+		r.random_apply_btn.button_down.connect(update_graph_visual)
 		r.lsystem_apply_btn.button_down.connect(apply_rule_lsystem.bind(file))
+		r.lsystem_apply_btn.button_down.connect(update_graph_visual)
 
 func apply_rule_random(file: String) -> void:
 	
-	var rules_strings = Helper.split_input_output(file)
-	var pattern = GodotGraph.new()
-	pattern.CreateFromString(rules_strings[0])
+	var rules_strings = Helper.split_input_output("res://rules/"+file)
+	var patterns = GodotGraph.ParseRuleFromString(FileAccess.get_file_as_string("res://rules/"+file))
 	
-	var pattern_output = GodotGraph.new()
-	pattern_output.CreateFromString(rules_strings[1])
+	print(patterns[0].GetGraphString())
+	print(patterns[1].GetGraphString())
 
-	var subgraph_iso_checker = SubgraphIsomorphism.new()
-	subgraph_iso_checker.FindAllIsomorphicSubgraphs(generator_graph.backend, pattern)
+	var matches = SubgraphIsomorphism.FindAll(patterns[0], generator_graph.backend)
 	#traverse_graph(graphs[0])
-	var matches = find_subgraph_matches(generator_graph.backend, pattern)
+	#var matches = find_subgraph_matches(generator_graph.backend, pattern)
 	print("Found %d matches" % matches.size())
 	
 	if matches.is_empty():
 		print("No valid nodes")
 		return
 	
-	apply_rewrite(generator_graph.backend, matches.pick_random(),pattern, pattern_output)
+	generator_graph.backend.ApplyRewrite(matches.pick_random(), patterns[0], patterns[1])	
 	
-	await generator_graph.clear()
-	await get_tree().process_frame
-	generator_graph.load_from_analytic(target)
+	#generator_graph.backend.ArrangeGrid(150)
+	generator_graph.backend.ArrangeForceDirected(1480,900, 1000)
 	print("Random " + file)
+	
+func update_graph_visual() ->void:
+	generator_graph.create_visuals_from_backend()
 	
 func apply_rule_lsystem(file: String) -> void:
 	var graphs = Helper.parse_graphs("res://rules/"+file)
@@ -103,7 +106,7 @@ func find_subgraph_matches(G: GodotGraph, P: GodotGraph) -> Array:
 	var used_G_nodes = {}
 
 	
-	backtrack(G, P, mapping, used_G_nodes, results)
+	#backtrack(G, P, mapping, used_G_nodes, results)
 	return results
 
 func backtrack(G: AnalyticGraph, P: AnalyticGraph, mapping: Dictionary, used_G_nodes: Dictionary, results: Array):

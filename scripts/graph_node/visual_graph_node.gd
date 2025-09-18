@@ -68,6 +68,7 @@ func update_visuals() -> void:
 	
 	
 func on_moved() -> void:
+	graph.update_node_position(self)
 	moved.emit()
 	
 func _exit_tree() -> void:

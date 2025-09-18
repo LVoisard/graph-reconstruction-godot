@@ -38,9 +38,14 @@ namespace graph_rewriting_test.scripts.graph_lib
 			Y = y;
 		}
 
+		public void SetId(int id)
+		{
+			Id = id;
+		}
+
 		public override string ToString()
 		{
-			return $"{Id},{X},{Y},{Enum.GetValues(typeof(Vertex.VertexType)).GetValue((int)Type)}\n";
+			return $"{Id},{X},{Y},{Enum.GetValues(typeof(Vertex.VertexType)).GetValue((int)Type)}";
 		}
 
 		public enum VertexType
