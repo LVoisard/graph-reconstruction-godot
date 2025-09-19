@@ -51,16 +51,20 @@ func iterate_recipe() -> void:
 		print("Finished recipe")
 		organise_graph.emit()
 		recipe_complete.emit()
+		update_gaph_visual.emit()
 		return
-	await process_step(step)
+	process_step(step)
+	update_gaph_visual.emit()
 		
 func complete_recipe() -> void:
 	var step = recipe_tree.get_next()
 	if step != null:
 		while step != null:
-			await process_step(step)
+			process_step(step)
 			step = recipe_tree.get_next()
 	recipe_complete.emit()
+	organise_graph.emit()
+	update_gaph_visual.emit()
 	
 func reset_recipe() -> void:
 	recipe_tree.reset_recipe()
@@ -69,10 +73,8 @@ func process_step(step) -> void:
 	print("processing ", step.name)
 	if int(step.min) == -1 and int(step.max) == -1:
 		apply_rule_lsystem.emit(step.path.get_file())
-		update_gaph_visual.emit()
 	else:	
 		for i in range(0, randi_range(int(step.min), int(step.max))):
 			print(i + 1)
 			apply_rule_random.emit(step.path.get_file())
-		update_gaph_visual.emit()
 	

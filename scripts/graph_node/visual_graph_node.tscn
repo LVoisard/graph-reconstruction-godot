@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://c0dm4275ybss1"]
+[gd_scene load_steps=15 format=3 uid="uid://c0dm4275ybss1"]
 
 [ext_resource type="Texture2D" uid="uid://cei4qngk4c2kh" path="res://assets/icons/white/circle-solid.png" id="1_n5sbo"]
 [ext_resource type="Script" uid="uid://dpeylpupxgqh1" path="res://scripts/graph_node/visual_graph_node.gd" id="1_xmc6h"]
@@ -12,6 +12,7 @@
 [ext_resource type="Resource" uid="uid://bpki6yb088ktr" path="res://resources/context_actions/graph node/ca_graph_node_link_existing_node.tres" id="7_rky0x"]
 [ext_resource type="Resource" uid="uid://tib5hh2wgcax" path="res://resources/context_actions/graph node/ca_graph_node_change_node_type.tres" id="8_w44de"]
 [ext_resource type="Resource" uid="uid://0sq5iqybsr51" path="res://resources/context_actions/graph node/ca_graph_node_remove_connections.tres" id="9_bo0vd"]
+[ext_resource type="Resource" uid="uid://blc066eqywkgv" path="res://resources/context_actions/graph node/ca_graph_node_add_annotation.tres" id="11_n50vu"]
 [ext_resource type="Resource" uid="uid://dnmwxkcclknd8" path="res://resources/context_actions/graph node/ca_graph_node_delete.tres" id="12_4hwu5"]
 
 [node name="GraphNode" type="Control" groups=["graph_nodes"]]
@@ -72,7 +73,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 offset_bottom = 30.0
 context = "Graph Node"
-context_actions = Array[ExtResource("4_d4doj")]([ExtResource("5_d7h6g"), ExtResource("7_rky0x"), ExtResource("8_w44de"), ExtResource("9_bo0vd"), ExtResource("12_4hwu5")])
+context_actions = Array[ExtResource("4_d4doj")]([ExtResource("5_d7h6g"), ExtResource("7_rky0x"), ExtResource("8_w44de"), ExtResource("11_n50vu"), ExtResource("9_bo0vd"), ExtResource("12_4hwu5")])
 
 [node name="draggable" parent="." instance=ExtResource("7_hmws7")]
 visible = false

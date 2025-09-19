@@ -89,32 +89,44 @@ namespace graph_rewriting_test.scripts.graph_lib
 
         private static bool IsFeasibleMapping(GodotGraph pattern, GodotGraph target, Dictionary<Vertex, Vertex> mapping, Vertex patternVertex, Vertex targetVertex)
         {
-            // Check edges consistency with already mapped neighbors
+            if (patternVertex.Type != Vertex.VertexType.Any && patternVertex.Type != targetVertex.Type)
+            {
+                return false;
+            }
+
+            // 2. Check edges consistency with already mapped neighbors
             foreach (var edge in pattern.GetEdges())
             {
                 if (edge.From == patternVertex && mapping.ContainsKey(edge.To))
                 {
                     var mappedFrom = targetVertex;
                     var mappedTo = mapping[edge.To];
-                    if (!target.GetEdges().Any(e => e.From == mappedFrom && e.To == mappedTo))
+
+                    if (!target.GetEdges().Any(e =>
+                        e.From == mappedFrom &&
+                        e.To == mappedTo &&
+                        e.Type == edge.Type)) // edge type must match
+                    {
                         return false;
+                    }
                 }
 
                 if (edge.To == patternVertex && mapping.ContainsKey(edge.From))
                 {
                     var mappedFrom = mapping[edge.From];
                     var mappedTo = targetVertex;
-                    if (!target.GetEdges().Any(e => e.From == mappedFrom && e.To == mappedTo))
+
+                    if (!target.GetEdges().Any(e =>
+                        e.From == mappedFrom &&
+                        e.To == mappedTo &&
+                        e.Type == edge.Type)) // edge type must match
+                    {
                         return false;
+                    }
                 }
             }
 
             return true;
-        }
-
-        private static bool compatible(Vertex v1, Vertex v2, Vertex v3, Dictionary<Vertex, Vertex> mapping)
-        {
-            return v1 == v3 && mapping.ContainsKey(v2) && (v3.Type == v1.Type || v3.Type == Vertex.VertexType.Any);
         }
 
 

@@ -12,10 +12,6 @@ var current_id: int = 0
 var free_ids: Array[int] = []
 
 var backend: GodotGraph = GodotGraph.new()
-
-func _ready() -> void:
-	print("ready")
-	print(backend.GetGraphString())
 	
 func create_new_node() -> VisualGraphNode:
 	var new_node = backend.CreateVertex()
@@ -25,7 +21,6 @@ func create_new_node() -> VisualGraphNode:
 	visual.set_id(new_node.Id)
 	visual_nodes.append(visual)
 	add_child(visual)
-	print(backend.GetGraphString())
 	return visual	
 	
 func create_new_connection(from: VisualGraphNode, to: VisualGraphNode) -> Connection:
@@ -35,7 +30,6 @@ func create_new_connection(from: VisualGraphNode, to: VisualGraphNode) -> Connec
 	visual_con.set_connection_nodes(from, to)	
 	visual_con.set_graph(self)
 	add_child(visual_con)
-	print(backend.GetGraphString())
 	return visual_con
 
 func remove_node_connections(node: VisualGraphNode) -> void:
@@ -47,20 +41,17 @@ func remove_node_connections(node: VisualGraphNode) -> void:
 	for con in to_remove:
 		visual_connections.erase(con)
 		con.queue_free()
-	print(backend.GetGraphString())
 
 func remove_node(node: VisualGraphNode) -> void:
 	remove_node_connections(node)
 	backend.RemoveVertex(node.id)
 	visual_nodes.erase(node)
 	node.queue_free()
-	print(backend.GetGraphString())
 	
 func change_node_type(node: VisualGraphNode, type: VisualGraphNode.NodeType) -> void:
 	backend.GetVertex(node.id).SetType(type)
 	node.set_type(type)
 	node.update_visuals()
-	print(backend.GetGraphString())
 	
 func update_node_position(node: VisualGraphNode) ->void:
 	backend.GetVertex(node.id).SetPosition(node.position.x, node.position.y)
@@ -70,7 +61,6 @@ func change_connection_type(con: Connection, type: Connection.ConnectionType) ->
 	backend.GetEdge(con.a().id, con.b().id).SetType(type)
 	con.set_type(type)
 	con.update_connection_visual()
-	print(backend.GetGraphString())	
 	
 func create_visuals_from_backend() -> void:
 	clear_visuals()

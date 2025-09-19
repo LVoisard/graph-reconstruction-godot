@@ -44,9 +44,11 @@ func update_file_tree() -> void:
 func load_rule(path: String) -> void:
 	print("loading rule: %s" % path)
 	clear()
-	var graph_strings = Helper.parse_graphs(path)
-	input_graph.load_from_string(graph_strings[0])
-	output_graph.load_from_string(graph_strings[1])
+	var graphs = GodotGraph.ParseRuleFromString(FileAccess.get_file_as_string(path))
+	input_graph.backend = graphs[0]
+	input_graph.create_visuals_from_backend()
+	output_graph.backend = graphs[1]
+	output_graph.create_visuals_from_backend()
 	#print(graph_strings)
 
 func copy_to_output() -> void:

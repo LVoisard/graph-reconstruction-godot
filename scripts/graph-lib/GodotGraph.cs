@@ -19,12 +19,10 @@ namespace graph_rewriting_test.scripts.graph_lib
             {
                 var id = idPool.First();
                 idPool.RemoveAt(0);
-                GD.Print($"Assigning Available id: {id}");
                 return id;
             }
             else
             {
-                GD.Print($"No Ids Available, assigning id: {graph.Vertices.Count}");
                 return graph.Vertices.Count;
             }
         }
@@ -95,9 +93,9 @@ namespace graph_rewriting_test.scripts.graph_lib
                     (inputToTargetMapping.Values.Contains(e.From) && !inputToTargetMapping.Values.Contains(e.To)) ||
                     (inputToTargetMapping.Values.Contains(e.To) && !inputToTargetMapping.Values.Contains(e.From))).ToList();
 
-
             //create an input to output mapping
             Godot.Collections.Dictionary<Vertex, Vertex> outputToInputMapping = new();
+            Godot.Collections.Dictionary<Vertex, Vertex> inputToOutputMapping = new();
             foreach (var v in outputPattern.graph.Vertices)
             {
                 foreach (var v2 in inputPattern.graph.Vertices)
@@ -105,15 +103,56 @@ namespace graph_rewriting_test.scripts.graph_lib
                     if (v.Id == v2.Id)
                     {
                         outputToInputMapping.Add(v, v2);
+                        inputToOutputMapping.Add(v2, v);
+                    }
+
+                }
+            }
+            // make sure a vertex keeps its outer(inner) edge to other nodes. 
+            // This happens when a rule specifies a node with no incoming edges.
+            // The substitution removes the edges if it is from a node in the pattern.
+            // We want to add it back after 
+
+
+            // edge that exists in the target graph bewteen inputpattern vertices, but doesn't exist in the input graph, and that are not removed.
+
+            // input that has an incoming from target but not in 
+            List<Edge> edges = graph.Edges.Where(x =>
+                inputToTargetMapping.Values.Contains(x.To) &&
+                inputToTargetMapping.Values.Contains(x.From)).ToList();
+
+
+            foreach (Edge e in edges)
+            {
+                // Find which pattern vertices this edge would correspond to
+                var patternFrom = inputToTargetMapping.FirstOrDefault(kv => kv.Value == e.From).Key;
+                var patternTo = inputToTargetMapping.FirstOrDefault(kv => kv.Value == e.To).Key;
+
+                // Only proceed if both endpoints exist in the mapping
+                if (patternFrom != null && patternTo != null)
+                {
+                    // Check if that edge exists in the input pattern
+                    bool existsInPattern = inputPattern.graph.Edges.Any(x =>
+                        x.From == patternFrom && x.To == patternTo);
+
+                    if (!existsInPattern)
+                    {
+                        GD.Print($"Extra edge in target (from {e.From.Id} to {e.To.Id}), not in input pattern → treat as external edge");
+                        if (!externalEdges.Contains(e))
+                            externalEdges.Add(e);
                     }
                 }
             }
+
+            //GD.Print(edges.Count);
+            //externalEdges.AddRange(edges);
+
 
             // 1. Remove matched vertices & edges
             foreach (var v in inputToTargetMapping.Values)
             {
                 //target.RemoveVertexEdges(v.Id);
-                RemoveVertex(v.Id);
+                RemoveVertexEdges(v.Id);
             }
 
             // Create new vertices from the output
@@ -121,22 +160,27 @@ namespace graph_rewriting_test.scripts.graph_lib
             Godot.Collections.Dictionary<Vertex, Vertex> targetToNewOutputMapping = new();
             foreach (var v in outputPattern.graph.Vertices)
             {
-                Vertex newV = new Vertex(GetNextId(), v.X, v.Y, v.Type);
-                // the type is not Any, then we need to change it.
-                if (outputToInputMapping.ContainsKey(v))
+                Vertex newV;
+                // if the output node is also in the input 
+                if (outputToInputMapping.ContainsKey(v) && inputToTargetMapping.ContainsKey(outputToInputMapping[v]))
                 {
-                    var original = inputToTargetMapping[outputToInputMapping[v]];
+                    newV = inputToTargetMapping[outputToInputMapping[v]];
                     // we can now reference the new vertices from the original vertices
-                    targetToNewOutputMapping.Add(original, newV);
-                    if (v.Type == Vertex.VertexType.Any)
+                    targetToNewOutputMapping.Add(newV, newV);
+
+                    if (v.Type != Vertex.VertexType.Any)
                     {
-                        newV.SetType(original.Type);
+                        newV.SetType(v.Type);
                     }
-                    newV.SetPosition(original.X, original.Y);
+                }
+                else
+                {
+                    newV = new Vertex(GetNextId(), v.X, v.Y, v.Type);
+                    graph.AddVertex(newV);
                 }
 
                 outputToNewOutputMapping.Add(v, newV);
-                graph.AddVertex(newV);
+
             }
 
             // Create the output edges
@@ -157,87 +201,210 @@ namespace graph_rewriting_test.scripts.graph_lib
 
         }
 
+        public bool IsTraversable()
+        {
+            Vertex entrance, goal;
+            if ((entrance = graph.Vertices.Find(x => x.Type == Vertex.VertexType.Entrance)) == null) return false;
+            if ((goal = graph.Vertices.Find(x => x.Type == Vertex.VertexType.Goal)) == null) return false;
+
+            Queue<Vertex> toExplore = new();
+            HashSet<Vertex> visited = new();
+            toExplore.Enqueue(entrance);
+            visited.Add(entrance);
+            while (toExplore.Count > 0)
+            {
+                Vertex current = toExplore.Dequeue();
+                if (current.Type == Vertex.VertexType.Goal)
+                    return true;
+
+                // add lock check
+
+                var connected = graph.Edges.Where(x => x.From == current && x.Type == Edge.EdgeType.Directional).Select(x => x.To);
+                foreach (var vert in connected)
+                {
+                    if (!visited.Contains(vert))
+                    {
+                        visited.Add(vert);
+                        toExplore.Enqueue(vert);
+                    }
+                }
+            }
+            return false;
+        }
+
         public void ArrangeGrid(int spacing = 100)
         {
             int cols = (int)Math.Ceiling(Math.Sqrt(graph.Vertices.Count));
             int i = 0;
-            foreach (var v in graph.Vertices)
+            Vertex entrance;
+            if ((entrance = graph.Vertices.Find(x => x.Type == Vertex.VertexType.Entrance)) == null) return;
+            Queue<Vertex> toExplore = new();
+            HashSet<Vertex> visited = new();
+            toExplore.Enqueue(entrance);
+            visited.Add(entrance);
+            while (toExplore.Count > 0)
             {
+                Vertex current = toExplore.Dequeue();
+
+
+                // add lock check
+
+                var connected = graph.Edges.Where(x => x.From == current && x.Type == Edge.EdgeType.Directional).Select(x => x.To);
+                foreach (var vert in connected)
+                {
+                    if (!visited.Contains(vert))
+                    {
+                        visited.Add(current);
+                        toExplore.Enqueue(vert);
+                    }
+                }
                 int row = i / cols;
                 int col = i % cols;
-                v.SetPosition(col * spacing, row * spacing);
+                current.SetPosition(col * spacing, row * spacing);
                 i++;
             }
         }
 
-        public void ArrangeForceDirected(int width = 800, int height = 600, int iterations = 10000)
+        public void ArrangeBFS(bool horizontalLayout, int spacingPrimary, int spacingSecondary, int primaryOffset, int secondaryOffset)
         {
-            double area = width * height;
-            double k = Math.Sqrt(area / graph.Vertices.Count);
-            Random rand = new Random();
+            Vertex entrance = graph.Vertices.Find(v => v.Type == Vertex.VertexType.Entrance);
+            if (entrance == null) return;
 
-            // Temporary floating point positions
-            var pos = new Dictionary<Vertex, (double x, double y)>();
+            // BFS layering
+            Queue<Vertex> queue = new();
+            Dictionary<Vertex, int> levels = new();
+            queue.Enqueue(entrance);
+            levels[entrance] = 0;
 
-            // Initialize random positions
-            foreach (var v in graph.Vertices)
-                pos[v] = (rand.Next(width), rand.Next(height));
+            while (queue.Count > 0)
+            {
+                Vertex current = queue.Dequeue();
+                int currentLevel = levels[current];
+
+                var neighbors = graph.Edges
+                    .Where(e => e.From == current && e.Type == Edge.EdgeType.Directional)
+                    .Select(e => e.To);
+
+                foreach (var neighbor in neighbors)
+                {
+                    if (!levels.ContainsKey(neighbor))
+                    {
+                        levels[neighbor] = currentLevel + 1;
+                        queue.Enqueue(neighbor);
+                    }
+                }
+            }
+
+            // Group vertices by level
+            var grouped = levels.GroupBy(kvp => kvp.Value)
+                                .OrderBy(g => g.Key);
+
+            // Position nodes
+            foreach (var group in grouped)
+            {
+                int level = group.Key;
+                var vertsAtLevel = group.ToList();
+                int count = vertsAtLevel.Count;
+                int totalSpread = (count - 1) * spacingSecondary;
+
+                for (int i = 0; i < count; i++)
+                {
+                    Vertex v = vertsAtLevel[i].Key;
+
+                    if (!horizontalLayout)
+                    {
+                        // Primary axis = Y, Secondary axis = X
+                        v.SetPosition(i * spacingSecondary - totalSpread / 2 + secondaryOffset, level * spacingPrimary + primaryOffset);
+                    }
+                    else
+                    {
+                        // Primary axis = X, Secondary axis = Y
+                        v.SetPosition(level * spacingPrimary + primaryOffset, i * spacingSecondary - totalSpread / 2 + secondaryOffset);
+                    }
+                }
+            }
+        }
+
+        public void ArrangeForceDirected(int width = 800, int height = 600, int iterations = 10000, int k = 100, float temperature = 10)
+        {
+            Random rand = new();
+            foreach (Vertex v in graph.Vertices)
+            {
+                v.SetPosition(v.X + (rand.Next() % 50 - 25), v.Y + (rand.Next() % 50 - 25));
+            }
 
             for (int iter = 0; iter < iterations; iter++)
             {
-                var disp = new Dictionary<Vertex, (double dx, double dy)>();
+                // Temporary displacement arrays
+                var dispX = new float[graph.Vertices.Count];
+                var dispY = new float[graph.Vertices.Count];
 
-                foreach (var v in graph.Vertices)
-                    disp[v] = (0, 0);
-
-                // Repulsion
-                foreach (var v in graph.Vertices)
+                // Repulsive forces
+                for (int i = 0; i < graph.Vertices.Count; i++)
                 {
-                    foreach (var u in graph.Vertices)
+                    for (int j = i + 1; j < graph.Vertices.Count; j++)
                     {
-                        if (u == v) continue;
-                        double dx = pos[v].x - pos[u].x;
-                        double dy = pos[v].y - pos[u].y;
-                        double dist = Math.Sqrt(dx * dx + dy * dy) + 0.01;
-                        double force = (k * k) / dist;
+                        float dx = graph.Vertices[i].X - graph.Vertices[j].X;
+                        float dy = graph.Vertices[i].Y - graph.Vertices[j].Y;
+                        float distance = Math.Max(1e-4f, (float)Math.Sqrt(dx * dx + dy * dy));
 
-                        disp[v] = (disp[v].dx + (dx / dist) * force,
-                                   disp[v].dy + (dy / dist) * force);
+                        float force = RepulsiveForce(distance, k);
+
+                        float fx = (dx / distance) * force;
+                        float fy = (dy / distance) * force;
+
+                        dispX[i] += fx;
+                        dispY[i] += fy;
+                        dispX[j] -= fx;
+                        dispY[j] -= fy;
                     }
                 }
 
-                // Attraction
+                // Attractive forces
                 foreach (var e in graph.Edges)
                 {
-                    if (e.Type == Edge.EdgeType.Relational) continue; // allow relational overlap
+                    int si = graph.Vertices.IndexOf(e.From);
+                    int ti = graph.Vertices.IndexOf(e.To);
 
-                    double dx = pos[e.From].x - pos[e.To].x;
-                    double dy = pos[e.From].y - pos[e.To].y;
-                    double dist = Math.Sqrt(dx * dx + dy * dy) + 0.01;
-                    double force = (dist * dist) / k;
+                    float dx = e.From.X - e.To.X;
+                    float dy = e.From.Y - e.To.Y;
+                    float distance = Math.Max(1e-4f, (float)Math.Sqrt(dx * dx + dy * dy));
 
-                    disp[e.From] = (disp[e.From].dx - (dx / dist) * force,
-                                    disp[e.From].dy - (dy / dist) * force);
-                    disp[e.To] = (disp[e.To].dx + (dx / dist) * force,
-                                    disp[e.To].dy + (dy / dist) * force);
+                    float force = AttractiveForce(distance, k);
+
+                    float fx = (dx / distance) * force;
+                    float fy = (dy / distance) * force;
+
+                    dispX[si] -= fx;
+                    dispY[si] -= fy;
+                    dispX[ti] += fx;
+                    dispY[ti] += fy;
                 }
 
                 // Update positions
-                foreach (var v in graph.Vertices)
+                for (int i = 0; i < graph.Vertices.Count; i++)
                 {
-                    double x = pos[v].x + disp[v].dx * 0.1;
-                    double y = pos[v].y + disp[v].dy * 0.1;
+                    float dx = dispX[i];
+                    float dy = dispY[i];
+                    float dispLength = Math.Max(1e-4f, (float)Math.Sqrt(dx * dx + dy * dy));
 
-                    pos[v] = (Math.Clamp(x, 0, width), Math.Clamp(y, 0, height));
+                    float step = Math.Min(dispLength, temperature);
+                    int newX = (int)Math.Round(graph.Vertices[i].X + (dx / dispLength) * step);
+                    int newY = (int)Math.Round(graph.Vertices[i].Y + (dy / dispLength) * step);
+
+                    // Keep inside bounds
+                    graph.Vertices[i].SetPosition(Math.Clamp(newX, 0, width), Math.Clamp(newY, 0, height));
+                    //graph.Vertices[i].Y = ;
                 }
-            }
 
-            // Write back as integers
-            foreach (var v in graph.Vertices)
-            {
-                v.SetPosition((int)Math.Round(pos[v].x), (int)Math.Round(pos[v].y));
+                // Cool down
+                temperature *= 0.95f;
             }
         }
+
+        private float RepulsiveForce(float distance, float k) => (k * k) / distance;
+        private float AttractiveForce(float distance, float k) => (distance * distance) / k;
+
 
         public string GetGraphString()
         {
@@ -297,7 +464,6 @@ namespace graph_rewriting_test.scripts.graph_lib
             string inputString = "";
             string outputString = "";
 
-            GD.Print(rule);
 
             using (StringReader reader = new StringReader(rule))
             {
@@ -305,7 +471,6 @@ namespace graph_rewriting_test.scripts.graph_lib
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    GD.Print(line);
                     if (string.IsNullOrEmpty(line)) continue;
                     if (line.Contains("output"))
                     {
@@ -324,9 +489,6 @@ namespace graph_rewriting_test.scripts.graph_lib
                         inputString += line + "\n";
                 }
             }
-
-            GD.Print("INPUT:" + inputString);
-            GD.Print("OUTPUT:" + outputString);
 
             inputGraph.CreateFromString(inputString);
             outputGraph.CreateFromString(outputString);
