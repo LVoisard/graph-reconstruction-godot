@@ -246,32 +246,22 @@ namespace graph_rewriting_test.scripts.graph_lib
                 foreach (var other in directionalEdges)
                 {
                     if (edge == other) continue;
-                    Vertex a, b, c, d;
-                    a = edge.From;
-                    b = edge.To;
-                    c = other.From;
-                    d = other.To;
+                    Vector2 a, b, adir, c, d, cdir;
+                    a = new Vector2(edge.From.X, edge.From.Y);
+                    b = new Vector2(edge.To.X, edge.To.Y);
+                    c = new Vector2(other.From.X, other.From.Y);
+                    d = new Vector2(other.To.X, other.To.Y);
+                    adir = b - a;
+                    cdir = d - c;
 
-                    // Check orientations
-                    int o1 = Orientation(a, b, c);
-                    int o2 = Orientation(a, b, d);
-                    int o3 = Orientation(c, d, a);
-                    int o4 = Orientation(c, d, b);
-
-                    // General case
-                    if (o1 != o2 && o3 != o4)
+                    Variant v = Geometry2D.SegmentIntersectsSegment(a + adir * 0.1f, b - adir * 0.1f, c + cdir * 0.1f, d - cdir * 0.1f);
+                    if (v.VariantType != Variant.Type.Nil)
+                    {
+                        GD.Print($"Edge {edge} and {other} intersect");
                         return true;
+                    }
                 }
 
-            }
-
-            // Helper: orientation of ordered triplet (p, q, r)
-            int Orientation(Vertex p, Vertex q, Vertex r)
-            {
-                int val = (q.Y - p.Y) * (r.X - q.X) -
-                          (q.X - p.X) * (r.Y - q.Y);
-                if (val == 0) return 0;   // colinear
-                return (val > 0) ? 1 : 2; // 1=clockwise, 2=counterclockwise
             }
 
             return false;

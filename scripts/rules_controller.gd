@@ -17,8 +17,6 @@ func _ready() -> void:
 	update_file_tree()
 	
 	
-	
-	
 func save_requested() -> void:
 	
 	file_dialog.show()

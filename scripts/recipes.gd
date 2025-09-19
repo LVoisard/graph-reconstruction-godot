@@ -65,6 +65,7 @@ func complete_recipe() -> void:
 			step = recipe_tree.get_next()
 	
 	print("Generated in: ", Time.get_ticks_msec() - start)
+	recipe_tree.reset_recipe()
 	recipe_complete.emit()
 	organise_graph.emit()
 	update_gaph_visual.emit()
