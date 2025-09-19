@@ -232,6 +232,51 @@ namespace graph_rewriting_test.scripts.graph_lib
             return false;
         }
 
+        public bool HasOverlappingDirectionalEdges()
+        {
+            // Compare only directional edges
+            var directionalEdges = graph.Edges
+                .Where(e => e.Type == Edge.EdgeType.Directional)
+                .ToList();
+
+
+
+            foreach (var edge in directionalEdges)
+            {
+                foreach (var other in directionalEdges)
+                {
+                    if (edge == other) continue;
+                    Vertex a, b, c, d;
+                    a = edge.From;
+                    b = edge.To;
+                    c = other.From;
+                    d = other.To;
+
+                    // Check orientations
+                    int o1 = Orientation(a, b, c);
+                    int o2 = Orientation(a, b, d);
+                    int o3 = Orientation(c, d, a);
+                    int o4 = Orientation(c, d, b);
+
+                    // General case
+                    if (o1 != o2 && o3 != o4)
+                        return true;
+                }
+
+            }
+
+            // Helper: orientation of ordered triplet (p, q, r)
+            int Orientation(Vertex p, Vertex q, Vertex r)
+            {
+                int val = (q.Y - p.Y) * (r.X - q.X) -
+                          (q.X - p.X) * (r.Y - q.Y);
+                if (val == 0) return 0;   // colinear
+                return (val > 0) ? 1 : 2; // 1=clockwise, 2=counterclockwise
+            }
+
+            return false;
+        }
+
         public void ArrangeGrid(int spacing = 100)
         {
             int cols = (int)Math.Ceiling(Math.Sqrt(graph.Vertices.Count));
@@ -325,12 +370,150 @@ namespace graph_rewriting_test.scripts.graph_lib
             }
         }
 
+        public void ArrangeCustomBFS(bool horizontalLayout, int spacingPrimary, int spacingSecondary, int primaryOffset, int secondaryOffset)
+        {
+            Vertex entrance = graph.Vertices.Find(v => v.Type == Vertex.VertexType.Entrance);
+            if (entrance == null) return;
+
+            // BFS layering
+            Queue<Vertex> queue = new();
+            Dictionary<Vertex, int> levels = new();
+            queue.Enqueue(entrance);
+            levels[entrance] = 0;
+
+            while (queue.Count > 0)
+            {
+                Vertex current = queue.Dequeue();
+                int currentLevel = levels[current];
+
+                var neighbors = graph.Edges
+                    .Where(e => (e.From == current || e.To == current) && e.Type == Edge.EdgeType.Directional)
+                    .Select(e => e.From == current ? e.To : e.From);
+
+                foreach (var neighbor in neighbors)
+                {
+                    if (!levels.ContainsKey(neighbor))
+                    {
+                        levels[neighbor] = currentLevel + 1;
+                        queue.Enqueue(neighbor);
+                    }
+                    else
+                    {
+                        levels[neighbor] = Math.Min(levels[neighbor], currentLevel + 1);
+                    }
+                }
+            }
+
+            int maxLevel = levels.Values.Max();
+            int medianSweeps = 2;
+
+            // 4) Build layers lists
+            var layers = new Dictionary<int, List<Vertex>>();
+            for (int i = 0; i <= maxLevel; i++) layers[i] = new List<Vertex>();
+            foreach (var kv in levels) layers[kv.Value].Add(kv.Key);
+
+            // 5) Sugiyama median heuristic - forward & backward sweeps
+            Func<Vertex, List<Vertex>, double> parentMedian = (v, prevLayerList) =>
+            {
+                var indices = graph.Edges
+                    .Where(e => e.To == v && levels[e.From] == levels[v] - 1)
+                    .Select(e => prevLayerList.IndexOf(e.From))
+                    .Where(idx => idx >= 0)
+                    .OrderBy(i => i)
+                    .ToList();
+                if (indices.Count == 0) return double.PositiveInfinity;
+                int mid = indices.Count / 2;
+                if (indices.Count % 2 == 1) return indices[mid];
+                return (indices[mid - 1] + indices[mid]) / 2.0;
+            };
+
+            Func<Vertex, List<Vertex>, double> childMedian = (v, nextLayerList) =>
+            {
+                var indices = graph.Edges
+                    .Where(e => e.From == v && levels[e.To] == levels[v] + 1)
+                    .Select(e => nextLayerList.IndexOf(e.To))
+                    .Where(idx => idx >= 0)
+                    .OrderBy(i => i)
+                    .ToList();
+                if (indices.Count == 0) return double.PositiveInfinity;
+                int mid = indices.Count / 2;
+                if (indices.Count % 2 == 1) return indices[mid];
+                return (indices[mid - 1] + indices[mid]) / 2.0;
+            };
+
+            // Ensure some deterministic initial order (e.g., by Id)
+            foreach (var layerIdx in layers.Keys)
+                layers[layerIdx].Sort((a, b) => a.Id.CompareTo(b.Id));
+
+            for (int sweep = 0; sweep < medianSweeps; sweep++)
+            {
+                // Forward sweep
+                for (int l = 1; l <= maxLevel; l++)
+                {
+                    var prev = layers[l - 1];
+                    var curList = layers[l];
+                    // compute medians
+                    var keyed = curList.Select(v => new { v, m = parentMedian(v, prev) }).ToList();
+                    keyed.Sort((a, b) =>
+                    {
+                        int cmp = a.m.CompareTo(b.m);
+                        if (cmp != 0) return cmp;
+                        return a.v.Id.CompareTo(b.v.Id);
+                    });
+                    layers[l] = keyed.Select(x => x.v).ToList();
+                }
+
+                // Backward sweep
+                for (int l = maxLevel - 1; l >= 0; l--)
+                {
+                    var next = layers[l + 1];
+                    var curList = layers[l];
+                    var keyed = curList.Select(v => new { v, m = childMedian(v, next) }).ToList();
+                    keyed.Sort((a, b) =>
+                    {
+                        int cmp = a.m.CompareTo(b.m);
+                        if (cmp != 0) return cmp;
+                        return a.v.Id.CompareTo(b.v.Id);
+                    });
+                    layers[l] = keyed.Select(x => x.v).ToList();
+                }
+            }
+
+            // 6) Assign coordinates
+            foreach (var kv in layers)
+            {
+                int layerIdx = kv.Key;
+                var verts = kv.Value;
+                int count = verts.Count;
+                if (count == 0) continue;
+                int total = (count - 1) * spacingSecondary;
+
+                for (int i = 0; i < count; i++)
+                {
+                    var v = verts[i];
+                    if (!horizontalLayout)
+                    {
+                        int x = i * spacingSecondary - total / 2;
+                        int y = layerIdx * spacingPrimary;
+                        v.SetPosition(x + secondaryOffset, y + primaryOffset); // adapt to your setter
+                    }
+                    else // LeftToRight
+                    {
+                        int x = layerIdx * spacingPrimary;
+                        int y = i * spacingSecondary - total / 2;
+                        v.SetPosition(x + primaryOffset, y + secondaryOffset);
+                    }
+                }
+            }
+
+        }
+
         public void ArrangeForceDirected(int width = 800, int height = 600, int iterations = 10000, int k = 100, float temperature = 10)
         {
             Random rand = new();
             foreach (Vertex v in graph.Vertices)
             {
-                v.SetPosition(v.X + (rand.Next() % 50 - 25), v.Y + (rand.Next() % 50 - 25));
+                //v.SetPosition(v.X + (rand.Next() % 50 - 25), v.Y + (rand.Next() % 50 - 25));
             }
 
             for (int iter = 0; iter < iterations; iter++)
@@ -363,6 +546,7 @@ namespace graph_rewriting_test.scripts.graph_lib
                 // Attractive forces
                 foreach (var e in graph.Edges)
                 {
+                    if (e.Type == Edge.EdgeType.Relational) continue;
                     int si = graph.Vertices.IndexOf(e.From);
                     int ti = graph.Vertices.IndexOf(e.To);
 

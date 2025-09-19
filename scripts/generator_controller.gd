@@ -23,6 +23,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if Input.is_key_pressed(KEY_O):
 		organise_graph()
+	elif Input.is_key_pressed(KEY_F):
+		force_update()
 	
 
 func clear() -> void:
@@ -59,7 +61,7 @@ func refresh_rules() -> void:
 		r.lsystem_apply_btn.button_down.connect(update_graph_visual)
 		
 func update_graph_visual() ->void:
-	generator_graph.backend.ArrangeForceDirected(1480,900, 10000, 150, 10)
+	#generator_graph.backend.ArrangeForceDirected(1480,900, 10000, 150, 10)
 	generator_graph.create_visuals_from_backend()
 	
 func apply_rule_random(file: String) -> void:
@@ -88,7 +90,13 @@ func apply_rule_lsystem(file: String) -> void:
 		generator_graph.backend.ApplyRewrite(m, patterns[0], patterns[1])
 	
 func validate_graph() -> bool:
-	return generator_graph.backend.IsTraversable()
+	#generator_graph.backend.ArrangeCustomBFS(true, 150, 200, 0, 500)
+	#for i in range(0, 200):
+	generator_graph.backend.ArrangeForceDirected(10000,10000, 1000, 75, 1000)
+	generator_graph.update_visuals_from_backend()
+	var valid = generator_graph.backend.IsTraversable() && !generator_graph.backend.HasOverlappingDirectionalEdges()
+	print("Valid graph ?", valid)
+	return valid
 
 func restart_validation() -> void:
 	print("Bad")
@@ -96,9 +104,16 @@ func restart_validation() -> void:
 	recipes.complete_recipe()
 
 func organise_graph() -> void:
-	generator_graph.backend.ArrangeBFS(true, 75, 150, 0, 300)
-	#generator_graph.backend.ArrangeForceDirected(900,1000, 10000, 90, 10)
+	#generator_graph.backend.ArrangeCustomBFS(true, 150, 200, 0, 500)
+	#generator_graph.backend.ArrangeForceDirected(10000,10000, 100, 75, 10)
 	generator_graph.create_visuals_from_backend()
+	
+var nb_iter = 0
+func force_update() -> void:
+	generator_graph.backend.ArrangeForceDirected(10000,10000, 10, 75, 100)
+	nb_iter += 10
+	print(nb_iter)
+	generator_graph.update_visuals_from_backend()
 	
 func generate_dungeon_graph(recipe_path: String) -> VisualGraph:
 	clear()

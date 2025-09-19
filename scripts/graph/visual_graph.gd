@@ -80,6 +80,14 @@ func create_visuals_from_backend() -> void:
 		visual_con.set_graph(self)
 		
 		add_child(visual_con)
+		
+func update_visuals_from_backend() -> void:
+	for v in backend.GetVertices():
+		var visual: VisualGraphNode = visual_nodes[visual_nodes.find_custom(func(x): return x.id == v.Id)]
+		visual.position = Vector2(v.X, v.Y)
+	for e in backend.GetEdges():
+		var visual_con: Connection = visual_connections[visual_connections.find_custom(func(x): return x.a().id == e.From.Id and x.b().id == e.To.Id)]
+		visual_con.update_connection_position()
 
 func clear_all() -> void:
 	clear_backend()

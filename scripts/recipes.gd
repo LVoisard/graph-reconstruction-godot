@@ -57,11 +57,14 @@ func iterate_recipe() -> void:
 	update_gaph_visual.emit()
 		
 func complete_recipe() -> void:
+	var start = Time.get_ticks_msec()
 	var step = recipe_tree.get_next()
 	if step != null:
 		while step != null:
 			process_step(step)
 			step = recipe_tree.get_next()
+	
+	print("Generated in: ", Time.get_ticks_msec() - start)
 	recipe_complete.emit()
 	organise_graph.emit()
 	update_gaph_visual.emit()
