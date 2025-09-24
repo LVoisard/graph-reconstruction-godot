@@ -6,32 +6,30 @@ extends Node3D
 var player_prefab: PackedScene = preload("res://addons/basic_fps_player.tscn")
 
 func _ready() -> void:
-	var cs_class = load("res://scripts/TestCSharp.cs")
-	cs_class.Test()
 	var graph = await generator.generate_dungeon_graph("res://recipes/test.txt")
 
 	var room_positions = {}
-	for node in graph.nodes:
-		var room_pos = Vector3i(node.position.x / 2, 0, node.position.y / 2)
+	for node in graph.backend.GetVertices():
+		var room_pos = Vector3i(node.X / 2, 0, node.Y / 2)
 		room_positions[node] = room_pos
 	
-	for con in graph.connections:
-		if con.connection_type == Connection.ConnectionType.Relational: continue
-		var grid_path_nodes =thicken_line_voxels(bresenham_line_3d(room_positions[con.a()], room_positions[con.b()]), 3)
+	for con in graph.backend.GetEdges():
+		if con.Type == 1: continue
+		var grid_path_nodes =thicken_line_voxels(bresenham_line_3d(room_positions[con.From], room_positions[con.To]), 3)
 		for pos in grid_path_nodes:
 			grid_map.set_cell_item(pos, grid_map.mesh_library.find_item_by_name("floor-small-square"))
 		#for x in max(1, ab.x):
 		#	for z in max(1, ab.z):
 		#		grid_map.set_cell_item(room_positions[con.a()] + Vector3i(x, 0, z), grid_map.mesh_library.find_item_by_name("floor-square"))	
 
-	for node in graph.nodes:
+	for node in graph.backend.GetVertices():
 		for i in range(-10, 10):
 			for j in range(-10, 10):
 				grid_map.set_cell_item(room_positions[node] + Vector3i(i, 0, j), grid_map.mesh_library.find_item_by_name("floor-square"))
 				
 	var player = player_prefab.instantiate()
 	add_child(player)
-	player.position = room_positions[graph.get_entrance_node()] + Vector3i(0,5,0)
+	player.position = room_positions[graph.backend.GetEntrance()] + Vector3i(0,5,0)
 
 func graph_has_edge_overlap(graph: VisualGraph) -> bool:
 	var used_voxels := {}

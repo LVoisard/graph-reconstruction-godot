@@ -7,7 +7,6 @@
 
 [node name="Basic FPS Player" type="CharacterBody3D"]
 script = ExtResource("1_8mk8t")
-CAPTURE_ON_START = true
 SPEED = 25.0
 IN_AIR_SPEED = 20.0
 

@@ -1,0 +1,7 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dru15002hmxap"]
+
+[ext_resource type="Script" uid="uid://b3k6d0fndt7ua" path="res://resources/context_actions/connection/ca_connection_delete.gd" id="1_q4u36"]
+
+[resource]
+script = ExtResource("1_q4u36")
+metadata/_custom_type_script = "uid://dtuax8xhdqj5q"

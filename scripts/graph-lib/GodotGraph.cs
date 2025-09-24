@@ -46,6 +46,11 @@ namespace graph_rewriting_test.scripts.graph_lib
             return graph.Vertices.Find(x => x.Id == id);
         }
 
+        public Vertex[] GetVertexNeighbours(int id)
+        {
+            return graph.Edges.Where(x => x.From.Id == id || x.To.Id == id).Select(x => x.From.Id == id ? x.To : x.From).ToArray();
+        }
+
         public Vertex[] GetVertices()
         {
             return graph.Vertices.ToArray();
@@ -61,6 +66,15 @@ namespace graph_rewriting_test.scripts.graph_lib
             return graph.Edges.ToArray();
         }
 
+        public Vertex GetEntrance()
+        {
+            return graph.Vertices.First(x => x.Type == Vertex.VertexType.Entrance);
+        }
+        public Vertex GetGoal()
+        {
+            return graph.Vertices.First(x => x.Type == Vertex.VertexType.Goal);
+        }
+
         public void RemoveVertexEdges(int id)
         {
             graph.Edges.RemoveAll(x => x.From.Id == id || x.To.Id == id);
@@ -72,6 +86,12 @@ namespace graph_rewriting_test.scripts.graph_lib
             graph.Vertices.Remove(graph.Vertices.Find(x => x.Id == id));
             idPool.Add(id);
             idPool.Sort();
+        }
+
+        public void RemoveEdge(int from, int to)
+        {
+            var e = graph.Edges.Find(x => x.From.Id == from && x.To.Id == to);
+            graph.Edges.Remove(e);
         }
 
         public void Clear()
@@ -201,6 +221,41 @@ namespace graph_rewriting_test.scripts.graph_lib
 
         }
 
+        void SnapToGrid(int gridSize)
+        {
+            foreach (var v in graph.Vertices)
+            {
+                int newX = (int)Math.Round((double)v.X / gridSize) * gridSize;
+                int newY = (int)Math.Round((double)v.Y / gridSize) * gridSize;
+
+                v.SetPosition(newX, newY);
+            }
+        }
+
+        void ResolveCollisions(int gridSize)
+        {
+            var occupied = new HashSet<(int, int)>();
+            foreach (var v in graph.Vertices)
+            {
+                int gx = v.X / gridSize;
+                int gy = v.Y / gridSize;
+                var pos = (gx, gy);
+
+                // If occupied, spiral out until we find a free cell
+                int radius = 1;
+                while (occupied.Contains(pos))
+                {
+                    gx += radius;
+                    gy += radius;
+                    pos = (gx, gy);
+                    radius++;
+                }
+
+                occupied.Add(pos);
+                v.SetPosition(gx * gridSize, gy * gridSize);
+            }
+        }
+
         public bool IsTraversable()
         {
             Vertex entrance, goal;
@@ -234,6 +289,17 @@ namespace graph_rewriting_test.scripts.graph_lib
 
         public bool HasOverlappingDirectionalEdges()
         {
+
+            foreach (var vert in graph.Vertices)
+            {
+                foreach (var other in graph.Vertices)
+                {
+                    if (vert == other) continue;
+                    if (vert.X == other.X && vert.Y == vert.Y) return true;
+                }
+
+            }
+
             // Compare only directional edges
             var directionalEdges = graph.Edges
                 .Where(e => e.Type == Edge.EdgeType.Directional)
@@ -254,7 +320,7 @@ namespace graph_rewriting_test.scripts.graph_lib
                     adir = b - a;
                     cdir = d - c;
 
-                    Variant v = Geometry2D.SegmentIntersectsSegment(a + adir * 0.1f, b - adir * 0.1f, c + cdir * 0.1f, d - cdir * 0.1f);
+                    Variant v = Geometry2D.SegmentIntersectsSegment(a + adir * 0.01f, b - adir * 0.01f, c + cdir * 0.01f, d - cdir * 0.01f);
                     if (v.VariantType != Variant.Type.Nil)
                     {
                         GD.Print($"Edge {edge} and {other} intersect");
@@ -267,38 +333,175 @@ namespace graph_rewriting_test.scripts.graph_lib
             return false;
         }
 
-        public void ArrangeGrid(int spacing = 100)
+
+        public void ArrangeGrid(int spacing, int offset)
         {
-            int cols = (int)Math.Ceiling(Math.Sqrt(graph.Vertices.Count));
-            int i = 0;
-            Vertex entrance;
-            if ((entrance = graph.Vertices.Find(x => x.Type == Vertex.VertexType.Entrance)) == null) return;
-            Queue<Vertex> toExplore = new();
-            HashSet<Vertex> visited = new();
-            toExplore.Enqueue(entrance);
-            visited.Add(entrance);
-            while (toExplore.Count > 0)
+            Dictionary<Vertex, (int x, int y)> positions = new();
+            HashSet<(int, int)> occupied = new();
+
+            var start = GetEntrance();
+            Queue<Vertex> q = new();
+            positions[start] = (0, 0);
+            occupied.Add((0, 0));
+            q.Enqueue(start);
+
+            while (q.Count > 0)
             {
-                Vertex current = toExplore.Dequeue();
+                var current = q.Dequeue();
+                var (cx, cy) = positions[current];
 
+                var neighbors = graph.Edges
+                    .Where(e => e.Type == Edge.EdgeType.Directional && (e.From == current || e.To == current))
+                    .Select(e => e.From == current ? e.To : e.From);
 
-                // add lock check
-
-                var connected = graph.Edges.Where(x => x.From == current && x.Type == Edge.EdgeType.Directional).Select(x => x.To);
-                foreach (var vert in connected)
+                foreach (var n in neighbors)
                 {
-                    if (!visited.Contains(vert))
+                    if (!positions.ContainsKey(n))
                     {
-                        visited.Add(current);
-                        toExplore.Enqueue(vert);
+                        // choose an available grid direction
+                        (int dx, int dy)[] dirs = { (1, 0), (-1, 0), (0, 1), (0, -1) };
+                        foreach (var (dx, dy) in dirs)
+                        {
+                            var pos = (cx + dx, cy + dy);
+                            if (!occupied.Contains(pos))
+                            {
+                                positions[n] = pos;
+                                occupied.Add(pos);
+                                q.Enqueue(n);
+                                break;
+                            }
+                        }
                     }
                 }
-                int row = i / cols;
-                int col = i % cols;
-                current.SetPosition(col * spacing, row * spacing);
-                i++;
+            }
+
+            foreach (Vertex v in graph.Vertices)
+            {
+                v.SetPosition(positions[v].x * spacing + 400, positions[v].y * spacing + offset);
             }
         }
+
+        public void ApplyLayeredLayout(bool topToBottom = true, int spacingX = 100, int spacingY = 100)
+        {
+            // Find the entrance
+            Vertex entrance = graph.Vertices.FirstOrDefault(v => v.Type == Vertex.VertexType.Entrance);
+            if (entrance == null) return;
+
+            // Step 1: BFS to compute levels
+            Dictionary<Vertex, int> levels = new();
+            Queue<Vertex> queue = new();
+            queue.Enqueue(entrance);
+            levels[entrance] = 0;
+
+            while (queue.Count > 0)
+            {
+                Vertex current = queue.Dequeue();
+                int currentLevel = levels[current];
+
+                // Traverse both directions (so we don’t miss parents/children)
+                var neighbors = graph.Edges
+                    .Where(e => (e.From == current || e.To == current) && e.Type == Edge.EdgeType.Directional)
+                    .Select(e => e.From == current ? e.To : e.From);
+
+                foreach (var n in neighbors)
+                {
+                    if (!levels.ContainsKey(n))
+                    {
+                        levels[n] = currentLevel + 1;
+                        queue.Enqueue(n);
+                    }
+                }
+            }
+
+            // Step 2: Group nodes by level
+            var grouped = levels.GroupBy(kvp => kvp.Value)
+                                .OrderBy(g => g.Key)
+                                .ToDictionary(g => g.Key, g => g.Select(x => x.Key).ToList());
+
+            // Step 3: Assign positions
+            foreach (var (level, nodes) in grouped)
+            {
+                for (int i = 0; i < nodes.Count; i++)
+                {
+                    if (topToBottom)
+                    {
+                        nodes[i].SetPosition(i * spacingX, level * spacingY);
+                        //nodes[i].Y = level * spacingY;
+                    }
+                    else
+                    {
+                        nodes[i].SetPosition(level * spacingX, i * spacingY);
+                    }
+                }
+            }
+        }
+
+        public void PlaceOnGrid(int width, int height)
+        {
+            var occupied = new bool[width, height];
+            var queue = new Queue<(Vertex v, int x, int y)>();
+
+            // Entrance at (0,0)
+            var entrance = GetEntrance();
+            entrance.SetPosition(0, 0);
+            queue.Enqueue((entrance, 0, 0));
+            occupied[0, 0] = true;
+
+            while (queue.Count > 0)
+            {
+                var (current, cx, cy) = queue.Dequeue();
+
+                var neighbors = graph.Edges
+                    .Where(e => e.From == current)
+                    .Select(e => e.To);
+
+                int dirIndex = 0;
+                foreach (var n in neighbors)
+                {
+                    // if (n.X != -1) continue; // already placed
+
+                    // Try directions in order: right, down, left, up
+                    var dirs = new (int dx, int dy)[] { (1, 0), (0, 1), (-1, 0), (0, -1) };
+                    bool placed = false;
+
+                    for (int i = 0; i < dirs.Length; i++)
+                    {
+                        int nx = cx + dirs[(dirIndex + i) % 4].dx;
+                        int ny = cy + dirs[(dirIndex + i) % 4].dy;
+                        if (nx >= 0 && nx < width && ny >= 0 && ny < height && !occupied[nx, ny])
+                        {
+                            n.SetPosition(nx * 100, ny * 100);
+                            occupied[nx, ny] = true;
+                            queue.Enqueue((n, nx, ny));
+                            placed = true;
+                            break;
+                        }
+                    }
+
+                    if (!placed)
+                    {
+                        // fallback: expand search radius
+                        for (int r = 2; !placed && r < Math.Max(width, height); r++)
+                        {
+                            for (int dx = -r; dx <= r; dx++)
+                                for (int dy = -r; dy <= r; dy++)
+                                {
+                                    int nx = cx + dx, ny = cy + dy;
+                                    if (nx >= 0 && nx < width && ny >= 0 && ny < height && !occupied[nx, ny])
+                                    {
+                                        n.SetPosition(nx * 100, ny * 100);
+                                        occupied[nx, ny] = true;
+                                        queue.Enqueue((n, nx, ny));
+                                        placed = true;
+                                        break;
+                                    }
+                                }
+                        }
+                    }
+                }
+            }
+        }
+
 
         public void ArrangeBFS(bool horizontalLayout, int spacingPrimary, int spacingSecondary, int primaryOffset, int secondaryOffset)
         {
@@ -317,8 +520,8 @@ namespace graph_rewriting_test.scripts.graph_lib
                 int currentLevel = levels[current];
 
                 var neighbors = graph.Edges
-                    .Where(e => e.From == current && e.Type == Edge.EdgeType.Directional)
-                    .Select(e => e.To);
+                    .Where(e => (e.From == current || e.To == current) && e.Type == Edge.EdgeType.Directional)
+                    .Select(e => e.From == current ? e.To : e.From);
 
                 foreach (var neighbor in neighbors)
                 {
@@ -517,19 +720,30 @@ namespace graph_rewriting_test.scripts.graph_lib
                 {
                     for (int j = i + 1; j < graph.Vertices.Count; j++)
                     {
-                        float dx = graph.Vertices[i].X - graph.Vertices[j].X;
-                        float dy = graph.Vertices[i].Y - graph.Vertices[j].Y;
-                        float distance = Math.Max(1e-4f, (float)Math.Sqrt(dx * dx + dy * dy));
+                        Vertex nodeA = graph.Vertices[i];
+                        Vertex nodeB = graph.Vertices[j];
+                        if (nodeA == nodeB) continue;
 
-                        float force = RepulsiveForce(distance, k);
+                        var dx = nodeB.X - nodeA.X;
+                        var dy = nodeB.Y - nodeA.Y;
+                        var distSq = dx * dx + dy * dy;
+                        var minDist = k + k;
 
-                        float fx = (dx / distance) * force;
-                        float fy = (dy / distance) * force;
+                        if (distSq < minDist * minDist)
+                        {
+                            var dist = Math.Sqrt(distSq);
+                            if (dist == 0) dist = 0.01; // avoid div by zero
 
-                        dispX[i] += fx;
-                        dispY[i] += fy;
-                        dispX[j] -= fx;
-                        dispY[j] -= fy;
+                            float overlap = 0.5f * (float)(minDist - dist);
+                            float nx = dx / (float)dist;
+                            float ny = dy / (float)dist;
+
+                            // push both nodes away from each other
+                            dispX[i] -= nx * overlap;
+                            dispY[i] -= ny * overlap;
+                            dispX[j] += nx * overlap;
+                            dispY[j] += ny * overlap;
+                        }
                     }
                 }
 
@@ -582,7 +796,7 @@ namespace graph_rewriting_test.scripts.graph_lib
 
         public string GetGraphString()
         {
-            string s = "nodes\n";
+            string s = "vertices\n";
             foreach (Vertex node in graph.Vertices)
             {
                 s += node.ToString() + "\n";

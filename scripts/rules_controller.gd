@@ -27,9 +27,9 @@ func save_rule() -> void:
 	print(file_dialog.current_file)
 	var f = FileAccess.open(file_dialog.current_path, FileAccess.WRITE)
 	var s = "input\n"
-	s += input_graph.get_graph_string()
+	s += input_graph.backend.GetGraphString()
 	s += "output\n"
-	s += output_graph.get_graph_string()
+	s += output_graph.backend.GetGraphString()
 	f.store_string(s)
 	f.flush()
 	f.close()
@@ -42,7 +42,8 @@ func update_file_tree() -> void:
 func load_rule(path: String) -> void:
 	print("loading rule: %s" % path)
 	clear()
-	var graphs = GodotGraph.ParseRuleFromString(FileAccess.get_file_as_string(path))
+	var strings = FileAccess.get_file_as_string(path)
+	var graphs = GodotGraph.ParseRuleFromString(strings)
 	input_graph.backend = graphs[0]
 	input_graph.create_visuals_from_backend()
 	output_graph.backend = graphs[1]

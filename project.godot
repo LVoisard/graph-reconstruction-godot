@@ -30,7 +30,7 @@ project/assembly_name="graph_rewriting_test"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/Basic FPS Player/plugin.cfg")
+enabled=PackedStringArray("res://addons/Basic FPS Player/plugin.cfg", "res://addons/wfc/plugin.cfg")
 
 [input]
 

@@ -48,6 +48,11 @@ func remove_node(node: VisualGraphNode) -> void:
 	visual_nodes.erase(node)
 	node.queue_free()
 	
+func remove_connection(con: Connection) -> void:
+	backend.RemoveEdge(con.a().id, con.b().id)
+	visual_connections.erase(con)
+	con.queue_free()
+	
 func change_node_type(node: VisualGraphNode, type: VisualGraphNode.NodeType) -> void:
 	backend.GetVertex(node.id).SetType(type)
 	node.set_type(type)
@@ -95,6 +100,17 @@ func clear_all() -> void:
 	
 func clear_backend() -> void:
 	backend.Clear()	
+	
+func copy_graph(input: VisualGraph) -> void:
+	var mapping: Dictionary[VisualGraphNode, VisualGraphNode] = {}
+	for n in input.visual_nodes:
+		mapping[n] = create_new_node() as VisualGraphNode
+		change_node_type(mapping[n],n.type)
+		mapping[n].position = n.position 
+		update_node_position(mapping[n])
+	for c in input.visual_connections:
+		var con = create_new_connection(mapping[c.a()], mapping[c.b()])
+		change_connection_type(con, c.connection_type)
 	
 func clear_visuals() -> void:
 	for con in visual_connections:

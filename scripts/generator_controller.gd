@@ -16,6 +16,7 @@ func _ready() -> void:
 	recipes.recipe_complete.connect(validate_graph)
 	recipes.update_gaph_visual.connect(update_graph_visual)
 	refresh_rules()
+	clear()
 	#Dungeon.Graph()
 	
 	#clear()
@@ -92,7 +93,12 @@ func apply_rule_lsystem(file: String) -> void:
 func validate_graph() -> bool:
 	#generator_graph.backend.ArrangeCustomBFS(true, 150, 200, 0, 500)
 	#for i in range(0, 200):
-	generator_graph.backend.ArrangeForceDirected(10000,10000, 1000, 75, 1000)
+	generator_graph.backend.ArrangeForceDirected(600,600, 1000, 100, 100)
+	#var side = ceil(sqrt(generator_graph.backend.GetVertices().size() * 2)) as int
+	#generator_graph.backend.ArrangeGrid(100, 400)
+	#generator_graph.backend.PlaceOnGrid(7, 7)
+	#generator_graph.backend.ArrangeCustomBFS(true, 100, 100, 100, 500)
+	#generator_graph.backend.SnapToGrid(100);
 	generator_graph.update_visuals_from_backend()
 	var valid = generator_graph.backend.IsTraversable() && !generator_graph.backend.HasOverlappingDirectionalEdges()
 	print("Valid graph ?", valid)
@@ -110,7 +116,7 @@ func organise_graph() -> void:
 	
 var nb_iter = 0
 func force_update() -> void:
-	generator_graph.backend.ArrangeForceDirected(10000,10000, 10, 75, 100)
+	generator_graph.backend.ArrangeForceDirected(600,600, 1000, 75, 100)
 	nb_iter += 10
 	print(nb_iter)
 	generator_graph.update_visuals_from_backend()
@@ -119,6 +125,9 @@ func generate_dungeon_graph(recipe_path: String) -> VisualGraph:
 	clear()
 	recipes.load_recipe(recipe_path)
 	recipes.complete_recipe()
+	while !validate_graph():
+		clear()
+		restart_validation()
 	return generator_graph
 		
 	

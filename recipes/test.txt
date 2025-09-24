@@ -1,6 +1,10 @@
-add_task,res://rules/add_task.txt,16,20
-add_lock,res://rules/add_lock.txt,2,4
-duplicate_key,res://rules/duplicate_key.txt,0,2
-pull_task_to_hide_key,res://rules/pull_task_to_hide_key.txt,6,11
-move_lock_towards_entrance,res://rules/move_lock_towards_entrance.txt,3,5
-add_shorcut_to_lock,res://rules/add_shorcut_to_lock.txt,-1,-1
+add_task,add_task.txt,16,20
+add_lock,add_lock.txt,2,4
+duplicate_key,duplicate_key.txt,0,2
+pull_task_to_hide_key,pull_task_to_hide_key.txt,6,11
+move_lock_towards_entrance,move_lock_towards_entrance.txt,3,5
+add_shorcut_to_lock,add_shorcut_to_lock.txt,-1,-1
+move_extra_node_1,move_extra_node_1.txt,5,5
+move_extra_node_2,move_extra_node_2.txt,5,5
+move_extra_node_3,move_extra_node_3.txt,5,5
+move_extra_node_4,move_extra_node_4.txt,5,5

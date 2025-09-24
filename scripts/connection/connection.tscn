@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://mgvb8detqlu7" path="res://components/context_menu.tscn" id="6_bpyl6"]
 [ext_resource type="Script" uid="uid://dg1p4omlqndtb" path="res://resources/context_actions/context_action.gd" id="7_a7eyn"]
 [ext_resource type="Resource" uid="uid://ddm8blxt0ulwn" path="res://resources/context_actions/connection/ca_connection_change_type.tres" id="8_r0l6d"]
-[ext_resource type="Resource" uid="uid://bysmucllofybw" path="res://resources/context_actions/ca_general_delete.tres" id="9_fpr8u"]
+[ext_resource type="Resource" uid="uid://dru15002hmxap" path="res://resources/context_actions/connection/ca_connection_delete.tres" id="10_nxwa8"]
 
 [node name="Connection" type="Control"]
 custom_minimum_size = Vector2(64, 10)
@@ -69,4 +69,4 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 offset_bottom = 30.0
 context = "Connection"
-context_actions = Array[ExtResource("7_a7eyn")]([ExtResource("8_r0l6d"), ExtResource("9_fpr8u")])
+context_actions = Array[ExtResource("7_a7eyn")]([ExtResource("8_r0l6d"), ExtResource("10_nxwa8")])

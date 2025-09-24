@@ -1,0 +1,92 @@
+[gd_scene load_steps=23 format=3 uid="uid://d3xb7mscvybb0"]
+
+[ext_resource type="PackedScene" uid="uid://cgafi02213q0p" path="res://assets/models/dungeon/GLB format/corridor-corner.glb" id="1_lxbxt"]
+[ext_resource type="PackedScene" uid="uid://bf77ysxa2pt1v" path="res://assets/models/dungeon/GLB format/corridor-end.glb" id="2_tg88x"]
+[ext_resource type="PackedScene" uid="uid://b7rpt6oo74qik" path="res://assets/models/dungeon/GLB format/corridor-intersection.glb" id="3_2lkcj"]
+[ext_resource type="PackedScene" uid="uid://cbm2hpda8uhyr" path="res://assets/models/dungeon/GLB format/corridor-junction.glb" id="4_0dmo3"]
+[ext_resource type="PackedScene" uid="uid://sb8l3ne1hrk1" path="res://assets/models/dungeon/GLB format/corridor.glb" id="5_fbylj"]
+[ext_resource type="PackedScene" uid="uid://cvveg51orw8u3" path="res://assets/models/dungeon/GLB format/gate-door-window.glb" id="6_ijbfd"]
+[ext_resource type="PackedScene" uid="uid://crvtvfc3aw0vs" path="res://assets/models/dungeon/GLB format/gate-door.glb" id="7_7wggv"]
+[ext_resource type="PackedScene" uid="uid://dqyhuunljkujc" path="res://assets/models/dungeon/GLB format/gate.glb" id="8_qfd5e"]
+[ext_resource type="PackedScene" uid="uid://b4lkrq3x3wlqd" path="res://assets/models/dungeon/GLB format/stairs-wide.glb" id="9_72yyr"]
+[ext_resource type="PackedScene" uid="uid://bga0aggfh4ba7" path="res://assets/models/dungeon/GLB format/stairs.glb" id="10_vpmtl"]
+[ext_resource type="PackedScene" uid="uid://7cewx7gsi2f2" path="res://assets/models/dungeon/GLB format/template-corner.glb" id="11_8v2i8"]
+[ext_resource type="PackedScene" uid="uid://dn8jw7wm7n5an" path="res://assets/models/dungeon/GLB format/template-detail.glb" id="12_uw6ak"]
+[ext_resource type="PackedScene" uid="uid://bausldvajk50o" path="res://assets/models/dungeon/GLB format/template-floor-big.glb" id="13_hb4vc"]
+[ext_resource type="PackedScene" uid="uid://bfjytaofbd6u4" path="res://assets/models/dungeon/GLB format/template-floor-detail-a.glb" id="14_5g1er"]
+[ext_resource type="PackedScene" uid="uid://bqmlf72yx02gv" path="res://assets/models/dungeon/GLB format/template-floor-detail.glb" id="15_87qfb"]
+[ext_resource type="PackedScene" uid="uid://cgir3uudgeqng" path="res://assets/models/dungeon/GLB format/template-floor.glb" id="16_vuqoj"]
+[ext_resource type="PackedScene" uid="uid://yxxi2ficn84p" path="res://assets/models/dungeon/GLB format/template-wall-corner.glb" id="17_oumav"]
+[ext_resource type="PackedScene" uid="uid://bp2ownrb35a6r" path="res://assets/models/dungeon/GLB format/template-wall-detail-a.glb" id="18_5nj7k"]
+[ext_resource type="PackedScene" uid="uid://dh6in0k7iarf2" path="res://assets/models/dungeon/GLB format/template-wall-half.glb" id="19_ltuwu"]
+[ext_resource type="PackedScene" uid="uid://b1ditf3j788pe" path="res://assets/models/dungeon/GLB format/template-wall-stairs.glb" id="20_sbfdl"]
+[ext_resource type="PackedScene" uid="uid://d18yvja4sgd2m" path="res://assets/models/dungeon/GLB format/template-wall-top.glb" id="21_1sl4n"]
+[ext_resource type="PackedScene" uid="uid://d4ms21g5rtrfb" path="res://assets/models/dungeon/GLB format/template-wall.glb" id="22_rkibn"]
+
+[node name="DungeonMeshLib" type="Node3D"]
+
+[node name="corridor-corner2" parent="." instance=ExtResource("1_lxbxt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.894968, 0, -31.760891)
+
+[node name="corridor-end2" parent="." instance=ExtResource("2_tg88x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+
+[node name="corridor-intersection2" parent="." instance=ExtResource("3_2lkcj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+
+[node name="corridor-junction2" parent="." instance=ExtResource("4_0dmo3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.8918133, 0, -31.752098)
+
+[node name="corridor2" parent="." instance=ExtResource("5_fbylj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 19.584167)
+
+[node name="gate-door-window2" parent="." instance=ExtResource("6_ijbfd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 23.249937)
+
+[node name="gate-door2" parent="." instance=ExtResource("7_7wggv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 25.574202)
+
+[node name="gate2" parent="." instance=ExtResource("8_qfd5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 28.232817)
+
+[node name="stairs-wide2" parent="." instance=ExtResource("9_72yyr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.0321045, 0, 1.1541748)
+
+[node name="stairs2" parent="." instance=ExtResource("10_vpmtl")]
+transform = Transform3D(0.9998708, 0, 0.016073719, 0, 1, 0, -0.016073719, 0, 0.9998708, 12.443359, 0, 34.238617)
+
+[node name="template-corner2" parent="." instance=ExtResource("11_8v2i8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.7273254, 0, -35.294216)
+
+[node name="template-detail2" parent="." instance=ExtResource("12_uw6ak")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.895386, 0, -26.386658)
+
+[node name="template-floor-big2" parent="." instance=ExtResource("13_hb4vc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.81482, 6.715454, -38.912262)
+
+[node name="template-floor-detail-a2" parent="." instance=ExtResource("14_5g1er")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.782104, 3.6082764, -29.619598)
+
+[node name="template-floor-detail2" parent="." instance=ExtResource("15_87qfb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.202759, 0, -39.50003)
+
+[node name="template-floor2" parent="." instance=ExtResource("16_vuqoj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.011219, 0.23649406, -39.77809)
+
+[node name="template-wall-corner2" parent="." instance=ExtResource("17_oumav")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 39.882202, 0, -26.561188)
+
+[node name="template-wall-detail-a2" parent="." instance=ExtResource("18_5nj7k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.914185, 0, -37.539978)
+
+[node name="template-wall-half2" parent="." instance=ExtResource("19_ltuwu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.989248, 0, -13.16127)
+
+[node name="template-wall-stairs2" parent="." instance=ExtResource("20_sbfdl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.6676025, 0, -8.178223)
+
+[node name="template-wall-top2" parent="." instance=ExtResource("21_1sl4n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.293125, 0, -14.522198)
+
+[node name="template-wall2" parent="." instance=ExtResource("22_rkibn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.795059, 0, -18.903206)
