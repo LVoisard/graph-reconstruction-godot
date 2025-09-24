@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://2366d4on4cdd"]
+
+[ext_resource type="Script" uid="uid://btxradebxf0j2" path="res://scripts/graph/visual_graph.gd" id="1_tpkau"]
+[ext_resource type="PackedScene" uid="uid://mgvb8detqlu7" path="res://components/context_menu.tscn" id="2_eolry"]
+[ext_resource type="Script" uid="uid://dg1p4omlqndtb" path="res://resources/context_actions/context_action.gd" id="3_7gfm3"]
+[ext_resource type="Resource" uid="uid://b021esmx6sf71" path="res://resources/context_actions/graph/ca_graph_create_new.tres" id="4_wyqm6"]
+
+[node name="Graph" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tpkau")
+
+[node name="context_menu" parent="." instance=ExtResource("2_eolry")]
+layout_mode = 1
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 61.0
+offset_bottom = 30.0
+context = "Graph"
+context_actions = Array[ExtResource("3_7gfm3")]([ExtResource("4_wyqm6")])

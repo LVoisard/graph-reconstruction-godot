@@ -1,10 +1,8 @@
-extends ContextAction
-var prefab: PackedScene = null
-func perform_context_action(node: Node) -> void:
+extends GraphContextAction
+
+func perform_graph_context_action(graph: VisualGraph) -> void:
 	print("creating new node")
-	if prefab == null:
-		prefab = load("res://scripts/graph_node/rule/rule_graph_node.tscn")
-		
-	var inst = prefab.instantiate() as Control
-	inst.position = node.get_global_mouse_position() - inst.get_rect().size / 2
-	node.add_child(inst)
+	
+	var visual = graph.create_new_node()
+	visual.position = graph.get_global_mouse_position() - visual.get_rect().size / 2
+	

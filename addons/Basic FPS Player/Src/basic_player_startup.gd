@@ -19,7 +19,7 @@ func _enter_tree():
 ###########################
 
 @export_category("Mouse Capture")
-@export var CAPTURE_ON_START := false
+@export var CAPTURE_ON_START := true
 
 @export_category("Movement")
 @export_subgroup("Settings")

@@ -1,0 +1,102 @@
+[gd_scene load_steps=10 format=3 uid="uid://cpa6up28eiwqp"]
+
+[ext_resource type="Script" uid="uid://6p6u06w31ddy" path="res://wfc/Assets/Scripts/WFC2DGridMap.cs" id="2_7xphf"]
+[ext_resource type="MeshLibrary" uid="uid://dabsi31issrxt" path="res://assets/mesh_libs/mini_dungeon_mesh_lib.tres" id="2_cckh0"]
+[ext_resource type="Script" uid="uid://ewftmmv63sg0" path="res://wfc/ProgressBarScript.cs" id="3_jdul8"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5twe2"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_00lx8"]
+sky_material = SubResource("ProceduralSkyMaterial_5twe2")
+
+[sub_resource type="Environment" id="Environment_e3ybu"]
+background_mode = 2
+sky = SubResource("Sky_00lx8")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yulyx"]
+bg_color = Color(0, 0.580392, 0.894118, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mhjrs"]
+bg_color = Color(0, 0.65098, 0.890196, 1)
+
+[sub_resource type="Theme" id="Theme_1xw26"]
+/colors/a = Color(1, 1, 1, 1)
+/constants/a = 0
+/styles/color = SubResource("StyleBoxFlat_yulyx")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_mhjrs")
+
+[node name="ExampleGridMap" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_e3ybu")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Camera2D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.559395, 0.828901, 0, -0.828901, 0.559395, 13.616, 13.054, 31.758)
+
+[node name="WFC Generator" type="Node" parent="." node_paths=PackedStringArray("target", "sample", "progressBar")]
+script = ExtResource("2_7xphf")
+target = NodePath("Target")
+sample = NodePath("Sample")
+progressBar = NodePath("../UI/ProgressBar")
+dimensions = Vector2i(30, 30)
+correctionRadius = 2
+correctionRadiusIncrementEvery = 8
+chooseByProbability = true
+
+[node name="Target" type="GridMap" parent="WFC Generator"]
+mesh_library = ExtResource("2_cckh0")
+cell_size = Vector3(1, 1, 1)
+cell_center_y = false
+metadata/_editor_floor_ = Vector3(0, 0, 0)
+
+[node name="Sample" type="GridMap" parent="WFC Generator"]
+mesh_library = ExtResource("2_cckh0")
+cell_size = Vector3(1, 1, 1)
+cell_center_y = false
+data = {
+"cells": PackedInt32Array(13, 65529, 73, 13, 65528, 73, 13, 65527, 73, 13, 65526, 73, 13, 65525, 73, 13, 65524, 73, 13, 65523, 73, 13, 65522, 73, 12, 65522, 73, 12, 65523, 73, 10, 65529, 73, 11, 65529, 73, 12, 65529, 73, 12, 65528, 87, 12, 65527, 73, 12, 65524, 73, 12, 65525, 73, 12, 65526, 73, 4, 65533, 1441801, 5, 65533, 1441801, 6, 65533, 1441801, 7, 65533, 1441801, 8, 65533, 1441801, 8, 65532, 1441800, 8, 65531, 1441801, 8, 65530, 1441801, 7, 65530, 1441801, 6, 65530, 1441801, 5, 65530, 1441800, 4, 65530, 1441801, 4, 65531, 1441801, 4, 65532, 1441801, 5, 65532, 1441800, 6, 65532, 1441801, 7, 65532, 1441801, 7, 65531, 1441801, 5, 65531, 1441801, 6, 65531, 1441800, 4, 65529, 1441801, 5, 65529, 1441801, 6, 65529, 1441800, 7, 65529, 1441801, 8, 65529, 1441801, 9, 65533, 1441807, 9, 65532, 1441807, 9, 65531, 1441807, 9, 65530, 1441807, 9, 65529, 1441807, 4, 65528, 15, 5, 65528, 15, 6, 65528, 15, 7, 65528, 15, 8, 65528, 15, 9, 65528, 1441810, 3, 65529, 1048591, 3, 65530, 1048591, 3, 65531, 1048591, 3, 65532, 1048591, 3, 65533, 1048591, 3, 65534, 1441810, 4, 65534, 655375, 5, 65534, 655375, 6, 65534, 655375, 7, 65534, 655375, 8, 65534, 655375, 9, 65534, 1441810, 3, 65528, 655378, 7, 3, 655375, 6, 3, 1048594, 6, 4, 1441807, 7, 5, 15, 8, 4, 1048591, 7, 4, 1048583, 6, 5, 1048594, 8, 5, 1048594, 8, 3, 1048594, 2, 12, 1048594, 2, 8, 1048594, 3, 10, 1048583, 3, 11, 1048583, 4, 11, 1048583, 4, 10, 1048583, 3, 9, 1048583, 4, 9, 1048583, 5, 9, 1048583, 5, 10, 1048583, 5, 11, 1048583, 3, 8, 655375, 4, 8, 655375, 5, 8, 655375, 2, 9, 1441807, 2, 10, 1441807, 2, 11, 1441807, 3, 12, 15, 4, 12, 15, 5, 12, 15, 6, 11, 1048591, 6, 10, 1048591, 6, 9, 1048591, 6, 8, 1048594, 6, 12, 1048594, 5, 65523, 1048585, 6, 65523, 1048585, 7, 65523, 1048585, 8, 65523, 1048585, 8, 65522, 1048585, 8, 65521, 1048585, 8, 65520, 1048585, 7, 65520, 1048585, 6, 65520, 1048585, 5, 65520, 1048585, 6, 65521, 1048585, 5, 65521, 1048585, 6, 65522, 1048585, 7, 65522, 1048585, 5, 65522, 1048585, 6, 65519, 1048585, 7, 65519, 1048585, 7, 65518, 1048585, 6, 65518, 1048585, 6, 65517, 1048585, 7, 65517, 1048585, 8, 65517, 1048585, 8, 65516, 1048585, 8, 65515, 1048585, 7, 65515, 1048585, 6, 65515, 1048585, 5, 65515, 1048585, 5, 65516, 1048585, 5, 65517, 1048585, 6, 65516, 1048585, 7, 65516, 1048585, 5, 65514, 1048585, 6, 65514, 1048585, 7, 65514, 1048585, 8, 65514, 1048585, 8, 65519, 18, 8, 65518, 1048594, 5, 65519, 1441810, 5, 65518, 1441810, 9, 65520, 1441807, 9, 65521, 1441807, 9, 65522, 1441807, 9, 65523, 1441807, 4, 65520, 1048591, 5, 65524, 655375, 6, 65524, 655375, 7, 65524, 655375, 8, 65524, 655375, 4, 65517, 1048591, 4, 65516, 1048591, 4, 65515, 1048591, 4, 65514, 1048591, 5, 65513, 15, 6, 65513, 15, 7, 65513, 15, 8, 65513, 15, 9, 65514, 1441807, 9, 65515, 1441807, 9, 65516, 1441807, 9, 65517, 1441807, 9, 65518, 1048583, 9, 65519, 1048583, 4, 65519, 7, 4, 65518, 7, 7, 65521, 1048585)
+}
+metadata/_editor_floor_ = Vector3(0, 0, 0)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Button" type="Button" parent="UI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -139.0
+offset_right = 100.0
+offset_bottom = -79.0
+grow_horizontal = 2
+grow_vertical = 0
+pivot_offset = Vector2(100, 30)
+text = "Generate"
+
+[node name="ProgressBar" type="ProgressBar" parent="UI"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 37.0
+offset_top = -48.0
+offset_right = -37.0
+offset_bottom = -17.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = SubResource("Theme_1xw26")
+max_value = 1.0
+value = 0.1
+script = ExtResource("3_jdul8")
+
+[connection signal="pressed" from="UI/Button" to="WFC Generator" method="_on_button_pressed"]

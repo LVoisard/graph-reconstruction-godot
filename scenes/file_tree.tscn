@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bpgw7tlguw8n0"]
 
-[ext_resource type="Script" uid="uid://c7no7sdr70pi1" path="res://scenes/file_tree.gd" id="1_21j4d"]
+[ext_resource type="Script" uid="uid://c7no7sdr70pi1" path="res://scripts/file_tree.gd" id="1_21j4d"]
 
 [node name="Tree" type="Tree"]
 size_flags_vertical = 3

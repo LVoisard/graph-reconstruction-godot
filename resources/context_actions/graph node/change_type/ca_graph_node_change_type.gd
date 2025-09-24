@@ -1,8 +1,7 @@
-extends ContextAction
+extends GraphNodeContextAction
 
-@export var type: MyGraphNode.NodeType
+@export var type: VisualGraphNode.NodeType
 
-func perform_context_action(node: Node) -> void:
-	var g_node = node as MyGraphNode
-	g_node.set_type(type)
+func perform_graph_node_context_action(node: VisualGraphNode) -> void:
+	node.graph.change_node_type(node, type)
 	

@@ -1,4 +1,4 @@
-[gd_scene load_steps=153 format=4 uid="uid://dr8ph2xo8rpkq"]
+[gd_scene load_steps=153 format=4 uid="uid://v8vkjwb6tt6y"]
 
 [ext_resource type="PackedScene" uid="uid://b7kk0qph3k27e" path="res://assets/models/GLB format/animal-bison.glb" id="1_3hgb6"]
 [ext_resource type="PackedScene" uid="uid://bm0y741nrgig6" path="res://assets/models/GLB format/animal-dog.glb" id="2_7hbov"]
@@ -228,9 +228,10 @@ shadow_mesh = SubResource("ArrayMesh_kwm3f")
 points = PackedVector3Array(-0.5, 0, -0.5, -0.5, 0, 0.5, 0.5, 0, -0.5, 0.5, 0, 0.5)
 
 [node name="floor_mesh_lib" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7729368, 0, 1.2755013)
 
 [node name="animal-bison2" parent="." instance=ExtResource("1_3hgb6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2434754, 0, -1.8595647)
 
 [node name="animal-dog2" parent="." instance=ExtResource("2_7hbov")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
@@ -287,16 +288,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 
 [node name="door-sliding-double-wide2" parent="." instance=ExtResource("20_3p7hk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.213013, 0, -1.661229)
 
 [node name="door-sliding-double2" parent="." instance=ExtResource("21_mq1d1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 
 [node name="door-sliding2" parent="." instance=ExtResource("22_6c10g")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8058872, 0, 2.2155519)
 
 [node name="figurine-cube-detailed2" parent="." instance=ExtResource("23_vtrnc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1427917, 0, 1.1583166)
 
 [node name="figurine-cube2" parent="." instance=ExtResource("24_3cl56")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
@@ -344,7 +345,7 @@ shape = SubResource("ConvexPolygonShape3D_7hbov")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 
 [node name="floor-thick-corner-round2" parent="." instance=ExtResource("33_jydgb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.228878, 2.3841858e-07, -1.0067042)
 
 [node name="floor-thick-corner-rounded2" parent="." instance=ExtResource("34_nnmqc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
@@ -356,10 +357,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 
 [node name="hat-hard2" parent="." instance=ExtResource("37_7v1m4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.576265, 0, 2.367598)
 
 [node name="indicator-doorway2" parent="." instance=ExtResource("38_mnter")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.448006, 0, -0.82304037)
 
 [node name="indicator-round-a2" parent="." instance=ExtResource("39_p0rro")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
@@ -407,7 +408,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 
 [node name="indicator-square-f2" parent="." instance=ExtResource("54_77e5f")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5883665, 0, 2.7871652)
 
 [node name="ladder-color2" parent="." instance=ExtResource("55_6sper")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
@@ -437,7 +438,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 
 [node name="number-42" parent="." instance=ExtResource("64_dcmw7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35169947, -4.7683716e-07, 2.6354384)
 
 [node name="number-52" parent="." instance=ExtResource("65_fanbs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
@@ -449,7 +450,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 
 [node name="number-82" parent="." instance=ExtResource("68_gibnp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0424439, 0, 1.6031427)
 
 [node name="number-92" parent="." instance=ExtResource("69_gwxga")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
@@ -476,10 +477,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 
 [node name="number-double-72" parent="." instance=ExtResource("77_ct7kb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2660166, 2.3841858e-07, 3.0551982)
 
 [node name="number-double-82" parent="." instance=ExtResource("78_rthad")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.93246853, 0, 2.2827234)
 
 [node name="number-double-92" parent="." instance=ExtResource("79_cu60e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
@@ -503,7 +504,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 
 [node name="shape-cube-half2" parent="." instance=ExtResource("86_evnmp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5054917, 0, -2.1949782)
 
 [node name="shape-cube-rounded2" parent="." instance=ExtResource("87_tgdwc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
@@ -614,7 +615,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
 
 [node name="wall-diagonal2" parent="." instance=ExtResource("123_c1sm2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.292703, 0, -0.53739774)
 
 [node name="wall-doorway-garage2" parent="." instance=ExtResource("124_nhh5p")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.467975, 0, 0.544855)

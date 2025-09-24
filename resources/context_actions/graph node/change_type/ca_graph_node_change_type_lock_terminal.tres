@@ -1,8 +1,0 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://d3exc2usg52tu"]
-
-[ext_resource type="Script" uid="uid://bqbfav8i5hg15" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type.gd" id="1_xs0vt"]
-
-[resource]
-script = ExtResource("1_xs0vt")
-type = 5
-action_text = "Lock (Terminal)"

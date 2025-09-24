@@ -1,3 +1,4 @@
+class_name ContextMenu
 extends Control
 
 var mouse_over_parent: bool = false

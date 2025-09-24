@@ -1,4 +1,4 @@
-class_name RuleGraphNode extends MyGraphNode
+class_name RuleGraphNode extends VisualGraphNode
 
 var annotation: Annotation = Annotation.None
 

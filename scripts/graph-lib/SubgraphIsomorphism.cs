@@ -5,98 +5,128 @@ using System.Linq;
 
 namespace graph_rewriting_test.scripts.graph_lib
 {
-    public partial class SubgraphIsomorphism : Godot.Node
+    [GlobalClass]
+    public partial class SubgraphIsomorphism : GodotObject
     {
-        public static bool IsIsomorphicSubgraph(Graph source, Graph pattern)
+        public static Godot.Collections.Dictionary<Vertex, Vertex> FindFirst(GodotGraph pattern, GodotGraph target)
         {
-            return false;
-        }
+            var mapping = new Dictionary<Vertex, Vertex>();
+            var usedTargetVertices = new HashSet<Vertex>();
+            Godot.Collections.Dictionary<Vertex, Vertex> result = null;
 
-        public static List<Graph> FindAllIsomorphicSubgraphs(Graph source, Graph pattern)
-        {
-            return null;
-        }
-
-        private static bool matchFirst(Graph target, Graph pattern, Dictionary<Node, Node> mapping,
-            HashSet<Node> usedTargetNodes)
-        {
-            if (mapping.Count == pattern.Nodes.Count)
-                return true; // <-- stop at first found
-
-            Node nextPatternNode = SelectUnmappedNode(pattern, mapping);
-
-            foreach (Node targetNode in target.Nodes)
+            bool Backtrack(int patternIndex)
             {
-                if (usedTargetNodes.Contains(targetNode))
-                    continue;
-
-                if (Compatible(nextPatternNode, targetNode, mapping, pattern, target))
+                if (patternIndex == pattern.GetVertices().Length)
                 {
-                    mapping[nextPatternNode] = targetNode;
-                    usedTargetNodes.Add(targetNode);
+                    // Found a full mapping
+                    result = new Godot.Collections.Dictionary<Vertex, Vertex>(mapping);
+                    return true;
+                }
 
-                    if (matchFirst(pattern, target, mapping, usedTargetNodes))
-                        return true; // <-- propagate success immediately
+                var patternVertex = pattern.GetVertices()[patternIndex];
 
-                    mapping.Remove(nextPatternNode);
-                    usedTargetNodes.Remove(targetNode);
+                foreach (var candidate in target.GetVertices())
+                {
+                    if (usedTargetVertices.Contains(candidate))
+                        continue;
+
+                    if (IsFeasibleMapping(pattern, target, mapping, patternVertex, candidate))
+                    {
+                        mapping[patternVertex] = candidate;
+                        usedTargetVertices.Add(candidate);
+
+                        if (Backtrack(patternIndex + 1))
+                            return true; // stop on first solution
+
+                        mapping.Remove(patternVertex);
+                        usedTargetVertices.Remove(candidate);
+                    }
+                }
+                return false;
+            }
+            Backtrack(0);
+            return result;
+        }
+
+        public static Godot.Collections.Array<Godot.Collections.Dictionary<Vertex, Vertex>> FindAll(GodotGraph pattern, GodotGraph target)
+        {
+            var results = new Godot.Collections.Array<Godot.Collections.Dictionary<Vertex, Vertex>>();
+            var mapping = new Dictionary<Vertex, Vertex>();
+            var usedTargetVertices = new HashSet<Vertex>();
+
+            void Backtrack(int patternIndex)
+            {
+                if (patternIndex == pattern.GetVertices().Length)
+                {
+
+                    results.Add(new Godot.Collections.Dictionary<Vertex, Vertex>(mapping));
+                    return;
+                }
+
+                var patternVertex = pattern.GetVertices()[patternIndex];
+
+                foreach (var candidate in target.GetVertices())
+                {
+                    if (usedTargetVertices.Contains(candidate))
+                        continue;
+
+                    if (IsFeasibleMapping(pattern, target, mapping, patternVertex, candidate))
+                    {
+                        mapping[patternVertex] = candidate;
+                        usedTargetVertices.Add(candidate);
+
+                        Backtrack(patternIndex + 1);
+
+                        mapping.Remove(patternVertex);
+                        usedTargetVertices.Remove(candidate);
+                    }
                 }
             }
 
-            return false;
+            Backtrack(0);
+            return results;
         }
 
-        private static void matchAll(Graph target, Graph pattern, Dictionary<Node, Node> mapping,
-            HashSet<Graph> usedTargetNodes)
+        private static bool IsFeasibleMapping(GodotGraph pattern, GodotGraph target, Dictionary<Vertex, Vertex> mapping, Vertex patternVertex, Vertex targetVertex)
         {
-
-        }
-
-        static bool Compatible(Node pNode, Node tNode,
-            Dictionary<Node, Node> mapping,
-            Graph pattern, Graph target)
-        {
-            // (1) Check labels if applicable
-            if (pNode.Type != tNode.Type)
-                return false;
-
-            // (2) Check edge consistency
-            foreach (Edge e in pattern.Edges)
+            if (patternVertex.Type != Vertex.VertexType.Any && patternVertex.Type != targetVertex.Type)
             {
-                if (e.From == pNode && mapping.ContainsKey(e.To))
+                return false;
+            }
+
+            // 2. Check edges consistency with already mapped neighbors
+            foreach (var edge in pattern.GetEdges())
+            {
+                if (edge.From == patternVertex && mapping.ContainsKey(edge.To))
                 {
-                    Node mappedTo = mapping[e.To];
-                    if (!EdgeExists(target, tNode, mappedTo))
+                    var mappedFrom = targetVertex;
+                    var mappedTo = mapping[edge.To];
+
+                    if (!target.GetEdges().Any(e =>
+                        e.From == mappedFrom &&
+                        e.To == mappedTo &&
+                        e.Type == edge.Type)) // edge type must match
+                    {
                         return false;
+                    }
                 }
 
-                if (e.To == pNode && mapping.ContainsKey(e.From))
+                if (edge.To == patternVertex && mapping.ContainsKey(edge.From))
                 {
-                    Node mappedFrom = mapping[e.From];
-                    if (!EdgeExists(target, mappedFrom, tNode))
+                    var mappedFrom = mapping[edge.From];
+                    var mappedTo = targetVertex;
+
+                    if (!target.GetEdges().Any(e =>
+                        e.From == mappedFrom &&
+                        e.To == mappedTo &&
+                        e.Type == edge.Type)) // edge type must match
+                    {
                         return false;
+                    }
                 }
             }
 
             return true;
-        }
-
-        static bool EdgeExists(Graph g, Node from, Node to)
-        {
-            return g.Edges.Any(e => e.From == from && e.To == to);
-        }
-
-        private static Node SelectUnmappedNode(Graph pattern, Dictionary<Node, Node> mapping)
-        {
-            return pattern.Nodes
-                .Where(n => !mapping.ContainsKey(n))
-                .OrderByDescending(n => Degree(pattern, n))
-                .First();
-        }
-
-        static int Degree(Graph g, Node n)
-        {
-            return g.Edges.Count(e => e.From == n || e.To == n);
         }
 
 
