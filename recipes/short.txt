@@ -1,3 +1,4 @@
+create_entrance_exit, create_entrance_exit.txt, 1,1
 add_task,add_task.txt,8,10
 add_lock,add_lock.txt,1,3
 duplicate_key,duplicate_key.txt,0,1

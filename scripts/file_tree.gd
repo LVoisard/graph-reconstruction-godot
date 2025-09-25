@@ -2,6 +2,7 @@ class_name FileTree extends Tree
 
 signal load_rule(path)
 
+
 const NAME_COLUMN_INDEX = 0
 const VIEW_FILE_COLUMN_INDEX = 1
 const DELETE_FILE_COLUMN_INDEX = 2

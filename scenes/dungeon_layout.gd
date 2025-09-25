@@ -7,22 +7,22 @@ var room_prefab: PackedScene = preload("res://scenes/dungeon_room.tscn")
 func _ready():
 	
 	var graph: GodotGraph =	generator.generate_dungeon_graph("res://recipes/short.txt").backend
-	var extent = compute_extent(graph)
-	extent.size /= 3
+	var extent = compute_extent(graph, 16, 3)
 	
-	$WFC2DGenerator.rect = extent
+	$WFC2DGenerator.rect.position = extent.position
+	$WFC2DGenerator.rect.size = extent.size
 	
 	for x in range(0,$WFC2DGenerator.rect.size.x):
 			for y in range(0,$WFC2DGenerator.rect.size.y):
 				$target/main.set_cell($WFC2DGenerator.rect.position + Vector2i(x,y), 0, Vector2i(0,0))
 	
 	for vert in graph.GetVertices():
-		var base_pos = Vector2i(vert.X, vert.Y) / 3 
+		var base_pos = (Vector2i(vert.X, vert.Y) / 3) + $WFC2DGenerator.rect.position
 		
 			
 		for x in range(0,16):
 			for y in range(0,16):
-				$target/main.set_cell(base_pos + Vector2i(x - 8,y - 8), 0, Vector2i(0,4))
+				$target/main.set_cell(base_pos + Vector2i(x,y), 0, Vector2i(0,4))
 		
 		#var room = room_prefab.instantiate() as DungeonRoom
 		#room.translate(Vector2i(vert.X, vert.Y) / 2)
@@ -34,24 +34,24 @@ func _ready():
 	$negative_sample.hide()
 	$WFC2DGenerator.start()
 	
-	
 
 
-func compute_extent(graph) -> Rect2i:
+
+func compute_extent(graph, offset, scale) -> Rect2i:
 	if graph.GetVertices().is_empty():
 		return Rect2i()
 
 	var verts = graph.GetVertices()
-	var minx = (verts[0].X - 8)
-	var miny = (verts[0].Y - 8)
-	var maxx = (verts[0].X + 8)
-	var maxy = (verts[0].Y + 8)
+	var minx = (verts[0].X) - offset
+	var miny = (verts[0].Y) - offset
+	var maxx = (verts[0].X) + offset
+	var maxy = (verts[0].Y) + offset
 
 	for i in range(1, verts.size()):
 		var v = verts[i]
-		minx = min(minx, (v.X - 8))
-		miny = min(miny, (v.Y - 8))
-		maxx = max(maxx, (v.X + 8))
-		maxy = max(maxy, (v.Y + 8))
+		minx = min(minx, (v.X - offset))
+		miny = min(miny, (v.Y - offset))
+		maxx = max(maxx, (v.X + offset))
+		maxy = max(maxy, (v.Y + offset))
 
-	return Rect2i(minx, miny, maxx - minx, maxy - miny)
+	return Rect2i(minx / scale, miny / scale, (maxx - minx) /  scale, (maxy - miny) /  scale)

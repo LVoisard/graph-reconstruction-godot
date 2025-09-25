@@ -26,9 +26,6 @@ metadata/_custom_type_script = "uid://3jn4kn5n5qb0"
 [node name="dungeon_layout" type="Node2D"]
 script = ExtResource("1_7tq1y")
 
-[node name="Generator" parent="." instance=ExtResource("1_a1oti")]
-visible = false
-
 [node name="WFC2DGenerator" type="Node" parent="."]
 script = ExtResource("1_u8cmh")
 target = NodePath("../target")
@@ -51,7 +48,6 @@ tile_map_data = PackedByteArray("AAAAAAAAAAAAAAQAAAABAAAAAAAAAAQAAAACAAAAAAAAAAQ
 tile_set = ExtResource("10_njufx")
 
 [node name="decorations" type="TileMapLayer" parent="sample"]
-visible = false
 tile_map_data = PackedByteArray("AAAGAAoAAAAFAAUAAAADAAoAAAACAAYAAAAFAAwAAAABAAYAAAABAAoAAAAFAAcAAAAJAAsAAAAHAAUAAAAJAAwAAAAJAAYAAAAJAA0AAAAIAAUAAAAMAAsAAAAHAAYAAAANAAsAAAAKAAUAAAAOAAsAAAAIAAYAAAAMAA0AAAAJAAUAAAAMAA4AAAAJAAYAAAAMAA8AAAAJAAYAAAAMABAAAAAJAAcAAAANABAAAAAKAAUAAAAOABAAAAAKAAUAAAAPABAAAAALAAcAAAAPAA8AAAAJAAYAAAAPAA4AAAAJAAYAAAAPAA0AAAALAAUAAAANAA0AAAAKAAUAAAAOAA0AAAAKAAUAAAAJAA8AAAAKAAYAAAAJABEAAAAGAAUAAAAJAAMAAAACAAYAAAA=")
 tile_set = ExtResource("11_lpeqw")
 
@@ -92,3 +88,6 @@ tile_set = ExtResource("10_njufx")
 
 [node name="decorations" type="TileMapLayer" parent="target"]
 tile_set = ExtResource("11_lpeqw")
+
+[node name="Generator" parent="." instance=ExtResource("1_a1oti")]
+visible = false

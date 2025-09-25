@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dl4uc3c8yk1no"]
+
+[ext_resource type="Script" uid="uid://bqbfav8i5hg15" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type.gd" id="1_qiyy5"]
+
+[resource]
+script = ExtResource("1_qiyy5")
+type = 7
+action_text = "Unused"

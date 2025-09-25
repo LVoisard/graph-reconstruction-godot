@@ -1,11 +1,12 @@
-[gd_resource type="Resource" script_class="SubContextAction" load_steps=5 format=3 uid="uid://ddm8blxt0ulwn"]
+[gd_resource type="Resource" script_class="SubContextAction" load_steps=6 format=3 uid="uid://ddm8blxt0ulwn"]
 
 [ext_resource type="Script" uid="uid://dsbdscvfng6du" path="res://resources/context_actions/sub_context_action.gd" id="1_wdvnf"]
 [ext_resource type="Script" uid="uid://dg1p4omlqndtb" path="res://resources/context_actions/context_action.gd" id="2_l7lqt"]
 [ext_resource type="Resource" uid="uid://d2oaakoy10jks" path="res://resources/context_actions/connection/change_type/ca_connection_change_type_directional.tres" id="3_ifp0k"]
 [ext_resource type="Resource" uid="uid://dns68sahiwmqu" path="res://resources/context_actions/connection/change_type/ca_connection_change_type_relational.tres" id="4_u4sor"]
+[ext_resource type="Resource" uid="uid://l0aa7xa8jm7t" path="res://resources/context_actions/connection/change_type/ca_connection_change_type_undirected.tres" id="5_wnvwn"]
 
 [resource]
 script = ExtResource("1_wdvnf")
-sub_context_actions = Array[ExtResource("2_l7lqt")]([ExtResource("3_ifp0k"), ExtResource("4_u4sor")])
+sub_context_actions = Array[ExtResource("2_l7lqt")]([ExtResource("3_ifp0k"), ExtResource("4_u4sor"), ExtResource("5_wnvwn")])
 action_text = "Change Connection Type"

@@ -1,0 +1,9 @@
+input
+vertices
+edges
+output
+vertices
+0,187,485,Entrance
+1,359,483,Goal
+edges
+0,1,Directional

@@ -56,6 +56,8 @@ namespace graph_rewriting_test.scripts.graph_lib
 			Key,
 			Lock,
 			Any,
+			Empty,
+			Unused,
 		}
 	}
 }

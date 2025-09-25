@@ -53,6 +53,10 @@ func update_connection_visual() -> void:
 			right_connector.show()
 			dotted_line.show()
 			full_line.hide()
+		ConnectionType.Undirected:
+			left_connector.hide()
+			right_connector.hide()
+			full_line.show()
 	
 func set_type(new_type: ConnectionType) -> void:
 	connection_type = new_type
@@ -86,5 +90,6 @@ func copy_connector(con: Connection) -> void:
 
 enum ConnectionType {
 	Directional,
-	Relational
+	Relational,
+	Undirected,
 }

@@ -4,5 +4,4 @@
 
 [resource]
 script = ExtResource("1_53dq2")
-type = 0
 action_text = "Directional"

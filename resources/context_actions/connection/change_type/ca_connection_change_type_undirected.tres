@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://l0aa7xa8jm7t"]
+
+[ext_resource type="Script" uid="uid://c65enufqcs620" path="res://resources/context_actions/connection/change_type/ca_connection_change_type.gd" id="1_nu8k8"]
+
+[resource]
+script = ExtResource("1_nu8k8")
+type = 2
+action_text = "Undirected"

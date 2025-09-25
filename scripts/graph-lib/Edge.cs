@@ -35,7 +35,8 @@ namespace graph_rewriting_test.scripts.graph_lib
 		public enum EdgeType
 		{
 			Directional,
-			Relational
+			Relational,
+			Undirected
 		}
 	}
 }

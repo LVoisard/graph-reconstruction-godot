@@ -65,6 +65,16 @@ func update_visuals() -> void:
 			visual.texture = visual_texture_square
 			visual.self_modulate = Color.BLACK
 			label.self_modulate = Color.WHITE
+		NodeType.EMPTY:
+			outline.texture = outline_texture_square
+			visual.texture = visual_texture_square
+			visual.self_modulate = Color.WHITE
+			label.self_modulate = Color.BLACK
+		NodeType.UNUSED:
+			outline.texture = outline_texture_round
+			visual.texture = visual_texture_round
+			visual.self_modulate = Color.GRAY
+			label.self_modulate = Color.BLACK
 	
 	
 func on_moved() -> void:
@@ -82,4 +92,6 @@ enum NodeType {
 	KEY,
 	LOCK,
 	ANY,
+	EMPTY,
+	UNUSED
 }

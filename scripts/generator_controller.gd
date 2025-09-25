@@ -4,7 +4,7 @@ signal graph_complete
 
 const generator_rule_prefab: PackedScene = preload("res://scenes/generator_rule.tscn")
 
-@onready var generator_rules_container: Control = $"HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer/Manual/VBoxContainer"
+@onready var generator_rules_container: ManualFileTree = $"HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer/Manual/VBoxContainer"
 @onready var generator_graph: VisualGraph = $"HBoxContainer/Input Graph Viewport/SubViewport/Control/input graph"
 @onready var recipes: Recipes = $"HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer/Recipes"
 
@@ -30,36 +30,29 @@ func _process(delta: float) -> void:
 
 func clear() -> void:
 	generator_graph.clear_all()
-	var entrance = generator_graph.create_new_node() as VisualGraphNode
-	entrance.set_position(Vector2(100, 50))
-	generator_graph.change_node_type(entrance, VisualGraphNode.NodeType.ENTRANCE)
-	generator_graph.update_node_position(entrance)
-	
-	
-	var goal = generator_graph.create_new_node() as VisualGraphNode
-	goal.set_position(Vector2(300, 50))
-	generator_graph.change_node_type(goal, VisualGraphNode.NodeType.GOAL)
-	generator_graph.update_node_position(goal)
-	
-	generator_graph.create_new_connection(entrance, goal) as Connection
+	#var entrance = generator_graph.create_new_node() as VisualGraphNode
+	#entrance.set_position(Vector2(100, 50))
+	#generator_graph.change_node_type(entrance, VisualGraphNode.NodeType.ENTRANCE)
+	#generator_graph.update_node_position(entrance)
+	#
+	#
+	#var goal = generator_graph.create_new_node() as VisualGraphNode
+	#goal.set_position(Vector2(300, 50))
+	#generator_graph.change_node_type(goal, VisualGraphNode.NodeType.GOAL)
+	#generator_graph.update_node_position(goal)
+	#
+	#generator_graph.create_new_connection(entrance, goal) as Connection
 	
 	
 
 func refresh_rules() -> void:
-	var dir = DirAccess.open("res://rules")
-	var files = dir.get_files()
-	for child in generator_rules_container.get_children():
-		child.free()
-		
-	for file in files:
-		var r = generator_rule_prefab.instantiate()
-		generator_rules_container.add_child(r)
-		var n = file.get_basename()
-		r.label.text = n
-		r.random_apply_btn.button_down.connect(apply_rule_random.bind(file))
-		r.random_apply_btn.button_down.connect(update_graph_visual)
-		r.lsystem_apply_btn.button_down.connect(apply_rule_lsystem.bind(file))
-		r.lsystem_apply_btn.button_down.connect(update_graph_visual)
+	
+	generator_rules_container.build_tree()
+	generator_rules_container.load_rule.connect(apply_rule_random)
+	generator_rules_container.load_rule.connect(update_graph_visual.unbind(1))
+	generator_rules_container.load_lsystem_rule.connect(apply_rule_lsystem)
+	generator_rules_container.load_lsystem_rule.connect(update_graph_visual.unbind(1))
+	
 		
 func update_graph_visual() ->void:
 	#generator_graph.backend.ArrangeForceDirected(1480,900, 10000, 150, 10)
@@ -67,7 +60,8 @@ func update_graph_visual() ->void:
 	
 func apply_rule_random(file: String) -> void:
 	print("Random " + file)
-	var patterns = GodotGraph.ParseRuleFromString(FileAccess.get_file_as_string("res://rules/"+file))
+	file = file.replace("res://rules/", "")
+	var patterns = GodotGraph.ParseRuleFromString(FileAccess.get_file_as_string("res://rules/" + file))
 
 	var matches = SubgraphIsomorphism.FindAll(patterns[0], generator_graph.backend)
 	print("Found %d matches" % matches.size())	
@@ -78,7 +72,8 @@ func apply_rule_random(file: String) -> void:
 	
 func apply_rule_lsystem(file: String) -> void:
 	print("L-System " + file)
-	var patterns = GodotGraph.ParseRuleFromString(FileAccess.get_file_as_string("res://rules/"+file))
+	file = file.replace("res://rules/", "")
+	var patterns = GodotGraph.ParseRuleFromString(FileAccess.get_file_as_string("res://rules/" + file))
 	#traverse_graph(graphs[0])
 	var matches = SubgraphIsomorphism.FindAll(patterns[0], generator_graph.backend)
 	
@@ -98,7 +93,7 @@ func validate_graph() -> bool:
 	#generator_graph.backend.ArrangeGrid(100, 400)
 	#generator_graph.backend.PlaceOnGrid(7, 7)
 	#generator_graph.backend.ArrangeCustomBFS(true, 100, 100, 100, 500)
-	#generator_graph.backend.SnapToGrid(100);
+	#generator_graph.backend.SnapToGrid(50);
 	generator_graph.update_visuals_from_backend()
 	var valid = generator_graph.backend.IsTraversable() && !generator_graph.backend.HasOverlappingDirectionalEdges()
 	print("Valid graph ?", valid)
