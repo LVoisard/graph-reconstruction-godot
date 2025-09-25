@@ -1,0 +1,8 @@
+input
+vertices
+0,0,0,Unused
+edges
+output
+vertices
+0,0,0,Empty
+edges

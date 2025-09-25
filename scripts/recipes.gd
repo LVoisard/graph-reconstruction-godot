@@ -22,6 +22,7 @@ func save_recipe() -> void:
 	var root = recipe_tree.get_root()
 	var current = root.get_first_child() as TreeItem
 	while current != null:
+		var path = current.get_metadata(recipe_tree.NAME_COLUMN_INDEX)
 		if current.get_text(recipe_tree.NAME_COLUMN_INDEX) != "Add Step":
 			recipe.append([
 				current.get_text(recipe_tree.NAME_COLUMN_INDEX),
@@ -76,9 +77,9 @@ func reset_recipe() -> void:
 func process_step(step) -> void:
 	print("processing ", step.name)
 	if int(step.min) == -1 and int(step.max) == -1:
-		apply_rule_lsystem.emit(step.path.get_file())
+		apply_rule_lsystem.emit(step.path)
 	else:	
 		for i in range(0, randi_range(int(step.min), int(step.max))):
 			print(i + 1)
-			apply_rule_random.emit(step.path.get_file())
+			apply_rule_random.emit(step.path)
 	

@@ -6,18 +6,18 @@ var room_prefab: PackedScene = preload("res://scenes/dungeon_room.tscn")
 
 func _ready():
 	
-	var graph: GodotGraph =	generator.generate_dungeon_graph("res://recipes/short.txt").backend
-	var extent = compute_extent(graph, 16, 3)
+	var graph: GodotGraph =	generator.generate_dungeon_graph("res://recipes/grid").backend
+	var extent = compute_extent(graph, 16, 4)
 	
 	$WFC2DGenerator.rect.position = extent.position
 	$WFC2DGenerator.rect.size = extent.size
 	
-	for x in range(0,$WFC2DGenerator.rect.size.x):
-			for y in range(0,$WFC2DGenerator.rect.size.y):
-				$target/main.set_cell($WFC2DGenerator.rect.position + Vector2i(x,y), 0, Vector2i(0,0))
+	#for x in range(0,$WFC2DGenerator.rect.size.x):
+	#		for y in range(0,$WFC2DGenerator.rect.size.y):
+	#			$target/main.set_cell($WFC2DGenerator.rect.position + Vector2i(x,y), 0, Vector2i(0,0))
 	
 	for vert in graph.GetVertices():
-		var base_pos = (Vector2i(vert.X, vert.Y) / 3) + $WFC2DGenerator.rect.position
+		var base_pos = (Vector2i(vert.X, vert.Y) / 4)
 		
 			
 		for x in range(0,16):
@@ -54,4 +54,4 @@ func compute_extent(graph, offset, scale) -> Rect2i:
 		maxx = max(maxx, (v.X + offset))
 		maxy = max(maxy, (v.Y + offset))
 
-	return Rect2i(minx / scale, miny / scale, (maxx - minx) /  scale, (maxy - miny) /  scale)
+	return Rect2i(minx / scale, miny / scale, (maxx - minx) /  scale + 16, (maxy - miny) /  scale + 16)

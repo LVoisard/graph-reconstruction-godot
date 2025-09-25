@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SubContextAction" load_steps=9 format=3 uid="uid://tib5hh2wgcax"]
+[gd_resource type="Resource" script_class="SubContextAction" load_steps=11 format=3 uid="uid://tib5hh2wgcax"]
 
 [ext_resource type="Script" uid="uid://dsbdscvfng6du" path="res://resources/context_actions/sub_context_action.gd" id="1_bnp0e"]
 [ext_resource type="Script" uid="uid://dg1p4omlqndtb" path="res://resources/context_actions/context_action.gd" id="2_f22py"]
@@ -8,8 +8,10 @@
 [ext_resource type="Resource" uid="uid://h6i5my37wotw" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_key.tres" id="6_j3mfi"]
 [ext_resource type="Resource" uid="uid://bgm13g8chq4s4" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_lock.tres" id="7_gcrpf"]
 [ext_resource type="Resource" uid="uid://cl5rtu3ct3apq" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_any.tres" id="9_5qxsh"]
+[ext_resource type="Resource" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_empty.tres" id="9_v2pb7"]
+[ext_resource type="Resource" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_unused.tres" id="10_j3mfi"]
 
 [resource]
 script = ExtResource("1_bnp0e")
-sub_context_actions = Array[ExtResource("2_f22py")]([ExtResource("3_a6coc"), ExtResource("4_v2pb7"), ExtResource("5_u2csm"), ExtResource("6_j3mfi"), ExtResource("7_gcrpf"), ExtResource("9_5qxsh")])
+sub_context_actions = Array[ExtResource("2_f22py")]([ExtResource("3_a6coc"), ExtResource("4_v2pb7"), ExtResource("5_u2csm"), ExtResource("6_j3mfi"), ExtResource("7_gcrpf"), ExtResource("9_5qxsh"), ExtResource("9_v2pb7"), ExtResource("10_j3mfi")])
 action_text = "Change Node Type"

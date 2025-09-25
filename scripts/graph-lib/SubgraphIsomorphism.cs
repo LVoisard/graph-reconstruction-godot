@@ -89,7 +89,8 @@ namespace graph_rewriting_test.scripts.graph_lib
 
         private static bool IsFeasibleMapping(GodotGraph pattern, GodotGraph target, Dictionary<Vertex, Vertex> mapping, Vertex patternVertex, Vertex targetVertex)
         {
-            if (patternVertex.Type != Vertex.VertexType.Any && patternVertex.Type != targetVertex.Type)
+            if ((patternVertex.Type != Vertex.VertexType.Any && patternVertex.Type != targetVertex.Type) || // if the nodes are the same,
+                patternVertex.Type == Vertex.VertexType.Any && targetVertex.Type == Vertex.VertexType.Empty)      // or if the target node is greater than Any (empty, unused)
             {
                 return false;
             }
@@ -97,31 +98,64 @@ namespace graph_rewriting_test.scripts.graph_lib
             // 2. Check edges consistency with already mapped neighbors
             foreach (var edge in pattern.GetEdges())
             {
-                if (edge.From == patternVertex && mapping.ContainsKey(edge.To))
+                if (edge.Type == Edge.EdgeType.Undirected)
                 {
-                    var mappedFrom = targetVertex;
-                    var mappedTo = mapping[edge.To];
-
-                    if (!target.GetEdges().Any(e =>
-                        e.From == mappedFrom &&
-                        e.To == mappedTo &&
-                        e.Type == edge.Type)) // edge type must match
+                    if (edge.From == patternVertex && mapping.ContainsKey(edge.To))
                     {
-                        return false;
+                        var mappedFrom = targetVertex;
+                        var mappedTo = mapping[edge.To];
+
+                        var match = target.GetEdges().FirstOrDefault(e => e.Type == Edge.EdgeType.Undirected &&
+                            ((e.From == mappedFrom && e.To == mappedTo) ||
+                            (e.From == mappedTo && e.To == mappedFrom)));
+
+                        if (match == null)
+                            return false;
+
+
+                    }
+
+                    if (edge.To == patternVertex && mapping.ContainsKey(edge.From))
+                    {
+                        var mappedFrom = mapping[edge.From];
+                        var mappedTo = targetVertex;
+
+                        var match = target.GetEdges().FirstOrDefault(e => e.Type == Edge.EdgeType.Undirected &&
+                            ((e.From == mappedFrom && e.To == mappedTo) ||
+                            (e.From == mappedTo && e.To == mappedFrom)));
+
+                        if (match == null)
+                            return false;
                     }
                 }
-
-                if (edge.To == patternVertex && mapping.ContainsKey(edge.From))
+                else
                 {
-                    var mappedFrom = mapping[edge.From];
-                    var mappedTo = targetVertex;
-
-                    if (!target.GetEdges().Any(e =>
-                        e.From == mappedFrom &&
-                        e.To == mappedTo &&
-                        e.Type == edge.Type)) // edge type must match
+                    if (edge.From == patternVertex && mapping.ContainsKey(edge.To))
                     {
-                        return false;
+                        var mappedFrom = targetVertex;
+                        var mappedTo = mapping[edge.To];
+
+                        if (!target.GetEdges().Any(e =>
+                            e.From == mappedFrom &&
+                            e.To == mappedTo &&
+                            e.Type == edge.Type)) // edge type must match
+                        {
+                            return false;
+                        }
+                    }
+
+                    if (edge.To == patternVertex && mapping.ContainsKey(edge.From))
+                    {
+                        var mappedFrom = mapping[edge.From];
+                        var mappedTo = targetVertex;
+
+                        if (!target.GetEdges().Any(e =>
+                            e.From == mappedFrom &&
+                            e.To == mappedTo &&
+                            e.Type == edge.Type)) // edge type must match
+                        {
+                            return false;
+                        }
                     }
                 }
             }

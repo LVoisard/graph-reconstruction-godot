@@ -88,12 +88,12 @@ func apply_rule_lsystem(file: String) -> void:
 func validate_graph() -> bool:
 	#generator_graph.backend.ArrangeCustomBFS(true, 150, 200, 0, 500)
 	#for i in range(0, 200):
-	generator_graph.backend.ArrangeForceDirected(600,600, 1000, 100, 100)
+	#generator_graph.backend.ArrangeForceDirected(600,600, 1000, 150, 100)
 	#var side = ceil(sqrt(generator_graph.backend.GetVertices().size() * 2)) as int
 	#generator_graph.backend.ArrangeGrid(100, 400)
 	#generator_graph.backend.PlaceOnGrid(7, 7)
 	#generator_graph.backend.ArrangeCustomBFS(true, 100, 100, 100, 500)
-	#generator_graph.backend.SnapToGrid(50);
+	generator_graph.backend.SnapToGrid(50);
 	generator_graph.update_visuals_from_backend()
 	var valid = generator_graph.backend.IsTraversable() && !generator_graph.backend.HasOverlappingDirectionalEdges()
 	print("Valid graph ?", valid)

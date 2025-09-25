@@ -1,11 +1,7 @@
-create_entrance_exit, create_entrance_exit.txt, 1,1
-add_task,add_task.txt,16,20
-add_lock,add_lock.txt,2,4
-duplicate_key,duplicate_key.txt,0,2
-pull_task_to_hide_key,pull_task_to_hide_key.txt,6,11
-move_lock_towards_entrance,move_lock_towards_entrance.txt,3,5
-add_shorcut_to_lock,add_shorcut_to_lock.txt,-1,-1
-move_extra_node_1,move_extra_node_1.txt,5,5
-move_extra_node_2,move_extra_node_2.txt,5,5
-move_extra_node_3,move_extra_node_3.txt,5,5
-move_extra_node_4,move_extra_node_4.txt,5,5
+create_entrance_exit,graph_grammar/create_entrance_exit.txt, 1,1
+add_task,graph_grammar/add_task.txt,16,20
+add_lock,graph_grammar/add_lock.txt,2,4
+duplicate_key,graph_grammar/duplicate_key.txt,0,2
+pull_task_to_hide_key,graph_grammar/pull_task_to_hide_key.txt,6,11
+move_lock_towards_entrance,graph_grammar/move_lock_towards_entrance.txt,3,5
+add_shorcut_to_lock,graph_grammar/add_shorcut_to_lock.txt,-1,-1

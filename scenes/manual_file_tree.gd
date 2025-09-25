@@ -4,6 +4,7 @@ signal load_lsystem_rule(path)
 
 func build_tree() -> void:
 	clear()
+	
 	var scanned_files = get_all_files("res://rules/")
 	
 	set_column_title(NAME_COLUMN_INDEX, "Name")

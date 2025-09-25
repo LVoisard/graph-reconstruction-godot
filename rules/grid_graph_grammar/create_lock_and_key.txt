@@ -1,0 +1,17 @@
+input
+vertices
+0,278,464,Any
+1,280,289,Task
+2,455,465,Unused
+edges
+0,1,Directional
+0,2,Undirected
+output
+vertices
+0,282,465,Any
+1,284,289,Lock
+2,470,463,Key
+edges
+0,1,Directional
+0,2,Directional
+2,1,Relational

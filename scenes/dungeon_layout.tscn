@@ -33,6 +33,7 @@ rect = Rect2i(0, 0, 100, 100)
 positive_sample = NodePath("../sample")
 negative_sample = NodePath("../negative_sample")
 precondition = SubResource("Resource_e5vlq")
+use_multithreading = false
 render_intermediate_results = true
 metadata/_custom_type_script = "uid://d1siouratvecn"
 

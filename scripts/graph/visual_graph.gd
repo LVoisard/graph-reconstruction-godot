@@ -88,11 +88,20 @@ func create_visuals_from_backend() -> void:
 		
 func update_visuals_from_backend() -> void:
 	for v in backend.GetVertices():
-		var visual: VisualGraphNode = visual_nodes[visual_nodes.find_custom(func(x): return x.id == v.Id)]
+		var index = visual_nodes.find_custom(func(x): return x.id == v.Id)
+		if index == -1:
+			#print(v)
+			continue
+		var visual: VisualGraphNode = visual_nodes[index]
 		visual.position = Vector2(v.X, v.Y)
 	for e in backend.GetEdges():
-		var visual_con: Connection = visual_connections[visual_connections.find_custom(func(x): return x.a().id == e.From.Id and x.b().id == e.To.Id)]
+		var index = visual_connections.find_custom(func(x): return x.a().id == e.From.Id and x.b().id == e.To.Id)
+		if index == -1:
+			#print(e)
+			continue
+		var visual_con: Connection = visual_connections[index]
 		visual_con.update_connection_position()
+		move_child(visual_con, -1)
 
 func clear_all() -> void:
 	clear_backend()

@@ -1,0 +1,15 @@
+input
+vertices
+0,0,0,Unused
+1,586,444,Any
+2,429,620,Any
+3,267,451,Any
+4,431,295,Any
+edges
+0,1,Undirected
+0,2,Undirected
+0,3,Undirected
+0,4,Undirected
+output
+vertices
+edges

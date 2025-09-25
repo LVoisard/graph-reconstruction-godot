@@ -1,0 +1,10 @@
+create_grid,grid_graph_grammar/create_grid.txt,1,1
+create_entrance,grid_graph_grammar/create_entrance.txt,1,1
+empty_to_unused,grid_graph_grammar/empty_to_unused.txt,-1,-1
+unused_to_empty,grid_graph_grammar/unused_to_empty.txt,2,4
+create_main_cycle_long,grid_graph_grammar/create_main_cycle_long.txt,1,1
+empty_to_unused,grid_graph_grammar/empty_to_unused.txt,-1,-1
+remove_islands,grid_graph_grammar/remove_islands.txt,-1,-1
+create_lock_and_key,grid_graph_grammar/create_lock_and_key.txt,1,3
+add_optional,grid_graph_grammar/add_optional.txt,5,5
+hide_key,grid_graph_grammar/hide_key.txt,2,4

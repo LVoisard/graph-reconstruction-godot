@@ -1,0 +1,16 @@
+input
+vertices
+0,0,0,Key
+1,518,453,Task
+2,365,300,Lock
+edges
+0,1,Directional
+0,2,Relational
+output
+vertices
+0,343,456,Task
+1,518,453,Key
+2,355,303,Lock
+edges
+0,1,Directional
+1,2,Relational

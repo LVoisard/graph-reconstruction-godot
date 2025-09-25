@@ -152,8 +152,11 @@ namespace graph_rewriting_test.scripts.graph_lib
                 if (patternFrom != null && patternTo != null)
                 {
                     // Check if that edge exists in the input pattern
-                    bool existsInPattern = inputPattern.graph.Edges.Any(x =>
-                        x.From == patternFrom && x.To == patternTo);
+                    bool existsInPattern = inputPattern.GetEdges().Any(pe =>
+                        pe.Type == e.Type && (
+                            (pe.From == patternFrom && pe.To == patternTo) || // same direction
+                            (pe.Type == Edge.EdgeType.Undirected && pe.From == patternTo && pe.To == patternFrom) // allow swap if undirected
+                        ));
 
                     if (!existsInPattern)
                     {
@@ -270,7 +273,10 @@ namespace graph_rewriting_test.scripts.graph_lib
             {
                 Vertex current = toExplore.Dequeue();
                 if (current.Type == Vertex.VertexType.Goal)
+                {
+                    GD.Print("Is traversable");
                     return true;
+                }
 
                 // add lock check
 
@@ -284,6 +290,8 @@ namespace graph_rewriting_test.scripts.graph_lib
                     }
                 }
             }
+
+            GD.Print("Not traversable");
             return false;
         }
 
@@ -295,7 +303,11 @@ namespace graph_rewriting_test.scripts.graph_lib
                 foreach (var other in graph.Vertices)
                 {
                     if (vert == other) continue;
-                    if (vert.X == other.X && vert.Y == vert.Y) return true;
+                    if (vert.X == other.X && vert.Y == other.Y)
+                    {
+                        GD.Print($"vert {vert} and {other} are overlaping");
+                        return true;
+                    }
                 }
 
             }
@@ -320,7 +332,7 @@ namespace graph_rewriting_test.scripts.graph_lib
                     adir = b - a;
                     cdir = d - c;
 
-                    Variant v = Geometry2D.SegmentIntersectsSegment(a + adir * 0.01f, b - adir * 0.01f, c + cdir * 0.01f, d - cdir * 0.01f);
+                    Variant v = Geometry2D.SegmentIntersectsSegment(a + adir * 0.05f, b - adir * 0.05f, c + cdir * 0.05f, d - cdir * 0.05f);
                     if (v.VariantType != Variant.Type.Nil)
                     {
                         GD.Print($"Edge {edge} and {other} intersect");

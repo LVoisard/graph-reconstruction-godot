@@ -40,7 +40,7 @@ func build_tree(recipe_file: String) -> void:
 		f.set_text(MAX_COLUMN_INDEX, file.max)
 		f.add_button(ACTION_COLUMN_INDEX, load("res://assets/icons/white/minus_small.png"))
 		f.set_metadata(ACTION_COLUMN_INDEX, "remove")
-		f.set_metadata(NAME_COLUMN_INDEX, file)		
+		f.set_metadata(NAME_COLUMN_INDEX, file)
 			
 	if on_item_button_pressed not in self.button_clicked.get_connections().map(func(x): return x["callable"]):
 		self.button_clicked.connect(on_item_button_pressed)
@@ -101,10 +101,11 @@ func add_rule(confirm) -> void:
 	new_item.set_editable(NAME_COLUMN_INDEX, false)
 	new_item.set_editable(MIN_COLUMN_INDEX, true)
 	new_item.set_editable(MAX_COLUMN_INDEX, true)
+	var item = JsonItemFile.new(confirm.current_file.get_basename(), confirm.current_path.replace("res://rules/", ""), "0", "0") 
 	new_item.set_text(NAME_COLUMN_INDEX, confirm.current_file.get_basename())
 	new_item.add_button(ACTION_COLUMN_INDEX, load("res://assets/icons/white/minus_small.png"))
 	new_item.set_metadata(ACTION_COLUMN_INDEX, "remove")
-	new_item.set_metadata(NAME_COLUMN_INDEX, confirm.current_path)
+	new_item.set_metadata(NAME_COLUMN_INDEX, item)
 	confirm.queue_free()
 	
 func get_recipe_rules(path: String) -> JsonItemDirectory:

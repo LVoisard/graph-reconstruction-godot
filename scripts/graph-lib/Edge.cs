@@ -27,6 +27,14 @@ namespace graph_rewriting_test.scripts.graph_lib
 		{
 			this.Type = type;
 		}
+
+		public void FlipDir()
+		{
+			var temp = From;
+			From = To;
+			To = temp;
+		}
+
 		public override string ToString()
 		{
 			return $"{From.Id},{To.Id},{Enum.GetValues(typeof(EdgeType)).GetValue((int)Type)}";
