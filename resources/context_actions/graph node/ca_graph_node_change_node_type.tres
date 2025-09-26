@@ -8,8 +8,8 @@
 [ext_resource type="Resource" uid="uid://h6i5my37wotw" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_key.tres" id="6_j3mfi"]
 [ext_resource type="Resource" uid="uid://bgm13g8chq4s4" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_lock.tres" id="7_gcrpf"]
 [ext_resource type="Resource" uid="uid://cl5rtu3ct3apq" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_any.tres" id="9_5qxsh"]
-[ext_resource type="Resource" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_empty.tres" id="9_v2pb7"]
-[ext_resource type="Resource" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_unused.tres" id="10_j3mfi"]
+[ext_resource type="Resource" uid="uid://cy08jq5i324dr" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_empty.tres" id="9_v2pb7"]
+[ext_resource type="Resource" uid="uid://dl4uc3c8yk1no" path="res://resources/context_actions/graph node/change_type/ca_graph_node_change_type_unused.tres" id="10_j3mfi"]
 
 [resource]
 script = ExtResource("1_bnp0e")

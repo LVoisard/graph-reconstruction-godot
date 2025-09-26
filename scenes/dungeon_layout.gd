@@ -7,23 +7,29 @@ var room_prefab: PackedScene = preload("res://scenes/dungeon_room.tscn")
 func _ready():
 	
 	var graph: GodotGraph =	generator.generate_dungeon_graph("res://recipes/grid").backend
-	var extent = compute_extent(graph, 16, 4)
+	var extent = compute_extent(graph, 16, 7)
 	
 	$WFC2DGenerator.rect.position = extent.position
 	$WFC2DGenerator.rect.size = extent.size
 	
-	#for x in range(0,$WFC2DGenerator.rect.size.x):
-	#		for y in range(0,$WFC2DGenerator.rect.size.y):
-	#			$target/main.set_cell($WFC2DGenerator.rect.position + Vector2i(x,y), 0, Vector2i(0,0))
+	for x in range(0,$WFC2DGenerator.rect.size.x):
+			for y in range(0,$WFC2DGenerator.rect.size.y):
+				$target/main.set_cell($WFC2DGenerator.rect.position + Vector2i(x,y), 0, Vector2i(0,0))
 	
 	for vert in graph.GetVertices():
-		var base_pos = (Vector2i(vert.X, vert.Y) / 4)
-		
+		var base_pos = (Vector2i(vert.X, vert.Y) / 7)
+		if vert.Type == 7: continue
 			
 		for x in range(0,16):
 			for y in range(0,16):
 				$target/main.set_cell(base_pos + Vector2i(x,y), 0, Vector2i(0,4))
-		
+	
+	
+	for con in graph.GetEdges():
+		if con.Type != 0: continue
+		var grid_path_nodes =thicken_line_voxels(bresenham_line_3d(Vector2i(con.From.X, con.From.Y)/7 + Vector2i(8,8), Vector2i(con.To.X, con.To.Y)/7 + Vector2i(8,8)) , 3)
+		for pos in grid_path_nodes:
+			$target/main.set_cell(pos, 0, Vector2i(0,4))
 		#var room = room_prefab.instantiate() as DungeonRoom
 		#room.translate(Vector2i(vert.X, vert.Y) / 2)
 		#room.setup_room(graph, vert)
@@ -55,3 +61,59 @@ func compute_extent(graph, offset, scale) -> Rect2i:
 		maxy = max(maxy, (v.Y + offset))
 
 	return Rect2i(minx / scale, miny / scale, (maxx - minx) /  scale + 16, (maxy - miny) /  scale + 16)
+
+
+func bresenham_line_3d(a: Vector2i, b: Vector2i) -> Array[Vector2i]:
+	var points: Array[Vector2i] = []
+	
+	var x0 = a.x
+	var y0 = a.y
+	var x1 = b.x
+	var y1 = b.y
+
+	var dx = abs(x1 - x0)
+	var dy = abs(y1 - y0)
+
+	var sx = 1 if x0 < x1 else -1
+	var sy = 1 if y0 < y1 else -1
+
+	var dx2 = dx * 2
+	var dy2 = dy * 2
+
+	var err1: int
+	var err2: int
+
+	if dx >= dy:
+		err1 = dy2 - dx
+		while x0 != x1:
+			points.append(Vector2i(x0, y0))
+			if err1 > 0:
+				y0 += sy
+				err1 -= dx2
+			err1 += dy2
+			x0 += sx
+	elif dy >= dx:
+		err1 = dx2 - dy
+		while y0 != y1:
+			points.append(Vector2i(x0, y0))
+			if err1 > 0:
+				x0 += sx
+				err1 -= dy2
+			err1 += dx2
+			y0 += sy
+
+	points.append(Vector2i(x1, y1))  # add final point
+	return points
+
+
+func thicken_line_voxels(line_voxels: Array[Vector2i], thickness: int) -> Array:
+	var thick_voxels = {}
+	var r = thickness
+
+	for voxel in line_voxels:
+		for dx in range(-r, r + 1):
+			for dy in range(-r, r + 1):
+				var p = voxel + Vector2i(dx, dy)
+				thick_voxels[p] = true  # using a dictionary to prevent duplicates
+
+	return thick_voxels.keys()

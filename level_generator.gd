@@ -6,7 +6,7 @@ extends Node3D
 var player_prefab: PackedScene = preload("res://addons/basic_fps_player.tscn")
 
 func _ready() -> void:
-	var graph = await generator.generate_dungeon_graph("res://recipes/test.txt")
+	var graph = await generator.generate_dungeon_graph("res://recipes/grid")
 
 	var room_positions = {}
 	for node in graph.backend.GetVertices():
@@ -14,7 +14,7 @@ func _ready() -> void:
 		room_positions[node] = room_pos
 	
 	for con in graph.backend.GetEdges():
-		if con.Type == 1: continue
+		if con.Type != 0: continue
 		var grid_path_nodes =thicken_line_voxels(bresenham_line_3d(room_positions[con.From], room_positions[con.To]), 3)
 		for pos in grid_path_nodes:
 			grid_map.set_cell_item(pos, grid_map.mesh_library.find_item_by_name("floor-small-square"))
