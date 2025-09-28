@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace graph_rewriting_test.scripts.graph_lib
+namespace GraphRewritingTest.Scripts.GraphLib.MissionGraph
 {
     public class Graph
     {

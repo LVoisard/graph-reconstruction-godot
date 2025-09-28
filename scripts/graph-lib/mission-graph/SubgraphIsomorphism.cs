@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace graph_rewriting_test.scripts.graph_lib
+namespace GraphRewritingTest.Scripts.GraphLib.MissionGraph
 {
     [GlobalClass]
     public partial class SubgraphIsomorphism : GodotObject

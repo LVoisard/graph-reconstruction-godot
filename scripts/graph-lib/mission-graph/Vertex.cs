@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-namespace graph_rewriting_test.scripts.graph_lib
+namespace GraphRewritingTest.Scripts.GraphLib
 {
 	public partial class Vertex : GodotObject
 	{

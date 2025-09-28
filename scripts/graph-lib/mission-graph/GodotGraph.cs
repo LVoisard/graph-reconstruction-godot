@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Godot;
 
-namespace graph_rewriting_test.scripts.graph_lib
+namespace GraphRewritingTest.Scripts.GraphLib.MissionGraph
 {
     [GlobalClass]
     public partial class GodotGraph : GodotObject

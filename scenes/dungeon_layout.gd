@@ -6,8 +6,13 @@ var room_prefab: PackedScene = preload("res://scenes/dungeon_room.tscn")
 
 func _ready():
 	
-	var graph: GodotGraph =	generator.generate_dungeon_graph("res://recipes/grid").backend
+	var graph: GodotGraph =	generator.generate_dungeon_graph("res://recipes/short.txt").backend
 	var extent = compute_extent(graph, 16, 7)
+	
+	#var layout = LayoutHandler.new()
+	#layout.Init(10,10)
+	
+	#var map = layout.BuildLayout(graph)
 	
 	$WFC2DGenerator.rect.position = extent.position
 	$WFC2DGenerator.rect.size = extent.size

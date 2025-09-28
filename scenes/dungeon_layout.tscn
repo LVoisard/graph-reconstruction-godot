@@ -14,7 +14,6 @@
 [sub_resource type="Resource" id="Resource_e5vlq"]
 script = ExtResource("7_82kje")
 class_map = NodePath("../remap_classes")
-remap_empty = true
 metadata/_custom_type_script = "uid://cs23t7qwqxddp"
 
 [sub_resource type="Resource" id="Resource_jgett"]
@@ -40,7 +39,6 @@ positive_sample = NodePath("../sample")
 negative_sample = NodePath("../negative_sample")
 precondition = SubResource("Resource_e5vlq")
 multithreaded_runner_settings = SubResource("Resource_jgett")
-use_multithreading = false
 render_intermediate_results = true
 metadata/_custom_type_script = "uid://d1siouratvecn"
 
@@ -92,14 +90,17 @@ script = ExtResource("1_1ahhd")
 mapper_factory = SubResource("Resource_xf6pi")
 
 [node name="main" type="TileMapLayer" parent="target"]
+visible = false
 tile_set = ExtResource("10_njufx")
 
 [node name="decorations" type="TileMapLayer" parent="target"]
+visible = false
 tile_set = ExtResource("11_lpeqw")
 
 [node name="Generator" parent="." instance=ExtResource("1_a1oti")]
 visible = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
+visible = false
 offset = Vector2(1000, 1200)
 zoom = Vector2(0.35, 0.35)
