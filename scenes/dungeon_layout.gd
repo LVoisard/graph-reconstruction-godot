@@ -5,14 +5,36 @@ var room_prefab: PackedScene = preload("res://scenes/dungeon_room.tscn")
 @onready var generator: Generator = $"Generator" 
 
 func _ready():
+	var done = false
 	
-	var graph: GodotGraph =	generator.generate_dungeon_graph("res://recipes/short.txt").backend
-	var extent = compute_extent(graph, 16, 7)
+	var map: Map
+	var graph: GodotGraph
+	while !done:
+		graph =	(await generator.generate_dungeon_graph("res://recipes/test.txt")).backend
+		#graph.AssignAccessLevels()
+		
+		var layout = LayoutHandler.new()
+		
+		
+		for i in range(100):
+			map = layout.GenerateDungeon(graph) as Map
+			if map != null: break;
+			
+		if map != null:
+			done = true
+		else:
+			print("generation failed")
 	
-	#var layout = LayoutHandler.new()
-	#layout.Init(10,10)
 	
-	#var map = layout.BuildLayout(graph)
+			
+	#	print(cell.x)
+	for cell in map.get2DMap():
+		if cell != null:
+			cell.node.SetPosition(cell.x * 150, cell.y * 150)
+			print(cell.x, cell.y)
+	generator.update_graph_visual()
+
+	var extent = compute_extent(graph, 20, 1)
 	
 	$WFC2DGenerator.rect.position = extent.position
 	$WFC2DGenerator.rect.size = extent.size
@@ -21,20 +43,47 @@ func _ready():
 			for y in range(0,$WFC2DGenerator.rect.size.y):
 				$target/main.set_cell($WFC2DGenerator.rect.position + Vector2i(x,y), 0, Vector2i(0,0))
 	
-	for vert in graph.GetVertices():
-		var base_pos = (Vector2i(vert.X, vert.Y) / 7)
-		if vert.Type == 7: continue
+	for cell in map.get2DMap():
+		if cell != null:
+			var base_pos = (Vector2i(cell.x * 20, cell.y * 20))
+			if cell.node.Type == 7: continue
 			
-		for x in range(0,16):
-			for y in range(0,16):
-				$target/main.set_cell(base_pos + Vector2i(x,y), 0, Vector2i(0,4))
+			for x in range(0,21):
+				for y in range(0,21):
+					$target/main.set_cell(base_pos - Vector2i(2,2) + Vector2i(x,y), 0, Vector2i(0,0))
+				
+			for x in range(0,17):
+				for y in range(0,17):
+					$target/main.set_cell(base_pos + Vector2i(x,y), 0, Vector2i(0,4))
+			
+			# temp to visualize the node type
+			$target/main.set_cell(base_pos + Vector2i(8,8), 0, Vector2i(cell.node.Type,0))
 	
 	
-	for con in graph.GetEdges():
-		if con.Type != 0: continue
-		var grid_path_nodes =thicken_line_voxels(bresenham_line_3d(Vector2i(con.From.X, con.From.Y)/7 + Vector2i(8,8), Vector2i(con.To.X, con.To.Y)/7 + Vector2i(8,8)) , 3)
-		for pos in grid_path_nodes:
-			$target/main.set_cell(pos, 0, Vector2i(0,4))
+	for cell in map.get2DMap():
+		if cell == null: continue
+		var me = cell.node
+		for x in range(0,3):
+			for y in range (0,3):
+				var doorDir = Vector2i(x-1, y-1)
+				if abs(doorDir.x) == abs(doorDir.y) : continue
+				print(doorDir)
+				
+				var door = cell.getDoor(doorDir.x, doorDir.y)
+				print(door)
+				if door == 1: # opened
+					$target/main.set_cell(Vector2i(cell.x * 20, cell.y * 20) - doorDir * Vector2i(9,9) +  Vector2i(8,8), 0, Vector2i(0,4))
+					$target/main.set_cell(Vector2i(cell.x * 20, cell.y * 20)  - doorDir * Vector2i(10,10) +  Vector2i(8,8), 0, Vector2i(0,4))
+					
+				elif door == 2: # locked
+					$target/decorations.set_cell(Vector2i(cell.x * 20, cell.y * 20)  - doorDir * Vector2i(9,9) +  Vector2i(8,8), 0, Vector2i(10,5))
+					$target/decorations.set_cell(Vector2i(cell.x * 20, cell.y * 20)  - doorDir * Vector2i(10,10) +  Vector2i(8,8), 0, Vector2i(10,5))
+				
+	#for con in graph.GetEdges():
+		#if con.Type != 0: continue
+		#var grid_path_nodes =thicken_line_voxels(bresenham_line_3d(Vector2i(con.From.X, con.From.Y)/7 + Vector2i(8,8), Vector2i(con.To.X, con.To.Y)/7 + Vector2i(8,8)) , 3)
+		#for pos in grid_path_nodes:
+			#$target/main.set_cell(pos, 0, Vector2i(0,4))
 		#var room = room_prefab.instantiate() as DungeonRoom
 		#room.translate(Vector2i(vert.X, vert.Y) / 2)
 		#room.setup_room(graph, vert)
@@ -43,7 +92,7 @@ func _ready():
 	$target.show()
 	$remap_classes.hide()
 	$negative_sample.hide()
-	$WFC2DGenerator.start()
+	#$WFC2DGenerator.start()
 	
 
 

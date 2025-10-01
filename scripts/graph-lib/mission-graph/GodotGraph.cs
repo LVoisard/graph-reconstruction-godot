@@ -48,7 +48,7 @@ namespace GraphRewritingTest.Scripts.GraphLib.MissionGraph
 
         public Vertex[] GetVertexNeighbours(int id)
         {
-            return graph.Edges.Where(x => x.From.Id == id || x.To.Id == id).Select(x => x.From.Id == id ? x.To : x.From).ToArray();
+            return graph.Edges.Where(x => x.From.Id == id).Select(x => x.To).ToArray();
         }
 
         public Vertex[] GetVertices()
@@ -265,14 +265,45 @@ namespace GraphRewritingTest.Scripts.GraphLib.MissionGraph
             if ((entrance = graph.Vertices.Find(x => x.Type == Vertex.VertexType.Entrance)) == null) return false;
             if ((goal = graph.Vertices.Find(x => x.Type == Vertex.VertexType.Goal)) == null) return false;
 
-            Queue<Vertex> toExplore = new();
+
+            const int MAX_TRIES = 100;
+            int tries = 0;
+            PriorityQueue<Vertex, int> toExplore = new();
             HashSet<Vertex> visited = new();
-            toExplore.Enqueue(entrance);
+            Dictionary<Vertex, int> locks = new();
+            int currentLevel = 0;
+            toExplore.Enqueue(entrance, 0);
             visited.Add(entrance);
-            while (toExplore.Count > 0)
+
+            foreach (Vertex v in graph.Vertices.Where(x => x.Type == Vertex.VertexType.Lock))
+            {
+                locks[v] = graph.Edges.Count(x => x.To == v && x.Type == Edge.EdgeType.Relational);
+            }
+
+            while (toExplore.Count > 0 && tries < MAX_TRIES)
             {
                 Vertex current = toExplore.Dequeue();
-                if (current.Type == Vertex.VertexType.Goal)
+                if (current.Type == Vertex.VertexType.Lock)
+                {
+                    if (locks[current] > 0)
+                    {
+                        toExplore.Enqueue(current, (int)current.Type);
+                        tries++;
+                        continue;
+                    }
+                    else
+                    {
+                        currentLevel++;
+                        current.accessLevel = currentLevel;
+
+                    }
+                }
+                else if (current.Type == Vertex.VertexType.Key)
+                {
+                    var l = graph.Edges.Find(x => x.Type == Edge.EdgeType.Relational && x.From == current).To;
+                    locks[l]--;
+                }
+                else if (current.Type == Vertex.VertexType.Goal)
                 {
                     GD.Print("Is traversable");
                     return true;
@@ -286,13 +317,84 @@ namespace GraphRewritingTest.Scripts.GraphLib.MissionGraph
                     if (!visited.Contains(vert))
                     {
                         visited.Add(vert);
-                        toExplore.Enqueue(vert);
+                        vert.accessLevel = currentLevel;
+                        toExplore.Enqueue(vert, (int)vert.Type);
                     }
                 }
             }
 
             GD.Print("Not traversable");
             return false;
+        }
+
+        public void AssignAccessLevels()
+        {
+            Vertex entrance, goal;
+            entrance = graph.Vertices.Find(x => x.Type == Vertex.VertexType.Entrance);
+            goal = graph.Vertices.Find(x => x.Type == Vertex.VertexType.Goal);
+
+
+            const int MAX_TRIES = 1000;
+            int tries = 0;
+            PriorityQueue<Vertex, int> toExplore = new();
+            HashSet<Vertex> visited = new();
+            Dictionary<Vertex, int> locks = new();
+            int currentLevel = 0;
+            toExplore.Enqueue(entrance, 0);
+            visited.Add(entrance);
+
+            foreach (Vertex v in graph.Vertices.Where(x => x.Type == Vertex.VertexType.Lock))
+            {
+                locks[v] = graph.Edges.Count(x => x.To == v && x.Type == Edge.EdgeType.Relational);
+            }
+            foreach ((var key, var val) in locks)
+            {
+                GD.Print($"{key} - {val}");
+
+            }
+            while (toExplore.Count > 0 && tries < MAX_TRIES)
+            {
+                Vertex current = toExplore.Dequeue();
+                if (current.Type == Vertex.VertexType.Lock)
+                {
+                    if (locks[current] > 0)
+                    {
+                        toExplore.Enqueue(current, (int)current.Type);
+                        tries++;
+                        continue;
+                    }
+                    else
+                    {
+                        currentLevel++;
+                        current.accessLevel = currentLevel;
+                    }
+                }
+                else if (current.Type == Vertex.VertexType.Key)
+                {
+                    var l = graph.Edges.Find(x => x.Type == Edge.EdgeType.Relational && x.From == current).To;
+                    locks[l]--;
+                }
+
+                // add lock check
+
+                var connected = graph.Edges.Where(x => x.From == current && x.Type == Edge.EdgeType.Directional).Select(x => x.To);
+                foreach (var vert in connected)
+                {
+                    if (!visited.Contains(vert))
+                    {
+                        visited.Add(vert);
+                        vert.accessLevel = currentLevel;
+                        toExplore.Enqueue(vert, (int)vert.Type);
+                    }
+                }
+            }
+            GD.Print(tries);
+            foreach ((var key, var val) in locks)
+            {
+                GD.Print($"{key} - {val}");
+
+            }
+            GD.Print("Finished assigning levels");
         }
 
         public bool HasOverlappingDirectionalEdges()

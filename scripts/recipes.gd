@@ -69,7 +69,7 @@ func complete_recipe() -> void:
 	recipe_tree.reset_recipe()
 	recipe_complete.emit()
 	organise_graph.emit()
-	update_gaph_visual.emit()
+	#update_gaph_visual.emit()
 	
 func reset_recipe() -> void:
 	recipe_tree.reset_recipe()

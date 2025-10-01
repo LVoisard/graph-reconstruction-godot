@@ -33,7 +33,7 @@ func set_type(new_type: NodeType) -> void:
 	type = new_type
 	
 func update_visuals() -> void:
-	label.text = "%d:%s" % [id, NodeType.keys()[type].substr(0,1)]
+	label.text = "%d:%s:%d" % [id, NodeType.keys()[type].substr(0,1), graph.backend.GetVertex(id).accessLevel]
 	match type:
 		NodeType.ANY:
 			outline.texture = outline_texture_round

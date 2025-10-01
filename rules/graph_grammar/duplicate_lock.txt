@@ -1,6 +1,6 @@
 input
 vertices
-1,124,497,Lock
+1,0,124,497,Lock
 2,319,497,Any
 3,497,498,Task
 4,316,326,Key

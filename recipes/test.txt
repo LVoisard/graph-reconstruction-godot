@@ -4,4 +4,3 @@ add_lock,graph_grammar/add_lock.txt,2,4
 duplicate_key,graph_grammar/duplicate_key.txt,0,2
 pull_task_to_hide_key,graph_grammar/pull_task_to_hide_key.txt,6,11
 move_lock_towards_entrance,graph_grammar/move_lock_towards_entrance.txt,3,5
-add_shorcut_to_lock,graph_grammar/add_shorcut_to_lock.txt,-1,-1

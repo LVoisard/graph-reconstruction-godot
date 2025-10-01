@@ -1,73 +1,107 @@
-using Godot;
 using System;
 using System.Collections.Generic;
-using Queue = System.Collections.Generic.Queue<GraphRewritingTest.Scripts.GraphLib.Vertex>;
-using Godot.Collections;
+using Godot;
 
-using GraphRewritingTest.Scripts.GraphLib.MissionGraph;
 namespace GraphRewritingTest.Scripts.GraphLib.Layout
 {
     [GlobalClass]
+    /// <summary>
+    /// The generator that tries to generate a map layout
+    /// </summary>
     public partial class LayoutHandler : GodotObject
     {
-        private Map map;
+        /// <summary>
+        /// random variable for random selection
+        /// </summary>
         private Random random;
 
+        /// <summary>
+        /// Constructor of the generator class for the map layout
+        /// </summary>
         public LayoutHandler()
         {
-            var rng = new Random();
-            map = new Map(mapWidth, mapHeight, rng);
-            random = rng;
+            this.random = new Random();
         }
 
-        public Map BuildLayout(GodotGraph graph)
+        /// <summary>
+        /// Generate a map layout that correspond to the input mission graph
+        /// </summary>
+        /// <param name="graph">the mission graph that need to be mapped to a 2D layout</param>
+        /// <returns>a 2D layout of the mission graph</returns>
+        public Map GenerateDungeon(MissionGraph.GodotGraph graph)
         {
-            // 1. place start node in the middle
-            int cx = mapWidth / 2;
-            int cy = mapHeight / 2;
-            map.PlaceCell(cx, cy, graph.GetEntrance());
-
-            // 2. BFS expansion
-            Queue open = new();
-            Godot.Collections.Dictionary<Vertex, int> parentIDs = new();
-
-            foreach (var child in graph.GetVertexNeighbours(graph.GetEntrance().Id))
+            Map result = new Map(this.random);
+            result.initializeCell(graph.GetEntrance());
+            #region  make initial dungeon
+            List<Vertex> open = new List<Vertex>();
+            Dictionary<Vertex, int> parentIDs = new Dictionary<Vertex, int>();
+            foreach (Vertex child in graph.GetVertexNeighbours(graph.GetEntrance().Id))
             {
-                open.Enqueue(child);
-                parentIDs[child] = graph.GetEntrance().Id;
+                open.Add(child);
+                parentIDs.Add(child, 0);
             }
-
-            HashSet<Vertex> visited = new() { graph.GetEntrance() };
-
+            HashSet<Vertex> nodes = new HashSet<Vertex>();
+            nodes.Add(graph.GetEntrance());
             while (open.Count > 0)
             {
-                var current = open.Dequeue();
-                if (visited.Contains(current)) continue;
-                visited.Add(current);
-
-                if (!map.AddCell(current, parentIDs[current]))
-                    return null; // fail, no space
-
-                foreach (var child in graph.GetVertexNeighbours(current.Id))
+                Vertex current = open[0];
+                open.RemoveAt(0);
+                if (nodes.Contains(current))
+                {
+                    continue;
+                }
+                nodes.Add(current);
+                if (!result.addCell(graph, current, parentIDs[current]))
+                {
+                    return null;
+                }
+                foreach (Vertex child in graph.GetVertexNeighbours(current.Id))
                 {
                     if (!parentIDs.ContainsKey(child))
                     {
                         if (current.Type == Vertex.VertexType.Lock)
-                            parentIDs[child] = current.Id;
+                        {
+                            parentIDs.Add(child, current.Id);
+                        }
                         else
-                            parentIDs[child] = parentIDs[current];
+                        {
+                            parentIDs.Add(child, parentIDs[current]);
+                        }
                     }
-                    open.Enqueue(child);
+                    open.Add(child);
                 }
             }
+            #endregion
 
-            // 3. Handle levers (optional)
-
-            return map;
+            #region make lever connections
+            open.Clear();
+            nodes.Clear();
+            open.Add(graph.GetEntrance());
+            while (open.Count > 0)
+            {
+                Vertex current = open[0];
+                open.RemoveAt(0);
+                if (nodes.Contains(current))
+                {
+                    continue;
+                }
+                nodes.Add(current);
+                foreach (Vertex child in graph.GetVertexNeighbours(current.Id))
+                {
+                    Cell from = result.getCell(current.Id);
+                    Cell to = result.getCell(child.Id);
+                    // if (current.Type == Vertex.VertexType.Lever)
+                    // {
+                    //     if (!result.makeConnection(from, to, nodes.Count * nodes.Count))
+                    //     {
+                    //         return null;
+                    //     }
+                    // }
+                    open.Add(child);
+                }
+            }
+            #endregion
+            return result;
         }
-
-        private int mapWidth => 20;
-        private int mapHeight => 20;
     }
 }
-

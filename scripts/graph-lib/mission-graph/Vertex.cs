@@ -11,6 +11,8 @@ namespace GraphRewritingTest.Scripts.GraphLib
 
 		[Export] public VertexType Type { get; private set; }
 
+		public int accessLevel { set; get; }
+
 		public Vertex(int id, VertexType type)
 		{
 			Id = id;

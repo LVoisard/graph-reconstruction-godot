@@ -1,110 +1,446 @@
-using Godot;
 using System;
+using System.Collections.Generic;
+using Godot;
+using GraphRewritingTest.Scripts.GraphLib.MissionGraph;
+
 namespace GraphRewritingTest.Scripts.GraphLib.Layout
 {
+    [GlobalClass]
+    /// <summary>
+    /// The map layout class
+    /// </summary>
     public partial class Map : GodotObject
     {
-
-        private int width, height;
-        private Cell[,] grid;
+        /// <summary>
+        /// random variable used to select cells randomly for expansions
+        /// </summary>
         private Random random;
+        /// <summary>
+        /// A list of all the possible direction to connect cells
+        /// </summary>
+        /// <value></value>
+        private List<int[]> directions = new List<int[]>{new int[]{-1, 0}, new int[]{1, 0},
+            new int[]{0, -1}, new int[]{0, 1}};
+        /// <summary>
+        /// A dictionary of all possible openings from each location
+        /// </summary>
+        private Dictionary<string, List<OpenNode>> openLocations;
+        /// <summary>
+        /// A dictionary of all used x,y locations
+        /// </summary>
+        private Dictionary<string, Cell> usedSpaces;
 
-        public Map(int w, int h, Random rng)
+        /// <summary>
+        /// Constructor that creates an empty layout
+        /// </summary>
+        /// <param name="random">the random variable that is used in generation</param>
+        public Map(Random random)
         {
-            width = w; height = h;
-            grid = new Cell[w, h];
-            random = rng;
+            this.random = random;
+            this.usedSpaces = new Dictionary<string, Cell>();
+            this.openLocations = new Dictionary<string, List<OpenNode>>();
         }
 
-        public Cell GetCell(int x, int y)
+        /// <summary>
+        /// Start the map by adding the first cell that correspond to the starting node of the mission graph
+        /// </summary>
+        /// <param name="node">the starting cell that has only to be connected randomly from one direction</param>
+        public void initializeCell(Vertex node)
         {
-            if (x < 0 || x >= width || y < 0 || y >= height) return null;
-            return grid[x, y];
+            Cell start = new Cell(0, 0, CellType.Normal, node);
+            this.usedSpaces.Add(start.getLocationString(), start);
+            this.openLocations.Add("0,0", new List<OpenNode>());
+            int[] randDir = this.directions[this.random.Next(this.directions.Count)];
+            this.openLocations["0,0"].Add(new OpenNode(randDir[0], randDir[1], start));
+            // foreach(int[] dir in this.directions){
+            //     this.openLocations["0,0"].Add(new OpenNode(dir[0], dir[1], start));
+            // }
         }
 
-        public bool IsFree(int x, int y)
+        /// <summary>
+        /// Get an empty location that has a specific access level and connected to a certain node
+        /// </summary>
+        /// <param name="parentID">the node id that need to be connected to</param>
+        /// <param name="accessLevel">the access level that the cell need to be at</param>
+        /// <returns>the empty location that has a certain parent id and access level</returns>
+        private OpenNode getWorkingLocation(int parentID, int accessLevel)
         {
-            return GetCell(x, y) == null;
-        }
-
-        public Cell PlaceCell(int x, int y, Vertex node)
-        {
-            if (!IsFree(x, y)) return null;
-            var cell = new Cell(x, y, node);
-            grid[x, y] = cell;
-            return cell;
-        }
-
-        public Cell FindParentCell(int parentId)
-        {
-            foreach (var c in grid)
+            if (!this.openLocations.ContainsKey(parentID + "," + accessLevel))
             {
-                if (c != null && c.Vert.Id == parentId)
+                return null;
+            }
+            Helper.shuffleList(this.random, this.openLocations[parentID + "," + accessLevel]);
+            OpenNode selected = null;
+            foreach (OpenNode loc in this.openLocations[parentID + "," + accessLevel])
+            {
+                if (!this.usedSpaces.ContainsKey(loc.x + "," + loc.y))
+                {
+                    selected = loc;
+                    break;
+                }
+            }
+            return selected;
+        }
+
+        /// <summary>
+        /// Adding a new cell in the map and modifying the used spaces and open spaces
+        /// </summary>
+        /// <param name="c">the new cell that is being added</param>
+        /// <param name="nextAccess">the new access level based on that cell</param>
+        /// <param name="parentID">the parent id that new cell</param>
+        private void addNewNode(Cell c, int nextAccess, int parentID)
+        {
+            this.usedSpaces.Add(c.getLocationString(), c);
+            if (!this.openLocations.ContainsKey(parentID + "," + nextAccess))
+            {
+                this.openLocations.Add(parentID + "," + nextAccess, new List<OpenNode>());
+            }
+            foreach (int[] dir in this.directions)
+            {
+                int newX = c.x + dir[0];
+                int newY = c.y + dir[1];
+                if (!this.usedSpaces.ContainsKey(newX + "," + newY))
+                {
+                    this.openLocations[parentID + "," + nextAccess].Add(new OpenNode(newX, newY, c));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get the cell that has a certain mission graph node id
+        /// </summary>
+        /// <param name="id">the id of the mission graph node</param>
+        /// <returns>the cell that have a mission graph node id</returns>
+        public Cell getCell(int id)
+        {
+            foreach (Cell c in this.usedSpaces.Values)
+            {
+                if (c.node != null && c.node.Id == id)
+                {
                     return c;
+                }
             }
             return null;
         }
 
-        // Try to add a cell next to its parent
-        public bool AddCell(Vertex node, int parentId)
+        public Cell getCell(int x, int y)
         {
-            var parent = FindParentCell(parentId);
-            if (parent == null) return false;
+            if (this.usedSpaces.ContainsKey($"{x},{y}"))
+                return this.usedSpaces[$"{x},{y}"];
+            return null;
 
-            // candidate directions
-            var dirs = new (int dx, int dy, string label)[] {
-                (0, 1, "North"),
-                (0,-1, "South"),
-                (1, 0, "East"),
-                (-1,0, "West")
-            };
+        }
 
-            // shuffle directions to add variation
-            for (int i = 0; i < dirs.Length; i++)
+        /// <summary>
+        /// Get a path between the "from" cell to the "to" cell without changing the access level
+        /// </summary>
+        /// <param name="from">the starting cell</param>
+        /// <param name="to">the ending cell</param>
+        /// <param name="accessLevel">the access level of the successor cells in the path</param>
+        /// <returns>a list of (x,y) locations that connect between "from" cell to "to" cell</returns>
+        public List<int[]> getDungeonPath(Cell from, Cell to, int accessLevel)
+        {
+            List<TreeNode> queue = new List<TreeNode>();
+            queue.Add(new TreeNode(from.x, from.y, null, to.x, to.y));
+            HashSet<string> visited = new HashSet<string>();
+            while (queue.Count > 0)
             {
-                int j = random.Next(i, dirs.Length);
-                (dirs[i], dirs[j]) = (dirs[j], dirs[i]);
-            }
-
-            foreach (var (dx, dy, label) in dirs)
-            {
-                int nx = parent.X + dx;
-                int ny = parent.Y + dy;
-                if (IsFree(nx, ny))
+                queue.Sort();
+                TreeNode current = queue[0];
+                queue.Remove(current);
+                if (current.x == to.x && current.y == to.y)
                 {
-                    var cell = PlaceCell(nx, ny, node);
-                    if (cell != null)
+                    return current.getPath();
+                }
+                if (from.parent != null && current.x == from.parent.x && current.y == from.parent.y)
+                {
+                    continue;
+                }
+                if (visited.Contains(current.x + "," + current.y))
+                {
+                    continue;
+                }
+                if (!this.usedSpaces.ContainsKey(current.x + "," + current.y))
+                {
+                    continue;
+                }
+                if (this.usedSpaces[current.x + "," + current.y].Type == CellType.Connection)
+                {
+                    continue;
+                }
+                if (this.usedSpaces[current.x + "," + current.y].node.accessLevel != accessLevel)
+                {
+                    continue;
+                }
+
+                visited.Add(current.x + "," + current.y);
+                foreach (int[] dir in directions)
+                {
+                    if (this.usedSpaces[current.x + "," + current.y].getDoor(-dir[0], -dir[1]) != 0)
                     {
-                        // connect neighbors
-                        parent.Neighbors[label] = cell;
-                        string opposite = label switch
-                        {
-                            "North" => "South",
-                            "South" => "North",
-                            "East" => "West",
-                            "West" => "East",
-                            _ => ""
-                        };
-                        cell.Neighbors[opposite] = parent;
-                        return true;
+                        int newX = current.x + dir[0];
+                        int newY = current.y + dir[1];
+                        queue.Add(new TreeNode(newX, newY, current, to.x, to.y));
                     }
                 }
             }
-            return false; // no room
+            return new List<int[]>();
         }
 
-        public void PrintAscii()
+        /// <summary>
+        /// Get a list of all open spaces that are needed to be transformed to cells to maintain connection between "from" cell to "to" cell
+        /// </summary>
+        /// <param name="from">the starting cell</param>
+        /// <param name="to">the ending cell</param>
+        /// <param name="maxIterations">the number of times that algorithm should try before failing</param>
+        /// <returns>the empty locations that need to be converted to "conncet" cells</returns>
+        private List<int[]> getConnectionPoints(Cell from, Cell to, int maxIterations)
         {
-            for (int y = height - 1; y >= 0; y--)
+            int accessLevel = Math.Min(from.node.accessLevel, to.node.accessLevel);
+            List<TreeNode> queue = new List<TreeNode>();
+            foreach (int[] dir in directions)
             {
-                for (int x = 0; x < width; x++)
-                {
-                    var c = grid[x, y];
-                    if (c == null) Console.Write(" . ");
-                    else Console.Write(" " + c.Vert.Type.ToString()[0] + " ");
-                }
-                Console.WriteLine();
+                int newX = from.x + dir[0];
+                int newY = from.y + dir[1];
+                queue.Add(new TreeNode(newX, newY, new TreeNode(from.x, from.y, null, to.x, to.y), to.x, to.y));
             }
+            HashSet<string> visited = new HashSet<string>();
+            visited.Add(from.x + "," + from.y);
+            while (queue.Count > 0)
+            {
+                queue.Sort();
+                TreeNode current = queue[0];
+                queue.Remove(current);
+                if (current.x == to.x && current.y == to.y)
+                {
+                    return current.getPath();
+                }
+                if (this.usedSpaces.ContainsKey(current.x + "," + current.y) &&
+                    this.usedSpaces[current.x + "," + current.y].Type == CellType.Normal)
+                {
+                    if (this.usedSpaces[current.x + "," + current.y].node.accessLevel > accessLevel)
+                    {
+                        continue;
+                    }
+                    List<int[]> dungeonPath = this.getDungeonPath(this.usedSpaces[current.x + "," + current.y], to, accessLevel);
+                    if (dungeonPath.Count > 0)
+                    {
+                        return current.getPath();
+                    }
+                }
+                if (from.parent != null && current.x == from.parent.x && current.y == from.parent.y)
+                {
+                    continue;
+                }
+                if (visited.Contains(current.x + "," + current.y))
+                {
+                    continue;
+                }
+                if (visited.Count > maxIterations)
+                {
+                    return new List<int[]>();
+                }
+                visited.Add(current.x + "," + current.y);
+                foreach (int[] dir in directions)
+                {
+                    int newX = current.x + dir[0];
+                    int newY = current.y + dir[1];
+                    queue.Add(new TreeNode(newX, newY, current, to.x, to.y));
+                }
+            }
+            return new List<int[]>();
+        }
+
+        /// <summary>
+        /// Create the "connect" cells to connect "from" cell to "to" cell
+        /// </summary>
+        /// <param name="from">the starting cell</param>
+        /// <param name="to">the end cell</param>
+        /// <param name="maxIterations">the maximum number of trials before failing</param>
+        /// <returns>True if the connection succeeded and False otherwise</returns>
+        public bool makeConnection(Cell from, Cell to, int maxIterations)
+        {
+            List<int[]> points = this.getConnectionPoints(from, to, maxIterations);
+            if (points.Count == 0)
+            {
+                return false;
+            }
+            foreach (int[] p in points)
+            {
+                if (!this.usedSpaces.ContainsKey(p[0] + "," + p[1]))
+                {
+                    Cell currentCell = new Cell(p[0], p[1], CellType.Connection, null);
+                    this.usedSpaces.Add(currentCell.getLocationString(), currentCell);
+                }
+            }
+            for (int i = 1; i < points.Count; i++)
+            {
+                int[] p = points[i];
+                Cell previousCell = this.usedSpaces[points[i - 1][0] + "," + points[i - 1][1]];
+                Cell currentCell = this.usedSpaces[p[0] + "," + p[1]];
+                DoorType door = DoorType.Open;
+                if (previousCell.node != null)
+                {
+                    // if (previousCell.node.Type == Vertex.VertexType.Lever)
+                    // {
+                    //     door = DoorType.LeverLock;
+                    // }
+                }
+                if (currentCell.getDoor(currentCell.x - previousCell.x, currentCell.y - previousCell.y) == 0)
+                {
+                    currentCell.connectCells(previousCell, door);
+                }
+
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Add a new cell to the layout that correspond to a certain node in the mission graph
+        /// </summary>
+        /// <param name="node">corresponding node in the mission graph</param>
+        /// <param name="parentID">the id of the parent that the new cell should be connected to</param>
+        /// <returns>True if it succeed and False otherwise</returns>
+        public bool addCell(GodotGraph graph, Vertex node, int parentID)
+        {
+            if (node.Type == Vertex.VertexType.Lock)
+            {
+                OpenNode selected = this.getWorkingLocation(parentID, node.accessLevel - 1);
+                if (selected == null)
+                {
+                    return false;
+                }
+                Cell newCell = new Cell(selected.x, selected.y, CellType.Normal, node);
+                newCell.connectCells(selected.parent, DoorType.Locked);
+                newCell.parent = selected.parent;
+                this.addNewNode(newCell, node.accessLevel, node.Id);
+            }
+            // else if (node.Type == Vertex.VertexType.Puzzle)
+            // {
+            //     OpenNode selected = this.getWorkingLocation(parentID, node.accessLevel);
+            //     if (selected == null)
+            //     {
+            //         return false;
+            //     }
+            //     Cell newCell = new Cell(selected.x, selected.y, CellType.Normal, node);
+            //     newCell.connectCells(selected.parent, DoorType.Open);
+            //     newCell.parent = selected.parent;
+            //     this.addNewNode(newCell, node.accessLevel + 1, node.id);
+            // }
+            // else if (node.Type == Vertex.VertexType.Lever)
+            // {
+            //     OpenNode selected = this.getWorkingLocation(parentID, node.accessLevel);
+            //     if (selected == null)
+            //     {
+            //         return false;
+            //     }
+            //     Cell newCell = new Cell(selected.x, selected.y, CellType.Normal, node);
+            //     newCell.connectCells(selected.parent, DoorType.Open);
+            //     newCell.parent = selected.parent;
+            //     this.usedSpaces.Add(newCell.getLocationString(), newCell);
+            // }
+            else
+            {
+                OpenNode selected = this.getWorkingLocation(parentID, node.accessLevel);
+                if (selected == null)
+                {
+                    return false;
+                }
+                Cell newCell = new Cell(selected.x, selected.y, CellType.Normal, node);
+                newCell.connectCells(selected.parent, DoorType.Open);
+                // if (selected.parent.node.Type == Vertex.VertexType.Puzzle)
+                // {
+                //     newCell.connectCells(selected.parent, DoorType.PuzzleLock);
+                // }
+                // else if (selected.parent.node.Type == Vertex.VertexType.Lever)
+                // {
+                //     newCell.connectCells(selected.parent, DoorType.LeverLock);
+                // }
+
+
+                if (graph.GetVertexNeighbours(node.Id).Length == 0)
+                {
+                    this.usedSpaces.Add(newCell.getLocationString(), newCell);
+                }
+                else
+                {
+                    this.addNewNode(newCell, node.accessLevel, parentID);
+                }
+                newCell.parent = selected.parent;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// return a 2D array of cells where the cells are placed in a grid
+        /// </summary>
+        /// <returns>2D array of the cells</returns>
+        public Cell[] get2DMap()
+        {
+            int minX = 0;
+            int maxX = 0;
+            int minY = 0;
+            int maxY = 0;
+            foreach (Cell c in this.usedSpaces.Values)
+            {
+                if (c.x < minX)
+                {
+                    minX = c.x;
+                }
+                if (c.y < minY)
+                {
+                    minY = c.y;
+                }
+                if (c.x > maxX)
+                {
+                    maxX = c.x;
+                }
+                if (c.y > maxY)
+                {
+                    maxY = c.y;
+                }
+            }
+            int sizeX = maxX - minX + 1;
+            int sizeY = maxY - minY + 1;
+            Cell[] result = new Cell[sizeX * sizeY];
+            foreach (Cell c in this.usedSpaces.Values)
+            {
+                Cell clone = c.clone();
+                clone.x = c.x - minX;
+                clone.y = c.y - minY;
+                result[clone.x + sizeX * clone.y] = clone;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Get a string represntation of the current layout
+        /// </summary>
+        /// <returns>a string of the current map layout</returns>
+        public override string ToString()
+        {
+            string nullCell = "     \n     \n     \n     \n     ";
+            string result = "";
+            Cell[] result2D = this.get2DMap();
+            for (int c = 0; c < result2D.Length; c++)
+            {
+                string[] parts = new string[5];
+                string[] temp = nullCell.Split('\n');
+                if (result2D[c] != null)
+                {
+                    temp = result2D[c].ToString().Split('\n');
+                }
+                for (int i = 0; i < parts.Length; i++)
+                {
+                    parts[i] += temp[i];
+                }
+
+                for (int i = 0; i < parts.Length; i++)
+                {
+                    result += parts[i] + "\n";
+                }
+            }
+            return result;
         }
     }
 }

@@ -1,24 +1,36 @@
-[gd_scene load_steps=15 format=4 uid="uid://chhdbxgjw653i"]
+[gd_scene load_steps=20 format=4 uid="uid://chhdbxgjw653i"]
 
 [ext_resource type="Script" uid="uid://c3otoiflt3i1q" path="res://addons/wfc/nodes/layered_map_2d.gd" id="1_1ahhd"]
 [ext_resource type="Script" uid="uid://blk778nork3dr" path="res://scenes/dungeon_layout.gd" id="1_7tq1y"]
 [ext_resource type="PackedScene" uid="uid://m7c1nsgiiqkd" path="res://scenes/generator.tscn" id="1_a1oti"]
 [ext_resource type="Script" uid="uid://d1siouratvecn" path="res://addons/wfc/nodes/generator_2d.gd" id="1_u8cmh"]
 [ext_resource type="Script" uid="uid://3jn4kn5n5qb0" path="res://addons/wfc/problems/2d/mappers/mapper_2d_factory.gd" id="2_ayhjk"]
+[ext_resource type="Script" uid="uid://casqnnqoid0h0" path="res://addons/wfc/utils/bitmatrix.gd" id="3_uf81g"]
+[ext_resource type="Script" uid="uid://c7wld7487ngrt" path="res://addons/wfc/problems/2d/rules_2d.gd" id="4_6w722"]
 [ext_resource type="Script" uid="uid://df7mji82gcv08" path="res://addons/wfc/runners/runner_multithreaded_settings.gd" id="4_xf6pi"]
+[ext_resource type="Script" uid="uid://o12ryqt7uyfd" path="res://addons/wfc/solver/solver_settings.gd" id="5_rrvol"]
 [ext_resource type="Script" uid="uid://cs23t7qwqxddp" path="res://addons/wfc/problems/2d/preconditions/precondition_2d_remap_by_map.gd" id="7_82kje"]
 [ext_resource type="PackedScene" uid="uid://dt2nffs32s7o1" path="res://addons/wfc/examples/helpers/progress_indicator.tscn" id="8_88c1p"]
 [ext_resource type="TileSet" uid="uid://f5ab14o2k2wy" path="res://addons/wfc/examples/assets/kenney-tiny-dungeon/tile-set-main.tres" id="10_njufx"]
 [ext_resource type="TileSet" uid="uid://drvu3d0pwtf50" path="res://addons/wfc/examples/assets/kenney-tiny-dungeon/tile-set-decorations.tres" id="11_lpeqw"]
 
+[sub_resource type="Resource" id="Resource_vn56u"]
+script = ExtResource("4_6w722")
+metadata/_custom_type_script = "uid://c7wld7487ngrt"
+
+[sub_resource type="Resource" id="Resource_qejs7"]
+script = ExtResource("5_rrvol")
+sparse_history_start = 0
+metadata/_custom_type_script = "uid://o12ryqt7uyfd"
+
 [sub_resource type="Resource" id="Resource_e5vlq"]
 script = ExtResource("7_82kje")
 class_map = NodePath("../remap_classes")
+remap_empty = true
 metadata/_custom_type_script = "uid://cs23t7qwqxddp"
 
 [sub_resource type="Resource" id="Resource_jgett"]
 script = ExtResource("4_xf6pi")
-max_threads = 6
 metadata/_custom_type_script = "uid://df7mji82gcv08"
 
 [sub_resource type="Resource" id="Resource_xf6pi"]
@@ -35,8 +47,10 @@ script = ExtResource("1_7tq1y")
 script = ExtResource("1_u8cmh")
 target = NodePath("../target")
 rect = Rect2i(0, 0, 100, 100)
+rules = SubResource("Resource_vn56u")
 positive_sample = NodePath("../sample")
 negative_sample = NodePath("../negative_sample")
+solver_settings = SubResource("Resource_qejs7")
 precondition = SubResource("Resource_e5vlq")
 multithreaded_runner_settings = SubResource("Resource_jgett")
 render_intermediate_results = true
@@ -90,7 +104,6 @@ script = ExtResource("1_1ahhd")
 mapper_factory = SubResource("Resource_xf6pi")
 
 [node name="main" type="TileMapLayer" parent="target"]
-visible = false
 tile_set = ExtResource("10_njufx")
 
 [node name="decorations" type="TileMapLayer" parent="target"]
@@ -99,8 +112,9 @@ tile_set = ExtResource("11_lpeqw")
 
 [node name="Generator" parent="." instance=ExtResource("1_a1oti")]
 visible = false
+z_index = 10
+z_as_relative = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
-visible = false
 offset = Vector2(1000, 1200)
-zoom = Vector2(0.35, 0.35)
+zoom = Vector2(0.5, 0.5)

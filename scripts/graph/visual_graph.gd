@@ -94,6 +94,7 @@ func update_visuals_from_backend() -> void:
 			continue
 		var visual: VisualGraphNode = visual_nodes[index]
 		visual.position = Vector2(v.X, v.Y)
+		visual.update_visuals()
 	for e in backend.GetEdges():
 		var index = visual_connections.find_custom(func(x): return x.a().id == e.From.Id and x.b().id == e.To.Id)
 		if index == -1:
