@@ -1,3 +1,4 @@
+@tool
 class_name VisualGraph extends Control
 
 @onready var context_menu: ContextMenu = $"context_menu"
@@ -11,10 +12,10 @@ var visual_connections: Array[Connection] = []
 var current_id: int = 0
 var free_ids: Array[int] = []
 
-var backend: GodotGraph = GodotGraph.new()
+var backend: LVGraph = LVGraph.new()
 	
 func create_new_node() -> VisualGraphNode:
-	var new_node = backend.CreateVertex()
+	var new_node = backend.create_node()
 	var visual: VisualGraphNode = graph_node_prefab.instantiate()
 	visual.set_graph(self)
 	visual.set_type(VisualGraphNode.NodeType.ANY)
@@ -24,7 +25,7 @@ func create_new_node() -> VisualGraphNode:
 	return visual	
 	
 func create_new_connection(from: VisualGraphNode, to: VisualGraphNode) -> Connection:
-	var con = backend.CreateEdge(backend.GetVertex(from.id), backend.GetVertex(to.id))
+	backend.connect_nodes(from.id, to.id)
 	var visual_con: Connection = connection_prefab.instantiate()
 	visual_connections.append(visual_con)
 	visual_con.set_connection_nodes(from, to)	
@@ -109,7 +110,7 @@ func clear_all() -> void:
 	clear_visuals()
 	
 func clear_backend() -> void:
-	backend.Clear()	
+	pass
 	
 func copy_graph(input: VisualGraph) -> void:
 	var mapping: Dictionary[VisualGraphNode, VisualGraphNode] = {}

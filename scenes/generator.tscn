@@ -1,11 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://m7c1nsgiiqkd"]
+[gd_scene format=3 uid="uid://m7c1nsgiiqkd"]
 
 [ext_resource type="Script" uid="uid://e6gvy72yn54q" path="res://scripts/generator_controller.gd" id="1_vxu2e"]
 [ext_resource type="PackedScene" uid="uid://cjrsqkrswr52s" path="res://scenes/recipes.tscn" id="2_ef8yp"]
 [ext_resource type="Script" uid="uid://cdp2waevu07a" path="res://scenes/manual_file_tree.gd" id="2_rqoq6"]
 [ext_resource type="PackedScene" uid="uid://2366d4on4cdd" path="res://scenes/graph.tscn" id="4_xsyub"]
 
-[node name="Generator" type="Control"]
+[node name="Generator" type="Control" unique_id=1041639491]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1920.0
@@ -15,7 +15,7 @@ size_flags_vertical = 3
 script = ExtResource("1_vxu2e")
 metadata/_tab_index = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=2088620993]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,11 +23,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Left Bar" type="Control" parent="HBoxContainer"]
+[node name="Left Bar" type="Control" parent="HBoxContainer" unique_id=965551272]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 
-[node name="Panel" type="Panel" parent="HBoxContainer/Left Bar"]
+[node name="Panel" type="Panel" parent="HBoxContainer/Left Bar" unique_id=808224940]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,7 +35,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="VBoxContainer" parent="HBoxContainer/Left Bar/Panel"]
+[node name="HBoxContainer" type="VBoxContainer" parent="HBoxContainer/Left Bar/Panel" unique_id=1078429223]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -43,12 +43,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TabContainer" type="TabContainer" parent="HBoxContainer/Left Bar/Panel/HBoxContainer"]
+[node name="TabContainer" type="TabContainer" parent="HBoxContainer/Left Bar/Panel/HBoxContainer" unique_id=1516336327]
 layout_mode = 2
 size_flags_vertical = 3
 current_tab = 0
 
-[node name="Manual" type="MarginContainer" parent="HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer"]
+[node name="Manual" type="MarginContainer" parent="HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer" unique_id=157651816]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -58,7 +58,7 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 metadata/_tab_index = 0
 
-[node name="VBoxContainer" type="Tree" parent="HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer/Manual"]
+[node name="VBoxContainer" type="Tree" parent="HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer/Manual" unique_id=655378447]
 layout_mode = 2
 columns = 3
 column_titles_visible = true
@@ -66,29 +66,29 @@ hide_root = true
 script = ExtResource("2_rqoq6")
 metadata/_custom_type_script = "uid://c7no7sdr70pi1"
 
-[node name="Recipes" parent="HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer" instance=ExtResource("2_ef8yp")]
+[node name="Recipes" parent="HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer" unique_id=100758502 instance=ExtResource("2_ef8yp")]
 visible = false
 layout_mode = 2
 
-[node name="refresh button" type="Button" parent="HBoxContainer/Left Bar/Panel/HBoxContainer"]
+[node name="refresh button" type="Button" parent="HBoxContainer/Left Bar/Panel/HBoxContainer" unique_id=650977019]
 layout_mode = 2
 text = "Refresh Rules"
 
-[node name="clear button" type="Button" parent="HBoxContainer/Left Bar/Panel/HBoxContainer"]
+[node name="clear button" type="Button" parent="HBoxContainer/Left Bar/Panel/HBoxContainer" unique_id=1981887531]
 layout_mode = 2
 text = "Clear"
 
-[node name="Input Graph Viewport" type="SubViewportContainer" parent="HBoxContainer"]
+[node name="Input Graph Viewport" type="SubViewportContainer" parent="HBoxContainer" unique_id=2016746343]
 layout_mode = 2
 size_flags_horizontal = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="HBoxContainer/Input Graph Viewport"]
+[node name="SubViewport" type="SubViewport" parent="HBoxContainer/Input Graph Viewport" unique_id=1645060456]
 handle_input_locally = false
 size = Vector2i(1516, 1080)
 render_target_update_mode = 4
 
-[node name="Control" type="Control" parent="HBoxContainer/Input Graph Viewport/SubViewport"]
+[node name="Control" type="Control" parent="HBoxContainer/Input Graph Viewport/SubViewport" unique_id=358781039]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -98,10 +98,10 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="input graph" parent="HBoxContainer/Input Graph Viewport/SubViewport/Control" instance=ExtResource("4_xsyub")]
+[node name="input graph" parent="HBoxContainer/Input Graph Viewport/SubViewport/Control" unique_id=1992332534 instance=ExtResource("4_xsyub")]
 layout_mode = 1
 
-[node name="Label" type="Label" parent="HBoxContainer/Input Graph Viewport/SubViewport"]
+[node name="Label" type="Label" parent="HBoxContainer/Input Graph Viewport/SubViewport" unique_id=1749850821]
 offset_right = 42.0
 offset_bottom = 23.0
 text = "Input

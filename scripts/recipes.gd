@@ -1,4 +1,6 @@
-class_name Recipes extends Control
+@tool
+class_name Recipes 
+extends Control
 
 signal apply_rule_random(file_name)
 signal apply_rule_lsystem(file_name)

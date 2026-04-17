@@ -1,18 +1,40 @@
-[gd_scene load_steps=4 format=3 uid="uid://cf17oxuy8efcn"]
+[gd_scene format=3 uid="uid://b5cx0updylmq5"]
 
-[ext_resource type="Script" uid="uid://c5v606j583xnh" path="res://basic_player.gd" id="1_p4ps5"]
+[sub_resource type="GDScript" id="GDScript_sk61d"]
+script/source = "extends CharacterBody3D
+
+var movement_input: Vector2 = Vector2.ZERO
+
+func _input(event: InputEvent) -> void:
+	movement_input = Vector2.ZERO
+	if event.is_action(\"move_forward\"):
+		movement_input += Vector2.UP
+	if event.is_action(\"move_backwards\"):
+		movement_input += Vector2.DOWN
+	if event.is_action(\"move_left\"):
+		movement_input += Vector2.LEFT
+	if event.is_action(\"move_right\"):
+		movement_input += Vector2.RIGHT
+		
+	movement_input = movement_input.normalized()
+
+func _physics_process(delta: float) -> void:
+	velocity = velocity.slerp(Vector3(movement_input.x, 0, movement_input.y) * 5 + get_gravity(), delta)
+	move_and_slide()
+	
+"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_j1kr1"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_ipur3"]
 
-[node name="CharacterBody3D" type="CharacterBody3D"]
-script = ExtResource("1_p4ps5")
+[node name="CharacterBody3D" type="CharacterBody3D" unique_id=720638147]
+script = SubResource("GDScript_sk61d")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=771022067]
 shape = SubResource("CapsuleShape3D_j1kr1")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=632186182]
 mesh = SubResource("CapsuleMesh_ipur3")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1444809409]

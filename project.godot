@@ -8,11 +8,15 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="graph_rewriting_test"
 run/main_scene="uid://chhdbxgjw653i"
-config/features=PackedStringArray("4.5", "C#", "Forward Plus")
+config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -30,7 +34,12 @@ project/assembly_name="graph_rewriting_test"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/Basic FPS Player/plugin.cfg", "res://addons/wfc/plugin.cfg")
+enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg", "res://addons/lv_graph/plugin.cfg", "res://addons/wfc/plugin.cfg")
+
+[gdunit4]
+
+settings/test/test_discovery=true
+ui/toolbar/run_overall=true
 
 [input]
 

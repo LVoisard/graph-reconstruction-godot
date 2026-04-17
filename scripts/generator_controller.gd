@@ -1,4 +1,6 @@
-class_name Generator extends Control
+@tool
+class_name Generator
+extends Control
 
 signal graph_complete
 
@@ -10,6 +12,8 @@ const generator_rule_prefab: PackedScene = preload("res://scenes/generator_rule.
 
 
 func _ready() -> void:
+	print("GOING")
+	
 	recipes.apply_rule_random.connect(apply_rule_random)
 	recipes.apply_rule_lsystem.connect(apply_rule_lsystem)
 	recipes.organise_graph.connect(organise_graph)
@@ -18,7 +22,7 @@ func _ready() -> void:
 	refresh_rules()
 	clear()
 	#Dungeon.Graph()
-	
+	print("GOING 2")
 	#clear()
 	
 func _process(delta: float) -> void:
@@ -62,30 +66,38 @@ func update_graph_visual() ->void:
 	
 func apply_rule_random(file: String) -> void:
 	print("Random " + file)
-	file = file.replace("res://rules/", "")
-	var patterns = GodotGraph.ParseRuleFromString(FileAccess.get_file_as_string("res://rules/" + file))
+	#file = file.replace("res://rules/", "")
+	
+	var rule = LVRule.from_file(FileAccess.open(file, FileAccess.READ))
+	#var patterns = GodotGraph.ParseRuleFromString(FileAccess.get_file_as_string("res://rules/" + file))
+	if !rule.apply(generator_graph.backend, LVRule.RuleMatchingMode.RANDOM):
+		print("No matches found")
 
-	var matches = SubgraphIsomorphism.FindAll(patterns[0], generator_graph.backend)
-	print("Found %d matches" % matches.size())	
-	if matches.is_empty():
-		print("No valid nodes")
-		return	
-	generator_graph.backend.ApplyRewrite(matches.pick_random(), patterns[0], patterns[1])
+	#var matches = SubgraphIsomorphism.FindAll(patterns[0], generator_graph.backend)
+	#print("Found %d matches" % matches.size())	
+	#if matches.is_empty():
+	#	print("No valid nodes")
+	#	return	
+	#generator_graph.backend.ApplyRewrite(matches.pick_random(), patterns[0], patterns[1])
 	
 func apply_rule_lsystem(file: String) -> void:
 	print("L-System " + file)
-	file = file.replace("res://rules/", "")
-	var patterns = GodotGraph.ParseRuleFromString(FileAccess.get_file_as_string("res://rules/" + file))
+	#file = file.replace("res://rules/", "")
+	var rule = LVRule.from_file(FileAccess.open(file, FileAccess.READ))
+	#var patterns = GodotGraph.ParseRuleFromString(FileAccess.get_file_as_string("res://rules/" + file))
 	#traverse_graph(graphs[0])
-	var matches = SubgraphIsomorphism.FindAll(patterns[0], generator_graph.backend)
+	#var matches = SubgraphIsomorphism.FindAll(patterns[0], generator_graph.backend)
 	
-	print("Found %d matches" % matches.size())
+	if !rule.apply(generator_graph.backend, LVRule.RuleMatchingMode.ALL):
+		print("No matches found")
 	
-	if matches.is_empty():
-		print("No valid nodes")
-		return
-	for m in matches:
-		generator_graph.backend.ApplyRewrite(m, patterns[0], patterns[1])
+	#print("Found %d matches" % matches.size())
+	
+	#if matches.is_empty():
+	#	print("No valid nodes")
+	#	return
+	#for m in matches:
+	#	generator_graph.backend.ApplyRewrite(m, patterns[0], patterns[1])
 	
 func finalize_graph() -> void:
 	generator_graph.backend.ArrangeForceDirected(10000,10000, 1000, 150, 100)

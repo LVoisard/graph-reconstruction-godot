@@ -1,4 +1,6 @@
-class_name RecipeTree extends Tree
+@tool
+class_name RecipeTree 
+extends Tree
 
 signal load_rule(path)
 

@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://drvu3d0pwtf50"]
+[gd_resource type="TileSet" format=3 uid="uid://drvu3d0pwtf50"]
 
 [ext_resource type="Texture2D" uid="uid://dafirfo2502o" path="res://addons/wfc/examples/assets/kenney-tiny-dungeon/tilemap_packed.png" id="1_eqa2d"]
 

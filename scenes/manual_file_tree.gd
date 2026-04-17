@@ -1,3 +1,4 @@
+@tool
 extends FileTree
 class_name ManualFileTree
 signal load_lsystem_rule(path)
@@ -6,6 +7,7 @@ func build_tree() -> void:
 	clear()
 	
 	var scanned_files = get_all_files("res://rules/")
+	print(scanned_files)
 	
 	set_column_title(NAME_COLUMN_INDEX, "Name")
 	set_column_expand(VIEW_FILE_COLUMN_INDEX, false)

@@ -1,5 +1,5 @@
-extends Control
 class_name Connection 
+extends Control
 
 var connection_nodes: Array[VisualGraphNode] = [null, null]
 var connector_bits: Array[bool] = [false,true]
