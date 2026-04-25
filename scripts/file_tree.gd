@@ -1,3 +1,4 @@
+@tool
 class_name FileTree extends Tree
 
 signal load_rule(path)
@@ -40,6 +41,8 @@ func build_tree() -> void:
 			
 	if on_item_button_pressed not in self.button_clicked.get_connections().map(func(x): return x["callable"]):
 		self.button_clicked.connect(on_item_button_pressed)
+	
+	print("hello world")
 	
 	#file_tree.check_propagated_to_item.connect(prop)
 

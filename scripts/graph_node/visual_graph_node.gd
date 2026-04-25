@@ -1,3 +1,4 @@
+@tool
 extends Control
 class_name VisualGraphNode
 
@@ -9,7 +10,7 @@ signal deleted(node)
 @export var outline_texture_square: Texture2D = null
 @export var visual_texture_square: Texture2D = null
 
-@onready var draggable: Draggable = $"draggable"
+#@onready var draggable: Draggable = $"draggable"
 @onready var outline: TextureRect = $"Outline"
 @onready var visual: TextureRect = $"Outline/NodeVisual"
 @onready var label: Label = $"Outline/NodeVisual/Label"
@@ -19,8 +20,8 @@ var id: int
 var graph: VisualGraph
 
 func _ready() -> void:
-	draggable.dragging.connect(on_moved)
-	draggable.finished_dragging.connect(on_moved)
+	#draggable.dragging.connect(on_moved)
+	#draggable.finished_dragging.connect(on_moved)
 	update_visuals() 
 	
 func set_graph(graph: VisualGraph) -> void:
@@ -33,7 +34,7 @@ func set_type(new_type: NodeType) -> void:
 	type = new_type
 	
 func update_visuals() -> void:
-	label.text = "%d:%s:%d" % [id, NodeType.keys()[type].substr(0,1), graph.backend.GetVertex(id).accessLevel]
+	label.text = "%d:%s:%d" % [id, NodeType.keys()[type].substr(0,1), 0]# temp access level
 	match type:
 		NodeType.ANY:
 			outline.texture = outline_texture_round
@@ -84,6 +85,11 @@ func on_moved() -> void:
 func _exit_tree() -> void:
 	deleted.emit(self)
 	
+# when start click and dragging
+func _get_drag_data(at_position: Vector2) -> Variant:
+	print(at_position)
+	set_drag_preview(self.duplicate())
+	return self
 
 enum NodeType {
 	ENTRANCE,

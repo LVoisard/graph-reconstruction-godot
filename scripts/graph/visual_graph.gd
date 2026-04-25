@@ -19,7 +19,7 @@ func create_new_node() -> VisualGraphNode:
 	var visual: VisualGraphNode = graph_node_prefab.instantiate()
 	visual.set_graph(self)
 	visual.set_type(VisualGraphNode.NodeType.ANY)
-	visual.set_id(new_node.Id)
+	visual.set_id(new_node.get_id())
 	visual_nodes.append(visual)
 	add_child(visual)
 	return visual	
@@ -34,7 +34,7 @@ func create_new_connection(from: VisualGraphNode, to: VisualGraphNode) -> Connec
 	return visual_con
 
 func remove_node_connections(node: VisualGraphNode) -> void:
-	backend.RemoveVertexEdges(node.id)
+	backend.RemoveVertexEdges(node.get_id())
 	var to_remove: Array[Node] = []
 	for con in visual_connections:
 		if con.a() == node || con.b() == node:
@@ -45,7 +45,7 @@ func remove_node_connections(node: VisualGraphNode) -> void:
 
 func remove_node(node: VisualGraphNode) -> void:
 	remove_node_connections(node)
-	backend.RemoveVertex(node.id)
+	backend.remove_node(node.id)
 	visual_nodes.erase(node)
 	node.queue_free()
 	
@@ -55,12 +55,12 @@ func remove_connection(con: Connection) -> void:
 	con.queue_free()
 	
 func change_node_type(node: VisualGraphNode, type: VisualGraphNode.NodeType) -> void:
-	backend.GetVertex(node.id).SetType(type)
+	backend.get_node(node.id).set_metadata("type", type)
 	node.set_type(type)
 	node.update_visuals()
 	
 func update_node_position(node: VisualGraphNode) ->void:
-	backend.GetVertex(node.id).SetPosition(node.position.x, node.position.y)
+	backend.get_node(node.id).set_metadata("position", node.position)
 	
 	
 func change_connection_type(con: Connection, type: Connection.ConnectionType) -> void:
@@ -70,19 +70,19 @@ func change_connection_type(con: Connection, type: Connection.ConnectionType) ->
 	
 func create_visuals_from_backend() -> void:
 	clear_visuals()
-	for v in backend.GetVertices():
+	for v in backend.get_nodes().values():
 		var visual = graph_node_prefab.instantiate() as VisualGraphNode
 		visual.set_graph(self)
-		visual.set_type(v.Type)
-		visual.set_id(v.Id)
-		visual.position = Vector2(v.X, v.Y)
+		visual.set_type(v.get_metadata("type"))
+		visual.set_id(v.get_id())
+		visual.position = v.get_metadata("position")
 		visual_nodes.append(visual)
 		add_child(visual)
-	for e in backend.GetEdges():
+	for e in backend.get_edges():
 		var visual_con: Connection = connection_prefab.instantiate()
 		visual_connections.append(visual_con)
-		visual_con.set_connection_nodes(visual_nodes[visual_nodes.find_custom(func(x): return x.id == e.From.Id)], visual_nodes[visual_nodes.find_custom(func(x): return x.id == e.To.Id)])	
-		visual_con.set_type(e.Type)
+		visual_con.set_connection_nodes(visual_nodes[visual_nodes.find_custom(func(x): return x.get_id() == e.from)], visual_nodes[visual_nodes.find_custom(func(x): return x.get_id() == e.to)])	
+		visual_con.set_type(e.type)
 		visual_con.set_graph(self)
 		
 		add_child(visual_con)

@@ -12,7 +12,7 @@ func _init(dict: Dictionary):
 		edges.append(AnalyticGraphEdge.new(int(params[0]), int(params[1]), params[2]))
 
 func add_node(node: AnalyticGraphNode):
-	nodes[node.id] = node
+	nodes[node.get_id()] = node
 
 func add_edge(edge: AnalyticGraphEdge):
 	edges.append(edge)
@@ -35,7 +35,7 @@ func get_next_id() -> int:
 func to_dict() -> Dictionary:
 	var d = {"nodes": [], "edges": []}
 	for node in nodes.values():
-		d["nodes"].append("%d,%d,%d,%s" % [node.id, node.x, node.y, node.label])
+		d["nodes"].append("%d,%d,%d,%s" % [node.get_id(), node.x, node.y, node.label])
 	for edge in edges:
 		d["edges"].append("%d,%d,%s" % [edge.source, edge.target, edge.label])
 	return d

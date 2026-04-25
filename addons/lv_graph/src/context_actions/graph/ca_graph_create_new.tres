@@ -1,0 +1,7 @@
+[gd_resource type="Resource" format=3 uid="uid://b021esmx6sf71"]
+
+[ext_resource type="Script" uid="uid://bhrmi12ddwrta" path="res://addons/lv_graph/src/context_actions/graph/ca_graph_create_new.gd" id="1_ye8qq"]
+
+[resource]
+script = ExtResource("1_ye8qq")
+action_text = "Create New Node"

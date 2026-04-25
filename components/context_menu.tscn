@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://mgvb8detqlu7"]
+[gd_scene format=3 uid="uid://mgvb8detqlu7"]
 
 [ext_resource type="Script" uid="uid://bi1wts51e6au8" path="res://components/context_menu.gd" id="1_4wdlj"]
 
-[node name="context_menu" type="PanelContainer"]
+[node name="context_menu" type="PanelContainer" unique_id=242336491]
 top_level = true
 custom_minimum_size = Vector2(0, 30)
 anchors_preset = -1
@@ -12,16 +12,15 @@ offset_bottom = -269.0
 script = ExtResource("1_4wdlj")
 context = "Context Menu Prefab"
 
-[node name="v-container" type="VBoxContainer" parent="."]
+[node name="v-container" type="VBoxContainer" parent="." unique_id=190996518]
 layout_mode = 2
 
-[node name="context-label" type="Label" parent="v-container"]
+[node name="context-label" type="Label" parent="v-container" unique_id=1426112662]
 layout_mode = 2
 size_flags_vertical = 0
-text = "Context
-"
+text = "Context Menu Prefab"
 horizontal_alignment = 1
 
-[node name="context-actions" type="VBoxContainer" parent="v-container"]
+[node name="context-actions" type="VBoxContainer" parent="v-container" unique_id=1886138904]
 layout_mode = 2
 theme_override_constants/separation = 1

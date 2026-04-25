@@ -3,13 +3,12 @@ extends Resource
 
 var _next_id: int = -1
 
-var _nodes: Dictionary
+var _nodes: Dictionary[int, LVNode]
 var _edges: Array[LVEdge]
 
 func create_node() -> LVNode:
-	var node = LVNode.new()
-	node.id = _next_node_id()
-	_nodes[node.id] = node
+	var node = LVNode.new(_next_node_id())
+	_nodes[node.get_id()] = node
 	return node
 	
 func remove_node(id: int) -> void:
@@ -32,8 +31,11 @@ func get_next_node_id(id: int) -> int:
 func get_node(id: int) -> LVNode:
 	return _nodes[id]
 	
-func get_nodes() -> Dictionary:
+func get_nodes() -> Dictionary[int, LVNode]:
 	return _nodes
+	
+func get_edges() -> Array[LVEdge]:
+	return _edges
 
 
 func _next_node_id() -> int:
@@ -43,4 +45,9 @@ func _next_node_id() -> int:
 	
 static func from_string(graph_string: String) -> LVGraph:
 	var graph = LVGraph.new()
+	
+	var node = graph.create_node()
+	node.set_metadata("type", 0)
+	node.set_metadata("position", Vector2(10, 10))
+	
 	return graph

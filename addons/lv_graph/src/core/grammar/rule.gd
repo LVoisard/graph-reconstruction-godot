@@ -3,6 +3,10 @@ extends Resource
 
 var _pattern: LVGraph
 var _output: LVGraph
+
+func _init(pattern: LVGraph, output: LVGraph):
+	self._pattern = pattern
+	self._output = output
 	
 func apply(target_graph: LVGraph, mode: RuleMatchingMode) -> bool:
 	
@@ -27,16 +31,13 @@ enum RuleMatchingMode {
 	ALL,
 }
 
+
 static func from_file(file: FileAccess) -> LVRule:
 	print(file.get_as_text())
-	var text = file.get_as_text()
-	#split text into input graph and output graph
 	
-	var pattern_text
-	var output_text
-	
-	var rule = LVRule.new()
-	rule._pattern = LVGraph.from_string(pattern_text)
-	rule._output = LVGraph.from_string(output_text)
+	var input_output: Array[String] = Helper.split_input_output(file)
 		
-	return rule
+	var pattern = LVGraph.from_string(input_output[0])
+	var output = LVGraph.from_string(input_output[0])
+	
+	return LVRule.new(pattern, output)

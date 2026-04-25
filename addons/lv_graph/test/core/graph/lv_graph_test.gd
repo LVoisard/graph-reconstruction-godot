@@ -15,22 +15,22 @@ func before_test() -> void:
 func test_create_node() -> void:	
 	var node: LVNode = graph.create_node()
 	
-	assert_int(node.id).is_equal(0)
+	assert_int(node.get_id()).is_equal(0)
 	assert_int(graph.get_nodes().size()).is_equal(1)
 
 func test_remove_node() -> void:
 	var node: LVNode = graph.create_node()
 	
-	assert_int(node.id).is_equal(0)
+	assert_int(node.get_id()).is_equal(0)
 	assert_int(graph.get_nodes().size()).is_equal(1) 
 	
-	graph.remove_node(node.id)
+	graph.remove_node(node.get_id())
 
 func test_connect_nodes() -> void:
 	var node1: LVNode = graph.create_node()
 	var node2: LVNode = graph.create_node()
 	
-	graph.connect_nodes(node1.id, node2.id)
+	graph.connect_nodes(node1.get_id(), node2.get_id())
 	
 	assert_int(graph.get_nodes().size()).is_equal(2) 
 	assert_int(graph._edges.size()).is_equal(1)

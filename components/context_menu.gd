@@ -1,3 +1,4 @@
+@tool
 class_name ContextMenu
 extends Control
 
@@ -14,8 +15,11 @@ func _ready() -> void:
 		printerr("Context-Menu \"%s\" has no parent" % context)
 	context_label.text = context
 	
-	get_parent().mouse_entered.connect(on_mouse_entered)
-	get_parent().mouse_exited.connect(on_mouse_exited)
+	if !get_parent() is SubViewport:
+		get_parent().mouse_entered.connect(on_mouse_entered)
+		get_parent().mouse_exited.connect(on_mouse_exited)
+		print(context)
+	
 	
 	for context_action in context_actions:
 		if context_action is SubContextAction:
@@ -37,8 +41,9 @@ func _ready() -> void:
 			context_actions_container.add_child(btn)
 		
 	self.hide()
+	
 
-func _input(event: InputEvent) -> void:
+func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
 		if event.is_pressed():
 			if mouse_over_parent:

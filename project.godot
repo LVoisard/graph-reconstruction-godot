@@ -19,10 +19,6 @@ run/main_scene="uid://chhdbxgjw653i"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
-[autoload]
-
-Helper="*res://Helper.gd"
-
 [display]
 
 window/size/viewport_width=1920

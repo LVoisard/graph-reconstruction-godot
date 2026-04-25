@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://b8pn7pipwpjec"]
+
+[ext_resource type="Script" uid="uid://dj52sq6lrj4lh" path="res://addons/lv_graph/src/test_ui_context.gd" id="1_xxjf1"]
+
+[node name="test_ui_context" type="PopupMenu" unique_id=1038176226]
+oversampling_override = 1.0
+visible = true
+item_count = 1
+item_0/text = "Joe"
+item_0/id = 0
+script = ExtResource("1_xxjf1")

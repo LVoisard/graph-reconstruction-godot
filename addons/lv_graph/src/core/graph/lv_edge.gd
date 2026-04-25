@@ -3,3 +3,4 @@ extends Resource
 
 var from: int
 var to: int
+var type: int

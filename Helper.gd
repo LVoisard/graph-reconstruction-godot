@@ -1,8 +1,6 @@
-extends Node
+class_name Helper
 
-
-func split_input_output(path: String) -> Array[String]:
-	var file = FileAccess.open(path, FileAccess.READ)
+static func split_input_output(file: FileAccess) -> Array[String]:
 	var input = ""
 	var output = ""
 	var mode = 0

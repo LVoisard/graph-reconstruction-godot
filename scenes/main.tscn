@@ -1,17 +1,20 @@
-[gd_scene load_steps=3 format=3 uid="uid://bgo78cbvaoxxk"]
+[gd_scene format=3 uid="uid://bgo78cbvaoxxk"]
 
 [ext_resource type="PackedScene" uid="uid://dav187gv7canr" path="res://scenes/rules.tscn" id="1_tho5h"]
 [ext_resource type="PackedScene" uid="uid://m7c1nsgiiqkd" path="res://scenes/generator.tscn" id="2_u4gl4"]
 
-[node name="main" type="Control"]
+[node name="main" type="Control" unique_id=1138831267]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=1290763328]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,7 +22,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TabContainer" type="TabContainer" parent="."]
+[node name="TabContainer" type="TabContainer" parent="." unique_id=1936404664]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,11 +33,11 @@ grow_vertical = 2
 size_flags_horizontal = 3
 current_tab = 0
 
-[node name="Generator" parent="TabContainer" instance=ExtResource("2_u4gl4")]
+[node name="Generator" parent="TabContainer" unique_id=523066131 instance=ExtResource("2_u4gl4")]
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="Rules" parent="TabContainer" instance=ExtResource("1_tho5h")]
+[node name="Rules" parent="TabContainer" unique_id=410310654 instance=ExtResource("1_tho5h")]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1

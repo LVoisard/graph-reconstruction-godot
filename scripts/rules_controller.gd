@@ -1,3 +1,4 @@
+@tool
 extends Control
 
 
@@ -42,11 +43,10 @@ func update_file_tree() -> void:
 func load_rule(path: String) -> void:
 	print("loading rule: %s" % path)
 	clear()
-	var strings = FileAccess.get_file_as_string(path)
-	var graphs = GodotGraph.ParseRuleFromString(strings)
-	input_graph.backend = graphs[0]
+	var rule = LVRule.from_file(FileAccess.open(path, FileAccess.READ))
+	input_graph.backend = rule._pattern
 	input_graph.create_visuals_from_backend()
-	output_graph.backend = graphs[1]
+	output_graph.backend = rule._output
 	output_graph.create_visuals_from_backend()
 	#print(graph_strings)
 

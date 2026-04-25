@@ -25,13 +25,13 @@ func _ready() -> void:
 	print("GOING 2")
 	#clear()
 	
-func _process(delta: float) -> void:
-	if Input.is_key_pressed(KEY_O):
-		organise_graph()
-	elif Input.is_key_pressed(KEY_F):
-		force_update()
-	elif Input.is_key_pressed(KEY_V):
-		generator_graph.backend.IsTraversable()
+#func _process(delta: float) -> void:
+	#if Input.is_key_pressed(KEY_O):
+		#organise_graph()
+	#elif Input.is_key_pressed(KEY_F):
+		#force_update()
+	#elif Input.is_key_pressed(KEY_V):
+		#generator_graph.backend.IsTraversable()
 	
 
 func clear() -> void:
