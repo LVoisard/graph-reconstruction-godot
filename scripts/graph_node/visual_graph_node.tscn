@@ -13,11 +13,13 @@
 [ext_resource type="Resource" uid="uid://0sq5iqybsr51" path="res://addons/lv_graph/src/context_actions/graph node/ca_graph_node_remove_connections.tres" id="9_bo0vd"]
 [ext_resource type="Resource" uid="uid://blc066eqywkgv" path="res://addons/lv_graph/src/context_actions/graph node/ca_graph_node_add_annotation.tres" id="11_n50vu"]
 [ext_resource type="Resource" uid="uid://dnmwxkcclknd8" path="res://addons/lv_graph/src/context_actions/graph node/ca_graph_node_delete.tres" id="12_4hwu5"]
+[ext_resource type="Script" uid="uid://dxxgyucn0j7h8" path="res://components/draggable.gd" id="14_n50vu"]
 
 [node name="GraphNode" type="Control" unique_id=1221019133 groups=["graph_nodes"]]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 3
 anchors_preset = 0
+mouse_filter = 1
 script = ExtResource("1_xmc6h")
 outline_texture_round = ExtResource("2_uw84f")
 visual_texture_round = ExtResource("1_n5sbo")
@@ -75,3 +77,10 @@ anchor_bottom = 0.0
 offset_bottom = 30.0
 context = "Graph Node"
 context_actions = Array[ExtResource("4_d4doj")]([ExtResource("5_d7h6g"), ExtResource("7_rky0x"), ExtResource("8_w44de"), ExtResource("11_n50vu"), ExtResource("9_bo0vd"), ExtResource("12_4hwu5")])
+
+[node name="Draggable" type="Control" parent="." unique_id=569384981]
+anchors_preset = 0
+offset_right = 64.0
+offset_bottom = 64.0
+script = ExtResource("14_n50vu")
+metadata/_custom_type_script = "uid://dxxgyucn0j7h8"

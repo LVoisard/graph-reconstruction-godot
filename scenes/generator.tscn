@@ -12,6 +12,7 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 1
 script = ExtResource("1_vxu2e")
 metadata/_tab_index = 1
 
@@ -78,32 +79,17 @@ text = "Refresh Rules"
 layout_mode = 2
 text = "Clear"
 
-[node name="Input Graph Viewport" type="SubViewportContainer" parent="HBoxContainer" unique_id=2016746343]
+[node name="Control" type="Control" parent="HBoxContainer" unique_id=358781039]
 layout_mode = 2
 size_flags_horizontal = 3
-stretch = true
-
-[node name="SubViewport" type="SubViewport" parent="HBoxContainer/Input Graph Viewport" unique_id=1645060456]
-handle_input_locally = false
-size = Vector2i(1516, 1080)
-render_target_update_mode = 4
-
-[node name="Control" type="Control" parent="HBoxContainer/Input Graph Viewport/SubViewport" unique_id=358781039]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 1
 
-[node name="input graph" parent="HBoxContainer/Input Graph Viewport/SubViewport/Control" unique_id=1992332534 instance=ExtResource("4_xsyub")]
+[node name="input graph" parent="HBoxContainer/Control" unique_id=1992332534 instance=ExtResource("4_xsyub")]
 layout_mode = 1
 
-[node name="Label" type="Label" parent="HBoxContainer/Input Graph Viewport/SubViewport" unique_id=1749850821]
-offset_right = 42.0
-offset_bottom = 23.0
+[node name="Label" type="Label" parent="HBoxContainer" unique_id=1749850821]
+layout_mode = 2
 text = "Input
 "
 

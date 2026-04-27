@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://bp8x4vaggq0uc"]
+[gd_scene format=3 uid="uid://bp8x4vaggq0uc"]
 
 [ext_resource type="Script" uid="uid://dxxgyucn0j7h8" path="res://components/draggable.gd" id="1_8cv04"]
 
-[node name="draggable" type="Control"]
+[node name="draggable" type="Control" unique_id=1493353959]
 layout_mode = 3
 anchors_preset = 0
+offset_right = 2.0
+offset_bottom = 2.0
 script = ExtResource("1_8cv04")

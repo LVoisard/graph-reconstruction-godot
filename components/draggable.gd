@@ -2,43 +2,38 @@
 extends Control
 class_name Draggable
 
-signal finished_dragging
-signal started_dragging
-signal dragging
+signal drag_started(node: Control, global_mouse: Vector2)
+signal drag_moved(node: Control, global_mouse: Vector2)
+signal drag_ended(node: Control)
 
-var is_dragging = false #state management
-var mouse_offset #center mouse on click
-
-
-var mouse_over_parent: bool = false
+var _is_dragging: bool = false
 
 func _ready() -> void:
-	self.set_size(get_parent().size)
-	self.set_position(get_parent().position)
-	get_parent().mouse_entered.connect(on_mouse_entered)
-	get_parent().mouse_exited.connect(on_mouse_exited)
-	
-func _physics_process(delta):
-	if is_dragging == true:
-		dragging.emit()
-		get_parent().position = get_global_mouse_position() - mouse_offset
-		
-func _input(event):
+	set_position(Vector2.ZERO)
+	set_size(get_parent().size)
+	mouse_filter = Control.MOUSE_FILTER_STOP
+	set_process_input(true)
+
+func _input(event: InputEvent) -> void:
+	if not event is InputEventMouseButton and not event is InputEventMouseMotion:
+		return
+
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
-			if mouse_over_parent:
-				#print('clicked on sprite')
-				is_dragging = true
-				started_dragging.emit()
-				mouse_offset = get_global_mouse_position() - get_parent().global_position
+			var rect = Rect2(position, size)
+			if rect.has_point(event.position):
+				print("start dragging")
+				_is_dragging = true
+				get_viewport().set_input_as_handled()
+				drag_started.emit(get_parent(), event.position)
 		else:
-			if is_dragging:
-				finished_dragging.emit()
-			is_dragging = false
-			
+			if _is_dragging:
+				print("stopped dragging")
+				_is_dragging = false
+				get_viewport().set_input_as_handled()
+				drag_ended.emit(get_parent())
 
-func on_mouse_entered() -> void:
-	mouse_over_parent = true
-	
-func on_mouse_exited() -> void:
-	mouse_over_parent = false
+	if event is InputEventMouseMotion and _is_dragging:
+		print("dragging")
+		get_viewport().set_input_as_handled()
+		drag_moved.emit(get_parent(), event.position)

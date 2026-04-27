@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://bgo78cbvaoxxk"]
 
+[ext_resource type="Script" uid="uid://ll4awbhyvkwo" path="res://addons/lv_graph/src/lv-graph-root.gd" id="1_sugp2"]
 [ext_resource type="PackedScene" uid="uid://dav187gv7canr" path="res://scenes/rules.tscn" id="1_tho5h"]
 [ext_resource type="PackedScene" uid="uid://m7c1nsgiiqkd" path="res://scenes/generator.tscn" id="2_u4gl4"]
 
@@ -12,18 +13,19 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 1
+script = ExtResource("1_sugp2")
 
 [node name="Panel" type="Panel" parent="." unique_id=1290763328]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="TabContainer" type="TabContainer" parent="." unique_id=1936404664]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,3 +43,9 @@ metadata/_tab_index = 0
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
+
+[node name="PopupMenu" type="PopupMenu" parent="." unique_id=1207537568]
+oversampling_override = 1.0
+item_count = 1
+item_0/text = "Joe"
+item_0/id = 0

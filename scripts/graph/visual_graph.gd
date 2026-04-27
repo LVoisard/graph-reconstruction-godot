@@ -12,6 +12,11 @@ var visual_connections: Array[Connection] = []
 var current_id: int = 0
 var free_ids: Array[int] = []
 
+var _drag_offsets: Dictionary = {}   # node -> Vector2
+var _is_panning: bool = false
+var _pan_start_mouse: Vector2
+var _pan_start_positions: Dictionary = {}  # node -> Vector2
+
 var backend: LVGraph = LVGraph.new()
 	
 func create_new_node() -> VisualGraphNode:
@@ -20,6 +25,7 @@ func create_new_node() -> VisualGraphNode:
 	visual.set_graph(self)
 	visual.set_type(VisualGraphNode.NodeType.ANY)
 	visual.set_id(new_node.get_id())
+	register_node(visual)
 	visual_nodes.append(visual)
 	add_child(visual)
 	return visual	
@@ -45,6 +51,7 @@ func remove_node_connections(node: VisualGraphNode) -> void:
 
 func remove_node(node: VisualGraphNode) -> void:
 	remove_node_connections(node)
+	unregister_node(node)
 	backend.remove_node(node.id)
 	visual_nodes.erase(node)
 	node.queue_free()
@@ -145,3 +152,63 @@ func get_lock_keys(node: RuleGraphNode) -> Array[RuleGraphNode]:
 		if con.connection_type == Connection.ConnectionType.Directional: continue
 		neighbours.append(con.get_other(node))
 	return neighbours
+	
+# call this when you spawn a graph node
+func register_node(node: Control) -> void:
+	var draggable = node.find_child("Draggable")
+	if not draggable:
+		return
+	draggable.drag_started.connect(_on_drag_started)
+	draggable.drag_moved.connect(_on_drag_moved)
+	draggable.drag_ended.connect(_on_drag_ended)
+
+func unregister_node(node: Control) -> void:
+	var draggable = node.find_child("Draggable")
+	if not draggable:
+		return
+	draggable.drag_started.disconnect(_on_drag_started)
+	draggable.drag_moved.disconnect(_on_drag_moved)
+	draggable.drag_ended.disconnect(_on_drag_ended)
+	
+func _on_drag_started(node: Control, global_mouse: Vector2) -> void:
+	_drag_offsets[node] = global_mouse - node.global_position
+
+func _on_drag_moved(node: Control, global_mouse: Vector2) -> void:
+	if not _drag_offsets.has(node):
+		return
+		
+	var target = global_mouse - _drag_offsets[node]
+	print("hello")
+	node.position = _clamped(node, target)
+
+func _on_drag_ended(node: Control) -> void:
+	_drag_offsets.erase(node)
+
+# --- canvas pan ---
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		var rect = Rect2(global_position, size)
+		if event.pressed and rect.has_point(event.global_position):
+			_is_panning = true
+			_pan_start_mouse = event.global_position
+			for child in get_children():
+				if child is Control:
+					_pan_start_positions[child] = child.position
+		else:
+			_is_panning = false
+			_pan_start_positions.clear()
+
+	if event is InputEventMouseMotion and _is_panning:
+		var delta = event.global_position - _pan_start_mouse
+		for node in _pan_start_positions:
+			node.position = _clamped(node, _pan_start_positions[node] + delta)
+		get_viewport().set_input_as_handled()
+
+# --- bounds ---
+
+func _clamped(node: Control, pos: Vector2) -> Vector2:
+	return Vector2(
+		clamp(pos.x, 0.0, size.x - node.size.x),
+		clamp(pos.y, 0.0, size.y - node.size.y)
+	)

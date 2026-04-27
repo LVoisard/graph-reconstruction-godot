@@ -7,12 +7,11 @@ signal graph_complete
 const generator_rule_prefab: PackedScene = preload("res://scenes/generator_rule.tscn")
 
 @onready var generator_rules_container: ManualFileTree = $"HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer/Manual/VBoxContainer"
-@onready var generator_graph: VisualGraph = $"HBoxContainer/Input Graph Viewport/SubViewport/Control/input graph"
+@onready var generator_graph: VisualGraph = $"HBoxContainer/Control/input graph"
 @onready var recipes: Recipes = $"HBoxContainer/Left Bar/Panel/HBoxContainer/TabContainer/Recipes"
 
 
 func _ready() -> void:
-	print("GOING")
 	
 	recipes.apply_rule_random.connect(apply_rule_random)
 	recipes.apply_rule_lsystem.connect(apply_rule_lsystem)
@@ -21,9 +20,6 @@ func _ready() -> void:
 	recipes.update_gaph_visual.connect(update_graph_visual)
 	refresh_rules()
 	clear()
-	#Dungeon.Graph()
-	print("GOING 2")
-	#clear()
 	
 #func _process(delta: float) -> void:
 	#if Input.is_key_pressed(KEY_O):
@@ -36,18 +32,18 @@ func _ready() -> void:
 
 func clear() -> void:
 	generator_graph.clear_all()
-	#var entrance = generator_graph.create_new_node() as VisualGraphNode
-	#entrance.set_position(Vector2(100, 50))
-	#generator_graph.change_node_type(entrance, VisualGraphNode.NodeType.ENTRANCE)
-	#generator_graph.update_node_position(entrance)
-	#
-	#
-	#var goal = generator_graph.create_new_node() as VisualGraphNode
-	#goal.set_position(Vector2(300, 50))
-	#generator_graph.change_node_type(goal, VisualGraphNode.NodeType.GOAL)
-	#generator_graph.update_node_position(goal)
-	#
-	#generator_graph.create_new_connection(entrance, goal) as Connection
+	var entrance = generator_graph.create_new_node() as VisualGraphNode
+	entrance.set_position(Vector2(100, 50))
+	generator_graph.change_node_type(entrance, VisualGraphNode.NodeType.ENTRANCE)
+	generator_graph.update_node_position(entrance)
+	
+	
+	var goal = generator_graph.create_new_node() as VisualGraphNode
+	goal.set_position(Vector2(300, 50))
+	generator_graph.change_node_type(goal, VisualGraphNode.NodeType.GOAL)
+	generator_graph.update_node_position(goal)
+	
+	generator_graph.create_new_connection(entrance, goal) as Connection
 	
 	
 

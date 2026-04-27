@@ -43,7 +43,7 @@ func _ready() -> void:
 	self.hide()
 	
 
-func _gui_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
 		if event.is_pressed():
 			if mouse_over_parent:

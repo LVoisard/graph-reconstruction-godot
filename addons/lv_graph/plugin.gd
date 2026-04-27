@@ -2,7 +2,6 @@
 extends EditorPlugin
 
 var dock_contents
-var context_menu: PopupMenu
 
 func _enable_plugin() -> void:
 	# Add autoloads here.
@@ -17,18 +16,10 @@ func _disable_plugin() -> void:
 func _enter_tree() -> void:
 	# Initialization of the plugin goes here.
 	dock_contents = preload("res://scenes/main.tscn").instantiate()
-	context_menu = preload("res://addons/lv_graph/src/test_ui_context.tscn").instantiate()
-	
+	dock_contents.set_process_input(true)
+	dock_contents.set_process_unhandled_input(true)
 	get_editor_interface().get_editor_main_screen().add_child(dock_contents)
 	print(dock_contents.is_node_ready())
-	
-func _handles(object):
-	return true # Handle EVERYTHING for testing
-
-func _forward_canvas_gui_input(event):
-	if event is InputEventMouseButton:
-		print("PLUGIN SAW CLICK")
-	return false
 
 func _exit_tree() -> void:
 	if dock_contents:

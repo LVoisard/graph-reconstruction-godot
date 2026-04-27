@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://dfuni6e1u6sre"]
+
+[ext_resource type="PackedScene" uid="uid://2366d4on4cdd" path="res://scenes/graph.tscn" id="1_xx2es"]
+
+[node name="TestDrag" type="Control" unique_id=118969756]
+custom_minimum_size = Vector2(600, 800)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="Graph" parent="." unique_id=1300540271 instance=ExtResource("1_xx2es")]
+layout_mode = 1
